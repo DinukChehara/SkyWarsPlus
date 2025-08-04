@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.tomqnto</groupId>
-    <artifactId>skywars</artifactId>
+    <artifactId>skywarsplus</artifactId>
     <version>0.1.0-alpha</version>
     <packaging>jar</packaging>
 
-    <name>skywars</name>
+    <name>skywarsplus</name>
 
     <properties>
         <java.version>21</java.version>
@@ -46,7 +46,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.1</version>
                 <configuration>
-                    <finalName>SkyWars-${project.version}</finalName>
+                    <finalName>SkyWarsPlus-${project.version}</finalName>
                     <outputDirectory>${user.home}\Desktop\server\plugins</outputDirectory>
                 </configuration>
             </plugin>

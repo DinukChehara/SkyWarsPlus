@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/skywars.iml" filepath="$PROJECT_DIR$/skywars.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skywarsplus.iml" filepath="$PROJECT_DIR$/skywarsplus.iml" />
     </modules>
   </component>
 </project>
