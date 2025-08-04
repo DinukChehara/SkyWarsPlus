@@ -1,0 +1,12 @@
+name: SkyWars
+version: '0.1.0-alpha'
+main: me.tomqnto.skyWars.SkyWars
+api-version: '1.21'
+prefix: SkyWars
+authors: [ Tomqnto ]
+
+commands:
+  skywars:
+    usage: /<command>
+    description: Base command for SkyWars plugin
+    aliases: [sw]
