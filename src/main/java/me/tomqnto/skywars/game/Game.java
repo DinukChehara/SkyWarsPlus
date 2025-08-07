@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class Game {
 
-    private final GameSettings gameSettings;
+    private final GameConfiguration gameConfiguration;
     private final GameManager gameManager;
     private final GameMap map;
     private final ChestManager chestManager;
@@ -35,15 +35,15 @@ public class Game {
     private final Set<GameTeam> gameTeams;
     private final StartCountdown startCountdown;
     private final ChestRefillCountdown chestRefillCountdown;
-    private final HashSet<PlayerSession> alivePlayers;
-    private final HashSet<PlayerSession> deadPlayers;
+    private final HashSet<Player> alivePlayers;
+    private final HashSet<Player> deadPlayers;
     private final HashMap<GameTeam, Location> teamSpawnLocations;
     private final int minPlayers;
     private final int maxPlayers;
     private final Set<Player> spectators;
 
-    public Game(GameSettings gameSettings, GameManager gameManager, GameMap map) {
-        this.gameSettings = gameSettings;
+    public Game(GameConfiguration gameConfiguration, GameManager gameManager, GameMap map) {
+        this.gameConfiguration = gameConfiguration;
         this.gameManager = gameManager;
         this.map = map;
         this.chestManager = new ChestManager(this);
@@ -52,25 +52,25 @@ public class Game {
         this.gamePlayers = new HashMap<>();
         this.startCountdown = new StartCountdown(this);
         this.chestRefillCountdown = new ChestRefillCountdown(this);
-        this.maxPlayers = gameSettings.getMaxTeams() * gameSettings.getTeamSize();
-        this.minPlayers = gameSettings.getMinTeams() * gameSettings.getTeamSize();
+        this.maxPlayers = gameConfiguration.getMaxTeams() * gameConfiguration.getTeamSize();
+        this.minPlayers = gameConfiguration.getMinTeams() * gameConfiguration.getTeamSize();
         this.gameTeams = new HashSet<>();
         this.teamSpawnLocations = new HashMap<>();
         this.alivePlayers = new HashSet<>();
         this.deadPlayers = new HashSet<>();
         this.spectators = new HashSet<>();
 
-        for (int x=0; x<gameSettings.getMaxTeams(); x++)
+        for (int x=0; x<gameConfiguration.getMaxTeams(); x++)
             gameTeams.add(new GameTeam());
 
-        for (int x=0; x<gameSettings.getMaxTeams(); x++)
+        for (int x=0; x<gameConfiguration.getMaxTeams(); x++)
             teamSpawnLocations.put(gameTeams.stream().toList().get(x),map.getTeamSpawnLocations().get(x));
 
         startCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
         Bukkit.getServer().getPluginManager().registerEvents(this.chestManager, SkywarsPlus.getInstance());
-        alivePlayers.addAll(gamePlayers.values());
+        alivePlayers.addAll(gamePlayers.keySet());
         if (map.getTeamSpawnLocations().size()<gameTeams.size())
-            Bukkit.getLogger().severe("Not enough team spawns for game setting: %s in map: %s".formatted(gameSettings.getName() ,map.getName()));
+            Bukkit.getLogger().severe("Not enough team spawns for game config: %s in map: %s".formatted(gameConfiguration.getName() ,map.getName()));
 
     }
 
@@ -87,7 +87,7 @@ public class Game {
         refreshPlayer(player);
         PlayerSession session = gameManager.createPlayerSession(player, this);
         gamePlayers.put(player, session);
-        player.teleport(map.getWaitingArea());
+        player.teleport(map.getWaitingLocation());
         assignTeam(player);
 
         broadcastMessage("<gold>%s<gray> joined the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
@@ -100,7 +100,8 @@ public class Game {
                 setGameState(GameState.STARTING);
                 startCountdown.setTime(20);
             }
-        }
+        }else if (gameState == GameState.STARTING)
+            teleportToTeamSpawnLocation(player);
     }
 
     public void playerLeave(Player player){
@@ -119,6 +120,7 @@ public class Game {
         gameManager.deletePlayerSession(player);
         refreshPlayer(player);
         player.teleport(gameManager.getLobbyLocation());
+        player.clearTitle();
 
         if (getPlayerCount()==0) {
             deleteGame();
@@ -132,20 +134,19 @@ public class Game {
     }
 
     public void playerDie(Player player){
-        if (gameManager.getPlayerSession(player).isDead())
+        if (spectators.contains(player))
             return;
         PlayerSession session = gameManager.getPlayerSession(player);
         session.markAsDead();
         getTeam(player).removePlayer(player);
-        alivePlayers.remove(session);
-        deadPlayers.add(session);
+        alivePlayers.remove(player);
+        deadPlayers.add(player);
         spectators.add(player);
 
         if (getAliveTeams().size()==1){
             setGameState(GameState.ENDED);
         }
 
-        player.setGameMode(GameMode.SPECTATOR);
 
     }
 
@@ -160,23 +161,25 @@ public class Game {
             return getAliveTeams().stream().toList().getFirst();
     }
 
-    public Set<PlayerSession> getDeadPlayers(){
+    public Set<Player> getDeadPlayers(){
         return deadPlayers;
     }
 
     public void broadcastMessage(String message){
-        for (Player player : gamePlayers.keySet())
+        for (Player player : getInGamePlayers())
             player.sendRichMessage(message);
     }
 
     public void broadcastMessage(Component component){
-        for (Player player : gamePlayers.keySet())
+        for (Player player : getInGamePlayers())
             player.sendMessage(component);
     }
 
     public void broadcastTitle(Component title, Component subtitle, Duration fadeIn, Duration stay, Duration fadeOut, @Nullable Collection<Player> players){
         List<Player> playerList;
-        playerList = Objects.requireNonNullElseGet(players, gamePlayers::keySet).stream().toList();
+        if (players == null)
+            playerList = getInGamePlayers().stream().toList();
+        else playerList = players.stream().toList();
 
         for (Player player : playerList)
             player.showTitle(Title.title(title, subtitle, Title.Times.times(fadeIn, stay, fadeOut)));
@@ -184,14 +187,16 @@ public class Game {
 
     public void broadcastTitle(Component title, Component subtitle, @Nullable Collection<Player> players){
         List<Player> playerList;
-        playerList = Objects.requireNonNullElseGet(players, gamePlayers::keySet).stream().toList();
+        if (players == null)
+            playerList = getInGamePlayers().stream().toList();
+        else playerList = players.stream().toList();
 
         for (Player player : playerList)
             player.showTitle(Title.title(title, subtitle));
     }
 
-    public GameSettings getGameSettings() {
-        return gameSettings;
+    public GameConfiguration getGameConfiguration() {
+        return gameConfiguration;
     }
 
     public GameState getGameState() {
@@ -204,7 +209,7 @@ public class Game {
         gameManager.getGamesMenu().update();
 
         if (before == GameState.STARTING && newState == GameState.WAITING ) {
-            gamePlayers.keySet().forEach(player -> player.teleport(map.getWaitingArea()));
+            gamePlayers.keySet().forEach(player -> player.teleport(map.getWaitingLocation()));
             broadcastMessage("<gray>Not enough players to start");
             startCountdown.setTime(60);
         }
@@ -221,8 +226,8 @@ public class Game {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 3*20, 10));
             }
             case ENDED -> {
-                broadcastTitle(Component.text("Victory!", NamedTextColor.GOLD, TextDecoration.BOLD), Component.empty(), getTeamWon().getTeamPlayers());
-                broadcastTitle(Component.text("Game Over!", NamedTextColor.RED, TextDecoration.BOLD), Component.empty(), spectators);
+                broadcastTitle(Component.text("VICTORY!", NamedTextColor.GOLD, TextDecoration.BOLD), Component.empty(), getTeamWon().getTeamPlayers());
+                broadcastTitle(Component.text("GAME OVER!", NamedTextColor.RED, TextDecoration.BOLD), Component.empty(), spectators);
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
             }
         }
@@ -248,6 +253,7 @@ public class Game {
         player.getInventory().clear();
         player.setHealth(20);
         player.setSaturation(20);
+        player.setExp(0);
         player.setGameMode(GameMode.SURVIVAL);
     }
 
@@ -255,11 +261,10 @@ public class Game {
         map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation());});
         map.unload();
         gameManager.getGames().remove(id);
-
     }
 
     public void assignTeam(Player player){
-        List<GameTeam> teams = gameTeams.stream().filter(team -> team.getPlayerCount()<gameSettings.getTeamSize()).toList();
+        List<GameTeam> teams = gameTeams.stream().filter(team -> team.getPlayerCount()< gameConfiguration.getTeamSize()).toList();
         if (teams.isEmpty()) {
             playerLeave(player);
             Message.send(player, "<red>You were kicked: not enough teams to join");
@@ -273,7 +278,7 @@ public class Game {
 
     public ChestManager getChestManager(){return chestManager;}
 
-    public HashSet<PlayerSession> getAlivePlayers() {
+    public HashSet<Player> getAlivePlayers() {
         return alivePlayers;
     }
 
@@ -302,13 +307,16 @@ public class Game {
     }
 
     public void teleportToTeamSpawnLocations(){
-        for (GameTeam team : gameTeams)
-            team.getTeamPlayers().forEach(player -> player.teleport(teamSpawnLocations.get(team)));
+        for (Player player : gamePlayers.keySet())
+            teleportToTeamSpawnLocation(player);
+    }
 
+    public void teleportToTeamSpawnLocation(Player player){
+        player.teleport(teamSpawnLocations.get(getTeam(player)));
     }
 
     public void setCages(Material material) {
-        int size = 2;
+        int size = 1;
         int start = -2;
         int end = size;
 
@@ -341,5 +349,16 @@ public class Game {
 
     public void removeCages(){
         setCages(Material.AIR);
+    }
+
+    public Set<Player> getSpectators(){
+        return spectators;
+    }
+
+    public Set<Player> getInGamePlayers(){
+        HashSet<Player> players = new HashSet<>();
+        players.addAll(alivePlayers);
+        players.addAll(spectators);
+        return players;
     }
 }

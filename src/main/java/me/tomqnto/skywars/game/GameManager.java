@@ -22,7 +22,7 @@ public class GameManager {
         gamesMenu = new GamesMenu(this);
     }
 
-    public @Nullable Game createGame(GameSettings gameSettings){
+    public @Nullable Game createGame(GameConfiguration gameSettings){
         List<String> maps = MapConfig.getMaps();
         if (maps.isEmpty())
             return null;
@@ -35,14 +35,14 @@ public class GameManager {
         return game;
     }
 
-    public @Nullable PlayerSession getPlayerSession(Player player){
+    public PlayerSession getPlayerSession(Player player){
         return playerSessions.get(player);
     }
 
     public @Nullable PlayerSession createPlayerSession(Player player, Game game){
         if (getPlayerSession(player)!=null)
             return null;
-        return playerSessions.put(player, new PlayerSession(game));
+        return playerSessions.put(player, new PlayerSession(player, game));
     }
 
     public void deletePlayerSession(Player player){

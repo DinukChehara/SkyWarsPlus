@@ -1,12 +1,16 @@
 package me.tomqnto.skywars.game;
 
+import org.bukkit.entity.Player;
+
 public class PlayerSession {
 
+    private final Player player;
     private final Game game;
     private int kills;
     private boolean isDead;
 
-    public PlayerSession(Game game) {
+    public PlayerSession(Player player, Game game) {
+        this.player = player;
         this.game = game;
         this.kills = 0;
         this.isDead = false;
@@ -34,5 +38,9 @@ public class PlayerSession {
 
     public Game getGame() {
         return game;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

@@ -16,7 +16,7 @@ public class ChestRefillCountdown extends BukkitRunnable {
 
     public ChestRefillCountdown(Game game) {
         this.game = game;
-        REFILL_TIME = game.getGameSettings().getChestRefillCooldown();
+        REFILL_TIME = game.getGameConfiguration().getChestRefillCooldown();
         timeleft = REFILL_TIME;
     }
 
@@ -24,7 +24,7 @@ public class ChestRefillCountdown extends BukkitRunnable {
     public void run() {
         if (game.getGameState()==GameState.STARTED){
 
-            for (Player player : game.getGamePlayers().keySet())
+            for (Player player : game.getInGamePlayers())
                 player.sendActionBar(Component.text("Chests refill in %ss".formatted(timeleft)));
 
             if (timeleft==0){

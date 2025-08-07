@@ -7,7 +7,7 @@ public class EndCountdown extends BukkitRunnable {
 
     private final Game game;
 
-    int timeleft = 25;
+    int timeleft = 15;
     public EndCountdown(Game game) {
         this.game = game;
     }

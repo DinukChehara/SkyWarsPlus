@@ -4,6 +4,7 @@ import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.configs.MapConfig;
 import net.kyori.adventure.util.TriState;
 import org.bukkit.*;
+import org.bukkit.persistence.PersistentDataType;
 import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
@@ -42,6 +43,11 @@ public class GameMap {
             if (bukkitWorld!=null){
                 this.bukkitWorld.setAutoSave(false);
                 bukkitWorld.setPVP(false);
+                bukkitWorld.setVoidDamageAmount(10000);
+                bukkitWorld.getPersistentDataContainer().set(new NamespacedKey(SkywarsPlus.getInstance(), "skywars_map"), PersistentDataType.BOOLEAN, true);
+                bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+                bukkitWorld.setGameRule(GameRule.KEEP_INVENTORY, false);
+                bukkitWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
                 bukkitWorld.setGameRule(GameRule.DO_MOB_SPAWNING, false);
                 bukkitWorld.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
                 bukkitWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
@@ -93,7 +99,7 @@ public class GameMap {
         return locations;
     }
 
-    public Location getWaitingArea(){
+    public Location getWaitingLocation(){
         List<Double> coords = MapConfig.getWaitingAreaCoordinates(getName());
         return new Location(bukkitWorld, coords.getFirst(), coords.get(1), coords.getLast());
     }

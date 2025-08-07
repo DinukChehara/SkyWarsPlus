@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GameSettings implements ConfigurationSerializable {
+public class GameConfiguration implements ConfigurationSerializable {
 
     private final String name;
     private final int minTeams;
@@ -16,10 +16,10 @@ public class GameSettings implements ConfigurationSerializable {
     private final String[] allowedMapTags;
     private final int chestRefillCooldown;
 
-    public static GameSettings SOLOS_SETTINGS = new GameSettings("Solos", 4, 12, 1, 120,"solos");
-    public static GameSettings DUOS_SETTINGS = new GameSettings("Duos",4, 12, 2, 20,"duos");
+    public static GameConfiguration SOLOS_SETTINGS = new GameConfiguration("Solos", 4, 12, 1, 120,"solos");
+    public static GameConfiguration DUOS_SETTINGS = new GameConfiguration("Duos",4, 12, 2, 20,"duos");
 
-    public GameSettings(String name, int minTeams, int maxTeams, int teamSize, int chestRefillCooldown, String... allowedMapTags) {
+    public GameConfiguration(String name, int minTeams, int maxTeams, int teamSize, int chestRefillCooldown, String... allowedMapTags) {
         this.maxTeams = maxTeams;
         this.minTeams = minTeams;
         this.name = name;
@@ -58,15 +58,15 @@ public class GameSettings implements ConfigurationSerializable {
         return map;
     }
 
-    public static GameSettings deserialize(Map<String, Object> map){
+    public static GameConfiguration deserialize(Map<String, Object> map){
         String name = (String) map.get("name");
-        int minPlayers = (int) map.get("min-teams");
-        int maxPlayers = (int) map.get("max-teams");
+        int minTeams = (int) map.get("min-teams");
+        int maxTeams = (int) map.get("max-teams");
         int teamSize = (int) map.get("team-size");
         int chestRefillCooldown = (int) map.get("chest-refill-cooldown");
         List<String> tags = (List<String>) map.get("allowed-map-tags");
         String[] allowedMapTags = tags.toArray(new String[0]);
-        return new GameSettings(name, maxPlayers, minPlayers, teamSize, chestRefillCooldown, allowedMapTags);
+        return new GameConfiguration(name, minTeams, maxTeams, teamSize, chestRefillCooldown, allowedMapTags);
     }
 
     public int getTeamSize() {

@@ -2,9 +2,9 @@ package me.tomqnto.skywars.command;
 
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.arguments.*;
-import me.tomqnto.skywars.configs.GameSettingsConfig;
+import me.tomqnto.skywars.configs.GameConfigurationManager;
 import me.tomqnto.skywars.game.GameManager;
-import me.tomqnto.skywars.game.GameSettings;
+import me.tomqnto.skywars.game.GameConfiguration;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,13 +19,13 @@ import java.util.*;
 public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
 
     private final GameManager gameManager;
-    private static final Map<String, ArgumentExecutor> arguments = new HashMap<>();
+    public static final Map<String, ArgumentExecutor> arguments = new HashMap<>();
 
 
     public SkyWarsPlusCommand(GameManager gameManager) {
         this.gameManager = gameManager;
 
-        arguments.put("create_settings", new CreateGameSettingsArgument());
+        arguments.put("create_config", new CreateGameConfigArgument());
         arguments.put("games", new GamesArgument(gameManager));
         arguments.put("leave", new LeaveGameArgument(gameManager));
         arguments.put("join", new JoinGameArgument(gameManager));
@@ -33,6 +33,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         arguments.put("setlobby", new SetLobbyArgument());
         arguments.put("setloot", new SetLootItemsArgument());
         arguments.put("addloot", new AddLootItemsArgument());
+        arguments.put("reload", new ReloadArgument());
     }
 
     @Override
@@ -70,30 +71,36 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
             return validArgs;
         }
 
+        if (args.length==2 && args[0].equals("help")){
+            final List<String> validArgs = new ArrayList<>();
+            StringUtil.copyPartialMatches(args[1], arguments.keySet(), validArgs);
+            return validArgs;
+        }
+
         if (args.length==2){
             if (args[0].equals("join")) {
-                Set<GameSettings> savedSettings = GameSettingsConfig.getSavedGameSettings();
-                return savedSettings.stream().map(GameSettings::getName).toList();
+                Set<GameConfiguration> savedSettings = GameConfigurationManager.getSavedGameConfigurations();
+                return savedSettings.stream().map(GameConfiguration::getName).toList();
             }
 
             if (args[0].equals("setloot") || args[0].equals("addloot")){
-                return List.of("middle", "normal");
+                return List.of("middle", "normal").stream().filter(arg -> arg.startsWith(args[1])).toList();
             }
         }
 
-        if (args.length>0 && (args[0].equals("create_settings"))){
+        if (args.length>0 && (args[0].equals("create_config"))){
             if (args.length == 2)
                 return List.of("name");
             if (args.length == 3)
-                return List.of("min teams");
+                return List.of("min_teams");
             if (args.length==4)
-                return List.of("max teams");
+                return List.of("max_teams");
             if (args.length==5)
-                return List.of("team size");
+                return List.of("team_size");
             if (args.length==6)
-                return List.of("chest refill cooldown");
+                return List.of("chest_refill_cooldown");
             if (args.length>6)
-                return List.of("map tags");
+                return List.of("map_tags");
         }
 
         return List.of();

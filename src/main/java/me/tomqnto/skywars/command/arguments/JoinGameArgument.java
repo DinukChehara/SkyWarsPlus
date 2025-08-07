@@ -2,7 +2,7 @@ package me.tomqnto.skywars.command.arguments;
 
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.ArgumentExecutor;
-import me.tomqnto.skywars.configs.GameSettingsConfig;
+import me.tomqnto.skywars.configs.GameConfigurationManager;
 import me.tomqnto.skywars.game.GameJoinHandler;
 import me.tomqnto.skywars.game.GameManager;
 import org.bukkit.command.CommandSender;
@@ -36,8 +36,8 @@ public class JoinGameArgument implements ArgumentExecutor {
         if (args.length==2){
             if (args[1].startsWith("id:")){
                 GameJoinHandler.joinGame(player, args[1].substring(4), gameManager);
-            } else if (GameSettingsConfig.doesExist(args[1]))
-                GameJoinHandler.joinGame(player, GameSettingsConfig.getGameSettings(args[1]),gameManager);
+            } else if (GameConfigurationManager.doesExist(args[1]))
+                GameJoinHandler.joinGame(player, GameConfigurationManager.getGameConfiguration(args[1]),gameManager);
             else
                 Message.send(player, "<red>Invalid mode or id");
         }

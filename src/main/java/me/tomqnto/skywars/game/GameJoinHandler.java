@@ -10,7 +10,7 @@ public class GameJoinHandler {
 
     private static final List<GameState> requiredStates = List.of(GameState.STARTING, GameState.WAITING);
 
-    public static void joinGame(Player player, GameSettings gameSettings, GameManager gameManager){
+    public static void joinGame(Player player, GameConfiguration gameSettings, GameManager gameManager){
 
         if (gameManager.hasActiveSession(player))
             return;
@@ -18,7 +18,7 @@ public class GameJoinHandler {
         HashMap<String, Game> games = gameManager.getGames();
         if (!games.isEmpty()) {
             for (Game game : games.values()) {
-                if (gameSettings == game.getGameSettings() && game.getPlayerCount() < game.getMaxPlayers() && requiredStates.contains(game.getGameState())) {
+                if (gameSettings == game.getGameConfiguration() && game.getPlayerCount() < game.getMaxPlayers() && requiredStates.contains(game.getGameState())) {
                     sendJoinMessage(player, game.getId());
                     game.playerJoin(player);
                     return;

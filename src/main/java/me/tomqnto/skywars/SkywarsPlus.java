@@ -1,12 +1,12 @@
 package me.tomqnto.skywars;
 
 import me.tomqnto.skywars.command.SkyWarsPlusCommand;
-import me.tomqnto.skywars.configs.GameSettingsConfig;
+import me.tomqnto.skywars.configs.GameConfigurationManager;
 import me.tomqnto.skywars.configs.LootItemsConfig;
 import me.tomqnto.skywars.configs.MapConfig;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.GameMap;
-import me.tomqnto.skywars.game.GameSettings;
+import me.tomqnto.skywars.game.GameConfiguration;
 import me.tomqnto.skywars.listeners.InGameListeners;
 import me.tomqnto.skywars.menus.api.InventoryListener;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -28,10 +28,10 @@ public final class SkywarsPlus extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        ConfigurationSerialization.registerClass(GameSettings.class);
+        ConfigurationSerialization.registerClass(GameConfiguration.class);
 
         MapConfig.load();
-        GameSettingsConfig.load();
+        GameConfigurationManager.load();
         LootItemsConfig.load();
 
         GameManager gameManager = new GameManager();
