@@ -1,1 +1,14 @@
-#lobby-location: [x,y,z]
+# SkywarsPlus Plugin Configuration
+
+# Location where players will be sent in the lobby.
+# Format: world name, x, y, z, yaw, pitch
+lobby-location:
+  world: world
+  x: 0.5
+  y: 64.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+
+# The block material used for cages. Must be a valid Minecraft Material enum name.
+cage-material: GLASS

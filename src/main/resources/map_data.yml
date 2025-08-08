@@ -1,5 +1,5 @@
 #folder name:
-#  spawn-location: [x,y,z]
-#  chest-locations:
+#  spectator-teleport-location: [x,y,z]
+#  middle-chest-locations:
 #    - [x,y,z]
 #    - [x,y,z]

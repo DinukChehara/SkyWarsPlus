@@ -43,16 +43,16 @@ public class MapConfig {
         return maps;
     }
 
-    public static List<List<Integer>> getChestCoordinates(String map){
-        List<List<Integer>> list = (List<List<Integer>>) config.get(map + ".chest-locations");
+    public static List<List<Integer>> getMiddleChestLocations(String map){
+        List<List<Integer>> list = (List<List<Integer>>) config.get(map + ".middle-chest-locations");
         if (list==null || list.isEmpty())
             return List.of();
 
         return list;
     }
 
-    public static List<Double> getWaitingAreaCoordinates(String map){
-        return config.getDoubleList(map + ".waiting-area-location");
+    public static List<Double> getSpectatorTeleportLocation(String map){
+        return config.getDoubleList(map + ".spectator-teleport-location");
     }
 
     public static List<List<Double>> getTeamSpawnCoordinates(String map){

@@ -1,8 +1,9 @@
 package me.tomqnto.skywars.game;
 
-import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.configs.MapConfig;
+import me.tomqnto.skywars.configs.PluginConfigManager;
 import me.tomqnto.skywars.menus.GamesMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -65,10 +66,10 @@ public class GameManager {
     }
 
     public Location getLobbyLocation(){
-        return SkywarsPlus.getInstance().getConfig().getLocation("lobby-location");
+        return PluginConfigManager.getLobbyLocation();
     }
 
-    public static String GameIdGenerator(){
+    public static String generateID(){
         String id = "sw-%s-%s-%s";
         String uuid = UUID.randomUUID().toString().substring(0, 8);
         String time = String.valueOf(System.currentTimeMillis());
@@ -76,4 +77,5 @@ public class GameManager {
         time = time.substring(time.length()-5);
         return id.formatted(time, uuid, time2);
     }
+
 }

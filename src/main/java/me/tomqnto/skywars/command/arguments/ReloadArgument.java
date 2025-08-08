@@ -6,13 +6,14 @@ import me.tomqnto.skywars.command.ArgumentExecutor;
 import me.tomqnto.skywars.configs.GameConfigurationManager;
 import me.tomqnto.skywars.configs.LootItemsConfig;
 import me.tomqnto.skywars.configs.MapConfig;
+import me.tomqnto.skywars.configs.PluginConfigManager;
 import org.bukkit.command.CommandSender;
 
 public class ReloadArgument implements ArgumentExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         long start = System.currentTimeMillis();
-        SkywarsPlus.getInstance().reloadConfig();
+        PluginConfigManager.load();
         GameConfigurationManager.load();
         LootItemsConfig.load();
         MapConfig.load();

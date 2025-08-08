@@ -100,12 +100,12 @@ public class GameMap {
     }
 
     public Location getWaitingLocation(){
-        List<Double> coords = MapConfig.getWaitingAreaCoordinates(getName());
+        List<Double> coords = MapConfig.getSpectatorTeleportLocation(getName());
         return new Location(bukkitWorld, coords.getFirst(), coords.get(1), coords.getLast());
     }
 
     public List<Location> getChestLocations(){
-        List<List<Integer>> intList = MapConfig.getChestCoordinates(this.getName());
+        List<List<Integer>> intList = MapConfig.getMiddleChestLocations(this.getName());
         List<Location> locationList = new ArrayList<>();
 
         for (List<Integer> intLocations : intList){

@@ -48,7 +48,7 @@ public class Game {
         this.map = map;
         this.chestManager = new ChestManager(this);
         this.gameState = GameState.WAITING;
-        this.id = GameManager.GameIdGenerator();
+        this.id = GameManager.generateID();
         this.gamePlayers = new HashMap<>();
         this.startCountdown = new StartCountdown(this);
         this.chestRefillCountdown = new ChestRefillCountdown(this);
@@ -67,11 +67,13 @@ public class Game {
             teamSpawnLocations.put(gameTeams.stream().toList().get(x),map.getTeamSpawnLocations().get(x));
 
         startCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
-        Bukkit.getServer().getPluginManager().registerEvents(this.chestManager, SkywarsPlus.getInstance());
-        alivePlayers.addAll(gamePlayers.keySet());
-        if (map.getTeamSpawnLocations().size()<gameTeams.size())
-            Bukkit.getLogger().severe("Not enough team spawns for game config: %s in map: %s".formatted(gameConfiguration.getName() ,map.getName()));
 
+        Bukkit.getServer().getPluginManager().registerEvents(this.chestManager, SkywarsPlus.getInstance());
+
+        if (map.getTeamSpawnLocations().size()<gameTeams.size())
+            Bukkit.getLogger().warning("Not enough team locations in the map: %s, config: %s".formatted(map.getName(), gameConfiguration.getName()));
+
+        spawnCages();
     }
 
     public void playerJoin(Player player){
@@ -87,8 +89,10 @@ public class Game {
         refreshPlayer(player);
         PlayerSession session = gameManager.createPlayerSession(player, this);
         gamePlayers.put(player, session);
+        alivePlayers.add(player);
         player.teleport(map.getWaitingLocation());
         assignTeam(player);
+        teleportToTeamSpawnLocation(player);
 
         broadcastMessage("<gold>%s<gray> joined the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
 
@@ -100,8 +104,7 @@ public class Game {
                 setGameState(GameState.STARTING);
                 startCountdown.setTime(20);
             }
-        }else if (gameState == GameState.STARTING)
-            teleportToTeamSpawnLocation(player);
+        }
     }
 
     public void playerLeave(Player player){
@@ -109,12 +112,17 @@ public class Game {
         if (gameState == GameState.WAITING || gameState == GameState.STARTING){
             getTeam(player).removePlayer(player);
             gamePlayers.remove(player);
+            alivePlayers.remove(player);
             broadcastMessage("<gold>%s<gray> left the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
         }
         else{
-            broadcastMessage("<gold>%s<gray> left the game".formatted(player.getName()));
-            playerDie(player);
-            spectators.remove(player);
+            if (deadPlayers.contains(player)){
+                spectators.remove(player);
+            } else{
+                broadcastMessage("<gold>%s<gray> left the game".formatted(player.getName()));
+                playerDie(player);
+                spectators.remove(player);
+            }
         }
 
         gameManager.deletePlayerSession(player);
@@ -209,14 +217,13 @@ public class Game {
         gameManager.getGamesMenu().update();
 
         if (before == GameState.STARTING && newState == GameState.WAITING ) {
-            gamePlayers.keySet().forEach(player -> player.teleport(map.getWaitingLocation()));
+//            gamePlayers.keySet().forEach(player -> player.teleport(map.getWaitingLocation()));
             broadcastMessage("<gray>Not enough players to start");
             startCountdown.setTime(60);
         }
 
         switch (newState){
             case STARTING -> {
-                spawnCages();
                 teleportToTeamSpawnLocations();
             }
             case STARTED -> {
@@ -324,12 +331,12 @@ public class Game {
             Location center = getTeamSpawnLocations().get(team).clone();
 
             for (int x = start; x <= end; x++) {
-                for (int y = start; y <= end; y++) {
+                for (int y = start; y <= end+1; y++) {
                     for (int z = start; z <= end; z++) {
                         Location loc = center.clone().add(x, y, z);
                         Block block = loc.getBlock();
 
-                        boolean isEdge = x == start || x == end || y == start || y == end || z == start || z == end;
+                        boolean isEdge = x == start || x == end || y == start || y == end+1 || z == start || z == end;
 
                         if (isEdge) {
                             block.setType(material);
@@ -357,8 +364,8 @@ public class Game {
 
     public Set<Player> getInGamePlayers(){
         HashSet<Player> players = new HashSet<>();
-        players.addAll(alivePlayers);
-        players.addAll(spectators);
+        players.addAll(getAlivePlayers());
+        players.addAll(getSpectators());
         return players;
     }
 }

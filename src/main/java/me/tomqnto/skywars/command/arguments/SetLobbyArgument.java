@@ -3,6 +3,7 @@ package me.tomqnto.skywars.command.arguments;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.command.ArgumentExecutor;
+import me.tomqnto.skywars.configs.PluginConfigManager;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,9 +17,8 @@ public class SetLobbyArgument implements ArgumentExecutor {
         }
 
         Location location = player.getLocation().getBlock().getLocation();
-        SkywarsPlus.getInstance().getConfig().set("lobby-location", location);
-        SkywarsPlus.getInstance().saveConfig();
-        Message.send(player, "<green>Successfully set lobby at: <dark_green>world: %s x: %s y: %s z: %s".formatted(location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
+        PluginConfigManager.setLobbyLocation(location);
+        Message.send(player, "<green>Successfully set lobby at: <dark_green>world: %s (teleport location: x: %s y: %s z: %s)".formatted(location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
     }
 
     @Override
