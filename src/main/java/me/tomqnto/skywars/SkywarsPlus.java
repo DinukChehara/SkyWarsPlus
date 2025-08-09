@@ -1,10 +1,7 @@
 package me.tomqnto.skywars;
 
 import me.tomqnto.skywars.command.SkyWarsPlusCommand;
-import me.tomqnto.skywars.configs.GameConfigurationManager;
-import me.tomqnto.skywars.configs.LootItemsConfig;
-import me.tomqnto.skywars.configs.MapConfig;
-import me.tomqnto.skywars.configs.PluginConfigManager;
+import me.tomqnto.skywars.configs.*;
 import me.tomqnto.skywars.game.Game;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.GameConfiguration;
@@ -36,6 +33,7 @@ public final class SkywarsPlus extends JavaPlugin {
         MapConfig.load();
         GameConfigurationManager.load();
         LootItemsConfig.load();
+        PlayerConfig.load();
 
         GameManager gameManager = new GameManager();
 

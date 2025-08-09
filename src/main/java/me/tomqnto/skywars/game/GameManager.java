@@ -1,10 +1,15 @@
 package me.tomqnto.skywars.game;
 
+import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.configs.MapConfig;
 import me.tomqnto.skywars.configs.PluginConfigManager;
 import me.tomqnto.skywars.menus.GamesMenu;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
@@ -13,9 +18,19 @@ public class GameManager {
     public static final HashMap<String, Game> games = new HashMap<>();
     private final HashMap<Player, PlayerSession> playerSessions = new HashMap<>();
     private final GamesMenu gamesMenu;
+    private static Team spectators;
 
     public GameManager() {
         gamesMenu = new GamesMenu(this);
+        Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        spectators = scoreboard.getTeam("spectators");
+
+        if (spectators == null) {
+            spectators = scoreboard.registerNewTeam("spectators");
+        }
+        spectators.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        spectators.setCanSeeFriendlyInvisibles(true);
+        spectators.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
     }
 
     public Game createGame(GameConfiguration gameSettings){
@@ -78,4 +93,7 @@ public class GameManager {
         return maps.stream().filter(map -> Arrays.stream(tags).toList().contains(MapConfig.getID(map))).toList();
     }
 
+    public static Team getSpectatorTeam(){
+        return spectators;
+    }
 }

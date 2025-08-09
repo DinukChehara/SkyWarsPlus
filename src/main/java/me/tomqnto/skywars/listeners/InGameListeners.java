@@ -4,11 +4,11 @@ import com.destroystokyo.paper.event.entity.ThrownEggHatchEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
+import me.tomqnto.skywars.configs.PlayerConfig;
 import me.tomqnto.skywars.game.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -20,10 +20,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -76,12 +73,12 @@ public class InGameListeners implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDie(PlayerDeathEvent event){
+    public void onPlayerDeath(PlayerDeathEvent event){
         Player player = event.getPlayer();
         if (gameManager.hasActiveSession(player)){
             Game game = gameManager.getPlayerSession(player).getGame();
 
-            player.teleport(game.getMap().getWaitingLocation());
+            player.teleport(game.getMap().getSpectatorLocation());
             if (game.getSpectators().contains(player)){
                 event.setCancelled(true);
                 return;
@@ -91,6 +88,10 @@ public class InGameListeners implements Listener {
                 game.playerDie(player);
                 game.broadcastMessage(event.deathMessage().color(NamedTextColor.RED));
                 event.deathMessage(Component.empty());
+
+                if (player.getKiller()!=null)
+                    PlayerConfig.addKill(player.getKiller());
+
             }else
                 event.setCancelled(true);
         }
@@ -100,8 +101,8 @@ public class InGameListeners implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event){
         Player player = event.getPlayer();
         if (gameManager.hasActiveSession(player)){
-            player.setGameMode(GameMode.SPECTATOR);
-            event.setRespawnLocation(gameManager.getPlayerSession(player).getGame().getMap().getWaitingLocation());
+            player.setGameMode(GameMode.SURVIVAL);
+            event.setRespawnLocation(gameManager.getPlayerSession(player).getGame().getMap().getSpectatorLocation());
         }
     }
 
@@ -133,7 +134,7 @@ public class InGameListeners implements Listener {
             return;
 
         Game game = gameManager.getPlayerSession(player).getGame();
-        if (game.getGameState()!=GameState.STARTED)
+        if (game.getGameState()!=GameState.STARTED || game.isSpectator(player))
             event.setCancelled(true);
     }
 
@@ -146,24 +147,33 @@ public class InGameListeners implements Listener {
             return;
 
         Game game = gameManager.getPlayerSession(player).getGame();
+        if (event.getDamageSource().getCausingEntity() instanceof Player && game.isSpectator((Player) event.getDamageSource().getCausingEntity())){
+            event.setCancelled(true);
+            return;
+        }
+
+
         if (game.getGameState() != GameState.STARTED)
+            event.setCancelled(true);
+
+        if (game.getSpectators().contains(player))
             event.setCancelled(true);
 
         if (event.getDamageSource().getDamageType()== DamageType.OUT_OF_WORLD){
             if (game.getGameState() == GameState.WAITING){
                 event.setCancelled(true);
-                player.teleport(game.getMap().getWaitingLocation());
+                player.teleport(game.getMap().getSpectatorLocation());
             } else if (game.getGameState() == GameState.STARTED) {
                 if (game.getSpectators().contains(player)){
                     event.setCancelled(true);
-                    player.teleport(game.getMap().getWaitingLocation());
+                    player.teleport(game.getMap().getSpectatorLocation());
                 }
             } else {
                 event.setCancelled(true);
                 if (game.getTeam(player)!=null){
                     player.teleport(game.getTeamSpawnLocations().get(game.getTeam(player)));
                 } else{
-                    player.teleport(game.getMap().getWaitingLocation());
+                    player.teleport(game.getMap().getSpectatorLocation());
                 }
             }
         }

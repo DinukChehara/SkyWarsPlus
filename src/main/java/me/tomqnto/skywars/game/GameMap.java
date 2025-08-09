@@ -97,7 +97,7 @@ public class GameMap {
         return locations;
     }
 
-    public Location getWaitingLocation(){
+    public Location getSpectatorLocation(){
         List<Double> coords = MapConfig.getSpectatorTeleportLocation(getName());
         return new Location(bukkitWorld, coords.getFirst(), coords.get(1), coords.getLast());
     }

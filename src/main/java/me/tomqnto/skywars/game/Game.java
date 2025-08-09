@@ -2,6 +2,7 @@ package me.tomqnto.skywars.game;
 
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
+import me.tomqnto.skywars.configs.PlayerConfig;
 import me.tomqnto.skywars.configs.PluginConfigManager;
 import me.tomqnto.skywars.tasks.ChestRefillCountdown;
 import me.tomqnto.skywars.tasks.EndCountdown;
@@ -16,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +44,7 @@ public class Game {
     private final int minPlayers;
     private final int maxPlayers;
     private final Set<Player> spectators;
+    private final HashMap<GameTeam, Boolean> teamAliveMap;
 
     public Game(GameConfiguration gameConfiguration, GameManager gameManager, GameMap map) {
         this.gameConfiguration = gameConfiguration;
@@ -60,9 +63,13 @@ public class Game {
         this.alivePlayers = new HashSet<>();
         this.deadPlayers = new HashSet<>();
         this.spectators = new HashSet<>();
+        this.teamAliveMap = new HashMap<>();
 
-        for (int x=0; x<gameConfiguration.getMaxTeams(); x++)
-            gameTeams.add(new GameTeam());
+        for (int x=0; x<gameConfiguration.getMaxTeams(); x++){
+            GameTeam team = new GameTeam();
+            gameTeams.add(team);
+            teamAliveMap.put(team, true);
+        }
 
         for (int x=0; x<gameConfiguration.getMaxTeams(); x++)
             teamSpawnLocations.put(gameTeams.stream().toList().get(x),map.getTeamSpawnLocations().get(x));
@@ -91,7 +98,7 @@ public class Game {
         PlayerSession session = gameManager.createPlayerSession(player, this);
         gamePlayers.put(player, session);
         alivePlayers.add(player);
-        player.teleport(map.getWaitingLocation());
+        player.teleport(map.getSpectatorLocation());
         assignTeam(player);
         teleportToTeamSpawnLocation(player);
 
@@ -118,11 +125,11 @@ public class Game {
         }
         else{
             if (deadPlayers.contains(player)){
-                spectators.remove(player);
+                removeSpectator(player);
             } else{
                 broadcastMessage("<gold>%s<gray> left the game".formatted(player.getName()));
                 playerDie(player);
-                spectators.remove(player);
+                removeSpectator(player);
             }
         }
 
@@ -147,20 +154,18 @@ public class Game {
             return;
         PlayerSession session = gameManager.getPlayerSession(player);
         session.markAsDead();
-        getTeam(player).removePlayer(player);
         alivePlayers.remove(player);
         deadPlayers.add(player);
-        spectators.add(player);
+        addSpectator(player);
+
+        if (!isTeamAlive(getTeam(player)))
+            teamAliveMap.put(getTeam(player), false);
 
         if (getAliveTeams().size()==1){
             setGameState(GameState.ENDED);
         }
 
 
-    }
-
-    public Set<GameTeam> getAliveTeams(){
-        return gameTeams.stream().filter(team -> team.getPlayerCount()>0).collect(Collectors.toSet());
     }
 
     public @Nullable GameTeam getTeamWon(){
@@ -218,7 +223,6 @@ public class Game {
         gameManager.getGamesMenu().update();
 
         if (before == GameState.STARTING && newState == GameState.WAITING ) {
-//            gamePlayers.keySet().forEach(player -> player.teleport(map.getWaitingLocation()));
             broadcastMessage("<gray>Not enough players to start");
             startCountdown.setTime(60);
         }
@@ -228,6 +232,7 @@ public class Game {
                 teleportToTeamSpawnLocations();
             }
             case STARTED -> {
+                gameTeams.forEach(team -> {if (!isTeamAlive(team)) teamAliveMap.remove(team);});
                 removeCages();
                 chestRefillCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
                 for (Player player : gamePlayers.keySet())
@@ -237,6 +242,9 @@ public class Game {
                 broadcastTitle(Component.text("VICTORY!", NamedTextColor.GOLD, TextDecoration.BOLD), Component.empty(), getTeamWon().getTeamPlayers());
                 broadcastTitle(Component.text("GAME OVER!", NamedTextColor.RED, TextDecoration.BOLD), Component.empty(), spectators);
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
+
+                getTeamWon().getTeamPlayers().forEach(PlayerConfig::addWin);
+                getDeadTeams().forEach(team -> team.getTeamPlayers().forEach(PlayerConfig::addLoss));
             }
         }
     }
@@ -268,7 +276,7 @@ public class Game {
     }
 
     public void deleteGame(){
-        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation());});
+        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); if (spectators.contains(player)) removeSpectator(player);});
         map.unload();
         gameManager.getGames().remove(id);
     }
@@ -370,5 +378,45 @@ public class Game {
         players.addAll(getAlivePlayers());
         players.addAll(getSpectators());
         return players;
+    }
+
+    public Set<GameTeam> getAliveTeams(){
+        return teamAliveMap.keySet().stream().filter(teamAliveMap::get).collect(Collectors.toSet());
+    }
+
+    public Set<GameTeam> getDeadTeams(){
+        return teamAliveMap.keySet().stream().filter(team -> !teamAliveMap.get(team)).collect(Collectors.toSet());
+    }
+
+    public boolean isTeamAlive(GameTeam team){
+        if (team.getPlayerCount()==0)
+            return false;
+         return !deadPlayers.containsAll(team.getTeamPlayers());
+    }
+
+    public void addSpectator(Player player){
+        player.setGameMode(GameMode.SURVIVAL);
+        player.setCollidable(false);
+        player.setAllowFlight(true);
+        player.setFlying(true);
+
+        GameManager.getSpectatorTeam().addPlayer(player);
+        alivePlayers.forEach(alivePlayer -> alivePlayer.hidePlayer(SkywarsPlus.getInstance(), player));
+        spectators.add(player);
+        player.setInvisible(true);
+    }
+
+    public void removeSpectator(Player player){
+        player.setCollidable(true);
+        GameManager.getSpectatorTeam().removePlayer(player);
+
+        alivePlayers.forEach(alivePlayer -> alivePlayer.showPlayer(SkywarsPlus.getInstance(), player));
+        spectators.remove(player);
+        player.setFlying(false);
+        player.setInvisible(false);
+    }
+
+    public boolean isSpectator(Player player){
+        return spectators.contains(player);
     }
 }
