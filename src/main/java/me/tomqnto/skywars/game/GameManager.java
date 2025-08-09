@@ -3,19 +3,14 @@ package me.tomqnto.skywars.game;
 import me.tomqnto.skywars.configs.MapConfig;
 import me.tomqnto.skywars.configs.PluginConfigManager;
 import me.tomqnto.skywars.menus.GamesMenu;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class GameManager {
 
-    private final HashMap<String, Game> games = new HashMap<>();
+    public static final HashMap<String, Game> games = new HashMap<>();
     private final HashMap<Player, PlayerSession> playerSessions = new HashMap<>();
     private final GamesMenu gamesMenu;
 
@@ -23,15 +18,15 @@ public class GameManager {
         gamesMenu = new GamesMenu(this);
     }
 
-    public @Nullable Game createGame(GameConfiguration gameSettings){
-        List<String> maps = MapConfig.getMaps();
+    public Game createGame(GameConfiguration gameSettings){
+        List<String> maps = getValidMaps(gameSettings.getAllowedMapIDs());
         if (maps.isEmpty())
             return null;
 
         GameMap map = new GameMap(maps.get(new Random().nextInt(maps.size())));
         Game game = new Game(gameSettings, this,map);
 
-        games.put(game.getId().toString(), game);
+        games.put(game.getId(), game);
 
         return game;
     }
@@ -40,7 +35,7 @@ public class GameManager {
         return playerSessions.get(player);
     }
 
-    public @Nullable PlayerSession createPlayerSession(Player player, Game game){
+    public PlayerSession createPlayerSession(Player player, Game game){
         if (getPlayerSession(player)!=null)
             return null;
         return playerSessions.put(player, new PlayerSession(player, game));
@@ -76,6 +71,11 @@ public class GameManager {
         String time2 = time.substring(0, 4);
         time = time.substring(time.length()-5);
         return id.formatted(time, uuid, time2);
+    }
+
+    public static List<String> getValidMaps(String[] tags){
+        List<String> maps = MapConfig.getMaps();
+        return maps.stream().filter(map -> Arrays.stream(tags).toList().contains(MapConfig.getID(map))).toList();
     }
 
 }

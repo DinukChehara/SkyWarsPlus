@@ -1,5 +1,6 @@
 package me.tomqnto.skywars.command.arguments;
 
+import me.tomqnto.skywars.DataValidator;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.command.ArgumentExecutor;
@@ -12,13 +13,14 @@ import org.bukkit.command.CommandSender;
 public class ReloadArgument implements ArgumentExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        long start = System.currentTimeMillis();
         PluginConfigManager.load();
         GameConfigurationManager.load();
         LootItemsConfig.load();
         MapConfig.load();
-        Message.send(sender, "<green>Successfully reloaded all plugin configs <gray>in %.3f seconds".formatted((System.currentTimeMillis() - start) / 1000.0));
-
+        Message.send(sender, "<green>Successfully reloaded all plugin configs");
+        Message.send(sender, "<green>Data will is being validated");
+        DataValidator.validateData();
+        DataValidator.sendResults(sender, true);
     }
 
     @Override

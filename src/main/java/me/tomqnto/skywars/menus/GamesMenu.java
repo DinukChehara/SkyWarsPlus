@@ -43,7 +43,7 @@ public class GamesMenu extends PagedMenu {
             Component empty = Component.empty();
             Component lore1 = Component.text(id, NamedTextColor.DARK_GRAY);
             Component lore2 = Component.text("Players: ", NamedTextColor.YELLOW).append(Component.text(playerCount, NamedTextColor.AQUA));
-            Component lore3 = Component.text("Mode: ", NamedTextColor.YELLOW).append(Component.text(game.getGameConfiguration().getName(), NamedTextColor.AQUA));
+            Component lore3 = Component.text("Config: ", NamedTextColor.YELLOW).append(Component.text(game.getGameConfiguration().getName(), NamedTextColor.AQUA));
             Component lore4 = Component.text("Map: ",NamedTextColor.YELLOW).append(Component.text(map, NamedTextColor.AQUA));
 
             meta.lore(List.of(lore1, empty,lore2,lore3 ,lore4,empty));

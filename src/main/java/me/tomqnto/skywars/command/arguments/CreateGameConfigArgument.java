@@ -28,21 +28,21 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
         int maxTeams = Integer.parseInt(args[3]);
         int teamSize = Integer.parseInt(args[4]);
         int chestRefillCooldown = Integer.parseInt(args[5]);
-        String[] allowedMapTags = Arrays.copyOfRange(args, 6, args.length);
+        String[] allowedMapIDs = Arrays.copyOfRange(args, 6, args.length);
 
         if (minTeams > maxTeams){
             Message.send(sender, "<red>Minimum team count must be less than or equal to maximum team count");
             return;
         }
 
-        GameConfiguration gameSettings = new GameConfiguration(name, minTeams, maxTeams, teamSize, chestRefillCooldown,allowedMapTags);
+        GameConfiguration gameSettings = new GameConfiguration(name, minTeams, maxTeams, teamSize, chestRefillCooldown,allowedMapIDs);
         GameConfigurationManager.saveGameConfiguration(gameSettings);
         Message.send(sender, "<green>Successfully created new game config: <yellow>" + name);
     }
 
     @Override
     public String getUsage() {
-        return "/skywarsplus create_config <name> <min teams> <max teams> <team size> <map tags>";
+        return "/skywarsplus create_config <name> <min teams> <max teams> <team size> <map ids>";
     }
 
     @Override

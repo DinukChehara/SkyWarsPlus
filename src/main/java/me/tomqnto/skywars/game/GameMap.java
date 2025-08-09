@@ -37,12 +37,11 @@ public class GameMap {
 
         try{
             FileUtils.copyDirectoryStructure(sourceWorldFolder, activeWorldFolder);
-            SkywarsPlus.getInstance().getLoadedMaps().add(this);
             this.bukkitWorld = Bukkit.createWorld(new WorldCreator(activeWorldFolder.getName()).keepSpawnLoaded(TriState.FALSE));
 
             if (bukkitWorld!=null){
                 this.bukkitWorld.setAutoSave(false);
-                bukkitWorld.setPVP(false);
+                bukkitWorld.setPVP(true);
                 bukkitWorld.setVoidDamageAmount(10000);
                 bukkitWorld.getPersistentDataContainer().set(new NamespacedKey(SkywarsPlus.getInstance(), "skywars_map"), PersistentDataType.BOOLEAN, true);
                 bukkitWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
@@ -67,7 +66,6 @@ public class GameMap {
         if (activeWorldFolder!=null) {
             try {
                 FileUtils.deleteDirectory(activeWorldFolder);
-                SkywarsPlus.getInstance().getLoadedMaps().remove(this);
                 Bukkit.getLogger().info("Deleted active world: " + activeWorldFolder.getName());
             } catch (IOException e) {
                 Bukkit.getLogger().severe("Could not delete active world: " + activeWorldFolder.getName());

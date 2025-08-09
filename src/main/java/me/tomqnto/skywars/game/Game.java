@@ -2,6 +2,7 @@ package me.tomqnto.skywars.game;
 
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
+import me.tomqnto.skywars.configs.PluginConfigManager;
 import me.tomqnto.skywars.tasks.ChestRefillCountdown;
 import me.tomqnto.skywars.tasks.EndCountdown;
 import me.tomqnto.skywars.tasks.StartCountdown;
@@ -259,8 +260,10 @@ public class Game {
     public void refreshPlayer(Player player){
         player.getInventory().clear();
         player.setHealth(20);
-        player.setSaturation(20);
-        player.setExp(0);
+        player.setFoodLevel(20);
+        player.setSaturation(6);
+        player.setExperienceLevelAndProgress(0);
+        player.clearActivePotionEffects();
         player.setGameMode(GameMode.SURVIVAL);
     }
 
@@ -331,12 +334,12 @@ public class Game {
             Location center = getTeamSpawnLocations().get(team).clone();
 
             for (int x = start; x <= end; x++) {
-                for (int y = start; y <= end+1; y++) {
+                for (int y = -1; y <= end+2; y++) {
                     for (int z = start; z <= end; z++) {
                         Location loc = center.clone().add(x, y, z);
                         Block block = loc.getBlock();
 
-                        boolean isEdge = x == start || x == end || y == start || y == end+1 || z == start || z == end;
+                        boolean isEdge = x == start || x == end || y == -1 || y == end+2 || z == start || z == end;
 
                         if (isEdge) {
                             block.setType(material);
@@ -351,7 +354,7 @@ public class Game {
 
 
     public void spawnCages(){
-        setCages(Material.GLASS);
+        setCages(PluginConfigManager.getCageMaterial());
     }
 
     public void removeCages(){

@@ -39,13 +39,13 @@ public class JoinGameArgument implements ArgumentExecutor {
             } else if (GameConfigurationManager.doesExist(args[1]))
                 GameJoinHandler.joinGame(player, GameConfigurationManager.getGameConfiguration(args[1]),gameManager);
             else
-                Message.send(player, "<red>Invalid mode or id");
+                Message.send(player, "<red>Invalid config or id");
         }
     }
 
     @Override
     public String getUsage() {
-        return "/skywarsplus join <id:gameid | mode>";
+        return "/skywarsplus join <id:gameid | config>";
     }
 
     @Override

@@ -13,19 +13,19 @@ public class GameConfiguration implements ConfigurationSerializable {
     private final int minTeams;
     private final int maxTeams;
     private final int teamSize;
-    private final String[] allowedMapTags;
+    private final String[] allowedMapIDs;
     private final int chestRefillCooldown;
 
     public static GameConfiguration SOLOS_SETTINGS = new GameConfiguration("Solos", 4, 12, 1, 120,"solos");
     public static GameConfiguration DUOS_SETTINGS = new GameConfiguration("Duos",4, 12, 2, 20,"duos");
 
-    public GameConfiguration(String name, int minTeams, int maxTeams, int teamSize, int chestRefillCooldown, String... allowedMapTags) {
+    public GameConfiguration(String name, int minTeams, int maxTeams, int teamSize, int chestRefillCooldown, String... allowedMapIDs) {
         this.maxTeams = maxTeams;
         this.minTeams = minTeams;
         this.name = name;
         this.teamSize = teamSize;
         this.chestRefillCooldown = chestRefillCooldown;
-        this.allowedMapTags = allowedMapTags;
+        this.allowedMapIDs = allowedMapIDs;
     }
 
     public int getMaxTeams() {
@@ -40,8 +40,8 @@ public class GameConfiguration implements ConfigurationSerializable {
         return name;
     }
 
-    public String[] getAllowedMapTags() {
-        return allowedMapTags;
+    public String[] getAllowedMapIDs() {
+        return allowedMapIDs;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GameConfiguration implements ConfigurationSerializable {
         map.put("max-teams", maxTeams);
         map.put("team-size", teamSize);
         map.put("chest-refill-cooldown", chestRefillCooldown);
-        map.put("allowed-map-tags", allowedMapTags);
+        map.put("map-ids", allowedMapIDs);
 
 
         return map;
@@ -64,9 +64,9 @@ public class GameConfiguration implements ConfigurationSerializable {
         int maxTeams = (int) map.get("max-teams");
         int teamSize = (int) map.get("team-size");
         int chestRefillCooldown = (int) map.get("chest-refill-cooldown");
-        List<String> tags = (List<String>) map.get("allowed-map-tags");
-        String[] allowedMapTags = tags.toArray(new String[0]);
-        return new GameConfiguration(name, minTeams, maxTeams, teamSize, chestRefillCooldown, allowedMapTags);
+        List<String> ids = (List<String>) map.get("map-ids");
+        String[] allowedMapIDs = ids.toArray(new String[0]);
+        return new GameConfiguration(name, minTeams, maxTeams, teamSize, chestRefillCooldown, allowedMapIDs);
     }
 
     public int getTeamSize() {

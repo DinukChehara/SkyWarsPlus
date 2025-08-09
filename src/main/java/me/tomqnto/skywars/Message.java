@@ -18,12 +18,16 @@ public enum Message {
         this.message = message;
     }
 
-    public void send(CommandSender sender) {
+    public void send(CommandSender to) {
         String msg = prefix + message;
-        sender.sendRichMessage(msg);
+        to.sendRichMessage(msg);
     }
 
     public static void send(CommandSender to,String message){
         to.sendRichMessage(prefix + message);
+    }
+
+    public static String getPrefix(){
+        return prefix;
     }
 }
