@@ -1,7 +1,9 @@
 package me.tomqnto.skywars.listeners;
 
 import com.destroystokyo.paper.event.entity.ThrownEggHatchEvent;
+import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import io.papermc.paper.event.player.PlayerPickItemEvent;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.configs.PlayerConfig;
@@ -199,4 +201,37 @@ public class InGameListeners implements Listener {
 
     }
 
+    @EventHandler
+    public void onItemPickUp(PlayerPickItemEvent event){
+        Player player = event.getPlayer();
+        if (!gameManager.hasActiveSession(player))
+            return;
+
+        PlayerSession session = gameManager.getPlayerSession(player);
+        if (session.getGame().isSpectator(player))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent event){
+        Player player = event.getPlayer();
+        if (!gameManager.hasActiveSession(player))
+            return;
+
+        PlayerSession session = gameManager.getPlayerSession(player);
+        if (session.getGame().isSpectator(player))
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onExpPickup(PlayerPickupExperienceEvent event){
+        Player player = event.getPlayer();
+        if (!gameManager.hasActiveSession(player))
+            return;
+
+        PlayerSession session = gameManager.getPlayerSession(player);
+        if (session.getGame().isSpectator(player))
+            event.setCancelled(true);
+    }
+    
 }

@@ -20,6 +20,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
 
     private final GameManager gameManager;
     public static final Map<String, ArgumentExecutor> arguments = new HashMap<>();
+    public static final Map<String, String> shortArgs = new HashMap<>();
 
 
     public SkyWarsPlusCommand(GameManager gameManager) {
@@ -34,6 +35,11 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         arguments.put("setloot", new SetLootItemsArgument());
         arguments.put("addloot", new AddLootItemsArgument());
         arguments.put("reload", new ReloadArgument());
+
+        shortArgs.put("g", "games");
+        shortArgs.put("j", "join");
+        shortArgs.put("l", "leave");
+        shortArgs.put("h", "help");
     }
 
     @Override
@@ -45,6 +51,9 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         }
 
         ArgumentExecutor argument = arguments.get(args[0]);
+        if (argument==null)
+            argument = arguments.get(shortArgs.get(args[0]));
+
 
         if (args[0].equals("join")){
             Location loc = gameManager.getLobbyLocation();
@@ -67,18 +76,20 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
 
         if (args.length==1){
             final List<String> validArgs = new ArrayList<>();
-            StringUtil.copyPartialMatches(args[0], arguments.keySet(), validArgs);
+            final Set<String> allArgs = new HashSet<>(arguments.keySet());
+            allArgs.addAll(shortArgs.keySet());
+            StringUtil.copyPartialMatches(args[0], allArgs, validArgs);
             return validArgs;
         }
 
-        if (args.length==2 && args[0].equals("help")){
+        if (args.length==2 && (args[0].equals("help") || args[0].equals("h"))){
             final List<String> validArgs = new ArrayList<>();
             StringUtil.copyPartialMatches(args[1], arguments.keySet(), validArgs);
             return validArgs;
         }
 
         if (args.length==2){
-            if (args[0].equals("join")) {
+            if (args[0].equals("join") || args[0].equals("j")) {
                 Set<GameConfiguration> savedSettings = GameConfigurationManager.getSavedGameConfigurations();
                 return savedSettings.stream().map(GameConfiguration::getName).toList();
             }

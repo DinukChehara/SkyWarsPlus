@@ -28,8 +28,6 @@ public class StartCountdown extends BukkitRunnable {
                 player.sendActionBar(Component.text("Not enough players to start", NamedTextColor.GRAY));
         }
         if (game.getGameState()==GameState.STARTING) {
-            for (Player player : game.getGamePlayers().keySet())
-                player.sendActionBar(MiniMessage.miniMessage().deserialize("<gold>Starting in <gold>%ss".formatted(time)));
             if (time == 30 || time == 20 || time == 15 || (time < 11 && time > 0)) {
                 game.broadcastMessage("<yellow>Starting in <gold>%s <yellow>seconds".formatted(time));
                 game.getGamePlayers().keySet().forEach(Audience::clearTitle);
