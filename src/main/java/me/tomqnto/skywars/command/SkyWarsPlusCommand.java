@@ -5,11 +5,13 @@ import me.tomqnto.skywars.command.arguments.*;
 import me.tomqnto.skywars.configs.GameConfigurationManager;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.GameConfiguration;
+import me.tomqnto.skywars.menus.SkyWarsMenu;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +22,6 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
 
     private final GameManager gameManager;
     public static final Map<String, ArgumentExecutor> arguments = new HashMap<>();
-    public static final Map<String, String> shortArgs = new HashMap<>();
 
 
     public SkyWarsPlusCommand(GameManager gameManager) {
@@ -35,24 +36,20 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         arguments.put("setloot", new SetLootItemsArgument());
         arguments.put("addloot", new AddLootItemsArgument());
         arguments.put("reload", new ReloadArgument());
-
-        shortArgs.put("g", "games");
-        shortArgs.put("j", "join");
-        shortArgs.put("l", "leave");
-        shortArgs.put("h", "help");
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
 
         if (args.length==0){
-            Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
+            if (sender instanceof Player player)
+                new SkyWarsMenu().open(player);
+            else
+                Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
             return true;
         }
 
         ArgumentExecutor argument = arguments.get(args[0]);
-        if (argument==null)
-            argument = arguments.get(shortArgs.get(args[0]));
 
 
         if (args[0].equals("join")){
@@ -76,9 +73,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
 
         if (args.length==1){
             final List<String> validArgs = new ArrayList<>();
-            final Set<String> allArgs = new HashSet<>(arguments.keySet());
-            allArgs.addAll(shortArgs.keySet());
-            StringUtil.copyPartialMatches(args[0], allArgs, validArgs);
+            StringUtil.copyPartialMatches(args[0], arguments.keySet(), validArgs);
             return validArgs;
         }
 

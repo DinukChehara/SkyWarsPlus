@@ -6,6 +6,7 @@ import me.tomqnto.skywars.game.Game;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.GameConfiguration;
 import me.tomqnto.skywars.listeners.InGameListeners;
+import me.tomqnto.skywars.listeners.inLobbyListeners;
 import me.tomqnto.skywars.menus.api.InventoryListener;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -34,17 +35,20 @@ public final class SkywarsPlus extends JavaPlugin {
         GameConfigurationManager.load();
         LootItemsConfig.load();
         PlayerConfig.load();
+        JoinMenuConfig.load();
+        SkyWarsMenuConfig.load();
 
         GameManager gameManager = new GameManager();
 
         getServer().getPluginManager().registerEvents(new InGameListeners(gameManager), this);
+        getServer().getPluginManager().registerEvents(new inLobbyListeners(), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
         getCommand("skywarsplus").setExecutor(new SkyWarsPlusCommand(gameManager));
 
         Message.send(Bukkit.getConsoleSender(), "<green>Data Validation Results:");
         DataValidator.validateData();
-        DataValidator.sendResults(Bukkit.getConsoleSender(), false);
+        DataValidator.sendResults(Bukkit.getConsoleSender());
     }
 
     public static SkywarsPlus getInstance(){

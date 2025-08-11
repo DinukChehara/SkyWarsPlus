@@ -38,12 +38,12 @@ public class PluginConfigManager {
     }
 
     public static void setLobbyLocation(Location location){
-        config.set("lobby-location", location);
+        config.set("lobby-settings.lobby-location", location);
         save();
     }
 
     public static Location getLobbyLocation(){
-        return (Location) config.get("lobby-location");
+        return (Location) config.get("lobby-settings.lobby-location");
     }
 
     public static void setCageMaterial(String material){
@@ -53,6 +53,34 @@ public class PluginConfigManager {
 
     public static Material getCageMaterial(){
         return Material.valueOf(config.getString("cage-material"));
+    }
+
+    public static boolean isInvulnerableInLobby(){
+        return config.getBoolean("lobby-settings.invulnerable-in-lobby");
+    }
+
+    public static boolean getCanPickUpItemsInLobby(){
+        return config.getBoolean("lobby-settings.can-pickup-items");
+    }
+
+    public static boolean canDropItemsInLobby(){
+        return config.getBoolean("lobby-settings.can-drop-items");
+    }
+
+    public static boolean canPlaceBlocksInLobby(){
+        return config.getBoolean("lobby-settings.can-place-blocks");
+    }
+
+    public static boolean canBreakBlocksInLobby(){
+        return config.getBoolean("lobby-settings.can-break-blocks");
+    }
+
+    public static boolean canPickupExpOrbsInLobby(){
+        return config.getBoolean("lobby-settings.can-pickup-exp");
+    }
+
+    public static boolean sendActionFailedMessageInLobby(){
+        return config.getBoolean("lobby-settings.send-action-failed-message");
     }
 
 }

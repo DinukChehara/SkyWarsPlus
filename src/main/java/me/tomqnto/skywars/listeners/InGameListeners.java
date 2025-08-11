@@ -54,6 +54,10 @@ public class InGameListeners implements Listener {
                     Vector velocity = event.getEntity().getVelocity();
                     velocity = velocity.multiply(-0.3);
                     player.knockback(0.5, velocity.getX(), velocity.getZ());
+                } else if (event.getEntity().getType() == EntityType.ARROW) {
+                    if (event.getEntity().getShooter() instanceof Entity shooter)
+                        if (shooter instanceof Player shooterPlayer)
+                            shooterPlayer.playSound(shooterPlayer.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1.0f, 1.0f);
                 }
             }
         }
@@ -91,8 +95,10 @@ public class InGameListeners implements Listener {
                 game.broadcastMessage(event.deathMessage().color(NamedTextColor.RED));
                 event.deathMessage(Component.empty());
 
-                if (player.getKiller()!=null)
+                if (player.getKiller()!=null){
                     PlayerConfig.addKill(player.getKiller());
+                    player.getKiller().playSound(player.getKiller().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
+                }
 
             }else
                 event.setCancelled(true);
@@ -208,7 +214,7 @@ public class InGameListeners implements Listener {
             return;
 
         PlayerSession session = gameManager.getPlayerSession(player);
-        if (session.getGame().isSpectator(player))
+        if (session.getGame().isSpectator(player) || session.getGame().getGameState() != GameState.STARTED)
             event.setCancelled(true);
     }
 
@@ -230,8 +236,8 @@ public class InGameListeners implements Listener {
             return;
 
         PlayerSession session = gameManager.getPlayerSession(player);
-        if (session.getGame().isSpectator(player))
+        if (session.getGame().isSpectator(player) || session.getGame().getGameState() != GameState.STARTED)
             event.setCancelled(true);
     }
-    
+
 }

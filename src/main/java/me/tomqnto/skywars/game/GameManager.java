@@ -96,4 +96,21 @@ public class GameManager {
     public static Team getSpectatorTeam(){
         return spectators;
     }
+
+    public static int getPlayerCount(String configuration){
+        int count = 0;
+        for (Game game : games.values()) {
+            if (game.getGameConfiguration().getName().equals(configuration))
+                count+=game.getPlayerCount();
+        }
+        return count;
+    }
+
+    public static int getPlayerCount(){
+        int count = 0;
+        for (Game game : games.values()){
+            count+=game.getPlayerCount();
+        }
+        return count;
+    }
 }

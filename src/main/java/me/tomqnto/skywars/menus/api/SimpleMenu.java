@@ -32,6 +32,11 @@ public abstract class SimpleMenu implements Menu, Listener {
     }
 
     @Override
+    public void setButton(int slot, Button button){
+        setItem(slot, button.getItemStack(), button.getAction());
+    }
+
+    @Override
     public void setItem(int slot, ItemStack item) {
         setItem(slot, item, player -> {});
     }

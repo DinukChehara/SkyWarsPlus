@@ -45,6 +45,7 @@ public class Game {
     private final int maxPlayers;
     private final Set<Player> spectators;
     private final HashMap<GameTeam, Boolean> teamAliveMap;
+    private final HashMap<Player, List<Player>> hiddenPlayers = new HashMap<>();
 
     public Game(GameConfiguration gameConfiguration, GameManager gameManager, GameMap map) {
         this.gameConfiguration = gameConfiguration;
@@ -234,13 +235,13 @@ public class Game {
             }
             case STARTED -> {
                 gameTeams.forEach(team -> {if (!isTeamAlive(team)) teamAliveMap.remove(team);});
+                getInGamePlayers().forEach(player -> hiddenPlayers.put(player, new ArrayList<>()));
                 removeCages();
                 chestRefillCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
                 for (Player player : gamePlayers.keySet())
                     player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 3*20, 10));
             }
             case ENDED -> {
-                getSpectators().forEach(this::removeSpectator);
                 broadcastTitle(Component.text("VICTORY!", NamedTextColor.GOLD, TextDecoration.BOLD), Component.empty(), getTeamWon().getTeamPlayers());
                 broadcastTitle(Component.text("GAME OVER!", NamedTextColor.RED, TextDecoration.BOLD), Component.empty(), spectators);
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
@@ -278,7 +279,7 @@ public class Game {
     }
 
     public void deleteGame(){
-        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); if (spectators.contains(player)) removeSpectator(player);});
+        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); showSpectators(player); if (isSpectator(player)) removeSpectator(player);});
         map.unload();
         gameManager.getGames().remove(id);
     }
@@ -404,7 +405,17 @@ public class Game {
 
         GameManager.getSpectatorTeam().addPlayer(player);
 
-        alivePlayers.forEach(alivePlayer -> alivePlayer.hidePlayer(SkywarsPlus.getInstance(), player));
+        if (!hiddenPlayers.containsKey(player))
+            hiddenPlayers.put(player, List.of());
+
+        hiddenPlayers.keySet().forEach(inGamePlayer -> {
+            if (inGamePlayer==player)
+                return;
+            inGamePlayer.hidePlayer(SkywarsPlus.getInstance(), player);
+            List<Player> hidden = hiddenPlayers.get(inGamePlayer);
+            hidden.add(player);
+            hiddenPlayers.put(inGamePlayer, hidden);
+        });
 
         spectators.add(player);
     }
@@ -413,8 +424,14 @@ public class Game {
         player.setCollidable(true);
         GameManager.getSpectatorTeam().removePlayer(player);
 
-        gamePlayers.keySet().forEach(gplayer -> gplayer.showPlayer(SkywarsPlus.getInstance(), player));
-        spectators.forEach(spectator -> spectator.showPlayer(SkywarsPlus.getInstance(), player));
+        hiddenPlayers.keySet().forEach(inGamePlayer -> {
+            if (inGamePlayer==player)
+                return;
+            inGamePlayer.showPlayer(SkywarsPlus.getInstance(), player);
+            List<Player> hidden = hiddenPlayers.get(inGamePlayer);
+            hidden.remove(player);
+            hiddenPlayers.put(inGamePlayer, hidden);
+        });
 
         spectators.remove(player);
         player.setFlying(false);
@@ -425,10 +442,10 @@ public class Game {
     }
 
     public void showSpectators(Player player){
-        spectators.forEach(p -> player.showPlayer(SkywarsPlus.getInstance(), player));
+        spectators.forEach(spectator -> player.showPlayer(SkywarsPlus.getInstance(), spectator));
     }
 
     public void hideSpectators(Player player){
-        spectators.forEach(p -> player.hidePlayer(SkywarsPlus.getInstance(), player));
+        spectators.forEach(spectator -> player.hidePlayer(SkywarsPlus.getInstance(), spectator));
     }
 }

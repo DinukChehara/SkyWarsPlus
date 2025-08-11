@@ -3,8 +3,10 @@ package me.tomqnto.skywars.command.arguments;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.ArgumentExecutor;
 import me.tomqnto.skywars.configs.GameConfigurationManager;
+import me.tomqnto.skywars.configs.JoinMenuConfig;
 import me.tomqnto.skywars.game.GameJoinHandler;
 import me.tomqnto.skywars.game.GameManager;
+import me.tomqnto.skywars.menus.JoinMenu;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -29,7 +31,7 @@ public class JoinGameArgument implements ArgumentExecutor {
         }
 
         if (args.length==1){
-            Message.MISSING_OR_INVALID_ARGUMENTS.send(player);
+            new JoinMenu().open(player);
             return;
         }
 
@@ -45,7 +47,7 @@ public class JoinGameArgument implements ArgumentExecutor {
 
     @Override
     public String getUsage() {
-        return "/skywarsplus join <id:gameid | config>";
+        return "/skywarsplus join <id:gameid | config | empty>";
     }
 
     @Override

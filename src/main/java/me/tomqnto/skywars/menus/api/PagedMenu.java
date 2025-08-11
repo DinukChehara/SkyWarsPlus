@@ -29,7 +29,10 @@ public abstract class PagedMenu extends SimpleMenu {
     }
 
     public void addAll(List<Button> buttons) {
-        final int safeArea = getInventory().getSize() - 9;
+        int minus = 9;
+        if (maxPage==1)
+            minus = 0;
+        final int safeArea = getInventory().getSize() - minus;
 
         for (int i = 0; i < buttons.size(); i++) {
             final int page = i / safeArea;
@@ -45,7 +48,8 @@ public abstract class PagedMenu extends SimpleMenu {
         getActionsMap().clear();
         getInventory().clear();
         onSetup();
-        setNavigation();
+        if (maxPage>1)
+            setNavigation();
     }
 
     public void setButton(int page, int slot, Button button) {

@@ -1,0 +1,20 @@
+#rows: THREE
+#
+#buttons:
+#  0:
+#    name: "&aJoin Solo"
+#    lore:
+#      - "&7Click to join a solo game"
+#    material: EMERALD
+#    glint: false
+#    join-on-click: true
+#    config: solo
+#
+#  1:
+#    name: "&bJoin Doubles"
+#    lore:
+#      - "&7Click to join a doubles game"
+#    material: DIAMOND
+#    glint: false
+#    join-on-click: true
+#    config: doubles

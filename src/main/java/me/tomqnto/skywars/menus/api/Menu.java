@@ -10,6 +10,8 @@ public interface Menu extends InventoryHolder{
 
     void click(Player player, int slot);
 
+    void setButton(int slot, Button button);
+
     void setItem(int slot, ItemStack item);
 
     void setItem(int slot, ItemStack item, Consumer<Player> action);
