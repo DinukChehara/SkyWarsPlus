@@ -97,6 +97,7 @@ public class InGameListeners implements Listener {
 
                 if (player.getKiller()!=null){
                     PlayerConfig.addKill(player.getKiller());
+                    gameManager.getPlayerSession(player.getKiller()).addKill();
                     player.getKiller().playSound(player.getKiller().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                 }
 

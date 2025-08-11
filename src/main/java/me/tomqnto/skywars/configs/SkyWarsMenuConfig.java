@@ -101,7 +101,7 @@ public class SkyWarsMenuConfig {
         List<String> msgs = new ArrayList<>();
         for (String msg : actionsStr){
             if (msg.startsWith("[MESSAGE] ")){
-                msgs.add(msg);
+                msgs.add(msg.replace("[MESSAGE] ", ""));
             }
         }
         return msgs;
@@ -152,7 +152,7 @@ public class SkyWarsMenuConfig {
         meta.lore(lore);
         if (glint)
             meta.setEnchantmentGlintOverride(true);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         item.setItemMeta(meta);
 
         Consumer<Player> action = player1 -> {

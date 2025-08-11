@@ -12,7 +12,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 public class SkyWarsMenu extends SimpleMenu {
 
     public SkyWarsMenu() {
-        super(JoinMenuConfig.getRows(), Component.text("SkyWars+", Style.style(TextDecoration.BOLD)));
+        super(SkyWarsMenuConfig.getRows(), Component.text("SkyWars+", Style.style(TextDecoration.BOLD)));
     }
 
     @Override

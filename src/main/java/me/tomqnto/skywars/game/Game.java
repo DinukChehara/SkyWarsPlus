@@ -46,6 +46,7 @@ public class Game {
     private final Set<Player> spectators;
     private final HashMap<GameTeam, Boolean> teamAliveMap;
     private final HashMap<Player, List<Player>> hiddenPlayers = new HashMap<>();
+    private final GameScoreboard gameScoreboard;
 
     public Game(GameConfiguration gameConfiguration, GameManager gameManager, GameMap map) {
         this.gameConfiguration = gameConfiguration;
@@ -65,6 +66,7 @@ public class Game {
         this.deadPlayers = new HashSet<>();
         this.spectators = new HashSet<>();
         this.teamAliveMap = new HashMap<>();
+        this.gameScoreboard = new GameScoreboard(this, gameManager);
 
         for (int x=0; x<gameConfiguration.getMaxTeams(); x++){
             GameTeam team = new GameTeam();
@@ -226,7 +228,7 @@ public class Game {
 
         if (before == GameState.STARTING && newState == GameState.WAITING ) {
             broadcastMessage("<gray>Not enough players to start");
-            startCountdown.setTime(60);
+            startCountdown.setTime(40);
         }
 
         switch (newState){
@@ -234,6 +236,7 @@ public class Game {
                 teleportToTeamSpawnLocations();
             }
             case STARTED -> {
+                gameScoreboard.runTaskTimer(SkywarsPlus.getInstance(), 0, 10);
                 gameTeams.forEach(team -> {if (!isTeamAlive(team)) teamAliveMap.remove(team);});
                 getInGamePlayers().forEach(player -> hiddenPlayers.put(player, new ArrayList<>()));
                 removeCages();
@@ -282,6 +285,10 @@ public class Game {
         map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); showSpectators(player); if (isSpectator(player)) removeSpectator(player);});
         map.unload();
         gameManager.getGames().remove(id);
+        try{
+            gameScoreboard.cancel();
+        } catch (IllegalStateException ignored) {
+        }
     }
 
     public void assignTeam(Player player){
@@ -447,5 +454,9 @@ public class Game {
 
     public void hideSpectators(Player player){
         spectators.forEach(spectator -> player.hidePlayer(SkywarsPlus.getInstance(), spectator));
+    }
+
+    public ChestRefillCountdown getChestRefillCountdown(){
+        return chestRefillCountdown;
     }
 }

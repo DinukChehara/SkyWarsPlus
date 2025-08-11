@@ -16,7 +16,7 @@ import java.time.Duration;
 public class StartCountdown extends BukkitRunnable {
 
     private final Game game;
-    private int time = 60;
+    private int time = 40;
 
     public StartCountdown(Game game) {
         this.game = game;
@@ -29,6 +29,7 @@ public class StartCountdown extends BukkitRunnable {
                 player.sendActionBar(Component.text("Not enough players to start", NamedTextColor.GRAY));
         }
         if (game.getGameState()==GameState.STARTING) {
+            game.getInGamePlayers().forEach(player -> player.setLevel(time));
             if (time == 30 || time == 20 || time == 15 || (time < 11 && time > 0)) {
                 game.getInGamePlayers().forEach(player -> player.playSound(player.getLocation(), Sound.BLOCK_METAL_PRESSURE_PLATE_CLICK_ON, 1.0f, 1.3f));
                 game.broadcastMessage("<yellow>Game starts in <gold>%s <yellow>seconds".formatted(time));
