@@ -77,6 +77,7 @@ public class Game {
         for (int x=0; x<gameConfiguration.getMaxTeams(); x++)
             teamSpawnLocations.put(gameTeams.stream().toList().get(x),map.getTeamSpawnLocations().get(x));
 
+        gameScoreboard.runTaskTimer(SkywarsPlus.getInstance(), 10, 10);
         startCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
         Bukkit.getServer().getPluginManager().registerEvents(this.chestManager, SkywarsPlus.getInstance());
@@ -236,7 +237,6 @@ public class Game {
                 teleportToTeamSpawnLocations();
             }
             case STARTED -> {
-                gameScoreboard.runTaskTimer(SkywarsPlus.getInstance(), 0, 10);
                 gameTeams.forEach(team -> {if (!isTeamAlive(team)) teamAliveMap.remove(team);});
                 getInGamePlayers().forEach(player -> hiddenPlayers.put(player, new ArrayList<>()));
                 removeCages();

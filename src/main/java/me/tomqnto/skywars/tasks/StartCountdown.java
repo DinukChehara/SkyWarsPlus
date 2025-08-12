@@ -51,4 +51,8 @@ public class StartCountdown extends BukkitRunnable {
     public void setTime(int time){
         this.time = time;
     }
+
+    public int getTime(){
+        return time;
+    }
 }
