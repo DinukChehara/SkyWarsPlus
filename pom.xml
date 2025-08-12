@@ -6,7 +6,7 @@
 
     <groupId>me.tomqnto</groupId>
     <artifactId>skywarsplus</artifactId>
-    <version>0.1.0-alpha</version>
+    <version>0.2.0-beta</version>
     <packaging>jar</packaging>
 
     <name>skywarsplus</name>
