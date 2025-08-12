@@ -1,0 +1,149 @@
+# ONE, TWO, THREE..., SIX
+rows: FIVE
+
+buttons:
+  0:
+    name: "&b&lSkyWars+"
+    material: BOOK
+    glint: true
+    lore:
+      - "&7Welcome to &bSkyWars+&7!"
+      - "&7Fast-paced PvP minigame with"
+      - "&7custom maps and modes."
+      - ""
+      - "&eFight, loot & &ebe the last one standing!"
+    actions: []
+
+  13:
+    name: "&a&lJoin a Game"
+    material: BOW
+    glint: true
+    lore:
+      - "&7Click to open the join menu"
+      - ""
+      - "&7Players online: &f%player-count%"
+    actions:
+      - "[COMMAND] sw join"
+
+  11:
+    name: "&6&lKits"
+    material: CHEST
+    glint: true
+    lore:
+      - "&7Select your starting kit"
+      - ""
+      - "&cComing Soon!"
+    actions:
+      - "[MESSAGE] &cThis feature is coming soon!"
+
+  15:
+    name: "&d&lPerks"
+    material: ENCHANTED_BOOK
+    glint: true
+    lore:
+      - "&7Unlock unique perks"
+      - ""
+      - "&cComing Soon!"
+    actions:
+      - "[MESSAGE] &cThis feature is coming soon!"
+
+  29:
+    name: "&e&lCosmetics"
+    material: PLAYER_HEAD
+    glint: true
+    lore:
+      - "&7Customize your experience"
+      - ""
+      - "&cComing Soon!"
+    actions:
+      - "[MESSAGE] &cThis feature is coming soon!"
+
+  33:
+    name: "&9&lStats"
+    material: PAPER
+    glint: true
+    lore:
+      - "&7View your game statistics"
+      - ""
+      - "&cComing Soon!"
+    actions:
+      - "[MESSAGE] &cThis feature is coming soon!"
+
+  36:
+    name: "&6&lAuthor Info"
+    material: NAME_TAG
+    glint: true
+    lore:
+      - "&7Plugin created by &aTomqnto"
+      - ""
+      - "&7Visit &9https://modrinth.com/plugin/skywars+ &7for info."
+    actions: []
+  1:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  2:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+
+  3:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  4:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  5:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  6:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  7:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  8:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  9:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  27:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  18:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  37:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  38:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  39:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  40:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  41:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  42:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  43:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  44:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+
+  17:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  26:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+  35:
+    name: ""
+    material: GRAY_STAINED_GLASS_PANE
+

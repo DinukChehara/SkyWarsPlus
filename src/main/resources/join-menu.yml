@@ -1,20 +1,43 @@
-#rows: THREE
-#
-#buttons:
-#  0:
-#    name: "&aJoin Solo"
-#    lore:
-#      - "&7Click to join a solo game"
-#    material: EMERALD
-#    glint: false
-#    join-on-click: true
-#    config: solo
-#
-#  1:
-#    name: "&bJoin Doubles"
-#    lore:
-#      - "&7Click to join a doubles game"
-#    material: DIAMOND
-#    glint: false
-#    join-on-click: true
-#    config: doubles
+# ONE, TWO, THREE..., SIX
+rows: THREE
+
+buttons:
+  
+  10:
+    name: "&7&lSkywars Solos"
+    material: IRON_SWORD
+    glint: false
+    join-on-click: false
+    config: null
+    lore:
+      - "&7Coming Soon!"
+      - "&aGet ready for epic battles."
+    actions:
+      - "[MESSAGE] &cThis mode is coming soon!"
+
+  13:
+    name: "&7&lSkywars Duos"
+    material: DIAMOND_SWORD
+    glint: false
+    join-on-click: false
+    config: null
+    lore:
+      - "&7Coming Soon!"
+      - "&aPrepare for intense SkyWars action."
+    actions:
+      - "[MESSAGE] &cThis mode is coming soon!"
+  16:
+    name: "&b&lMini &e&lSkyWars"
+    material: FEATHER
+    glint: true
+    join-on-click: true
+    config: Mini
+    lore:
+      - "&7Fast-paced &e4v4 &7SkyWars match"
+      - "&aPerfect for quick games!"
+      - "&6&l[NEW MODE]"
+      - ""
+      - "&7Playing: &f%config-player-count%"
+      - "&e&lClick to Join!"
+    actions:
+      - "[COMMAND] sw join Mini"

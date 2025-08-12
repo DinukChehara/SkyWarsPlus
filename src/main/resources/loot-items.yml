@@ -1,3 +1,761 @@
 loot-items:
   normal-chest:
+    '0':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: STONE_SWORD
+      name: ''
+    '1':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: STONE_AXE
+      name: ''
+    '2':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_PICKAXE
+      name: ''
+    '3':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: CHAINMAIL_BOOTS
+      name: ''
+    '4':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: CHAINMAIL_LEGGINGS
+      name: ''
+    '5':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: CHAINMAIL_CHESTPLATE
+      name: ''
+    '6':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: CHAINMAIL_HELMET
+      name: ''
+    '7':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 16
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SNOWBALL
+        amount: 6
+      name: ''
+    '8':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 16
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: EGG
+        amount: 5
+      name: ''
+    '9':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 2
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: GOLDEN_APPLE
+      name: ''
+    '10':
+      min-amount: 1
+      chance: 0.7
+      max-amount: 16
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: COOKED_BEEF
+        amount: 7
+      name: ''
+    '11':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 32
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: EXPERIENCE_BOTTLE
+        amount: 24
+      name: ''
+    '12':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: FISHING_ROD
+      name: ''
+    '13':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 24
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: OAK_LOG
+        amount: 14
+      name: ''
+    '14':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 32
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: OAK_PLANKS
+        amount: 31
+      name: ''
+    '15':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LAVA_BUCKET
+      name: ''
+    '16':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: WATER_BUCKET
+      name: ''
+    '17':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: BOW
+      name: ''
+    '18':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: ARROW
+        amount: 8
+      name: ''
+    '19':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SPLASH_POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:poison
+      name: ''
+    '20':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SPLASH_POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:regeneration
+      name: ''
+    '21':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 16
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: OAK_PLANKS
+        amount: 10
+      name: ''
+    '22':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: EXPERIENCE_BOTTLE
+        amount: 6
+      name: ''
+    '23':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: GOLDEN_BOOTS
+      name: ''
+    '24':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: GOLDEN_LEGGINGS
+      name: ''
+    '25':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: GOLDEN_CHESTPLATE
+      name: ''
+    '26':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LEATHER_BOOTS
+      name: ''
+    '27':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LEATHER_LEGGINGS
+      name: ''
+    '28':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LEATHER_CHESTPLATE
+      name: ''
+    '29':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LEATHER_HELMET
+      name: ''
+    '30':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: FLINT_AND_STEEL
+      name: ''
+    '31':
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LAPIS_LAZULI
+        amount: 2
+      name: ''
+      min-amount: 1
+      chance: 1.0
+      max-amount: 2
+    '32':
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LAPIS_LAZULI
+        amount: 4
+      name: ''
+      min-amount: 1
+      chance: 1.0
+      max-amount: 4
   middle-chest:
+    '0':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: DIAMOND_PICKAXE
+      name: ''
+    '1':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_AXE
+      name: ''
+    '2':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_SWORD
+      name: ''
+    '3':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: DIAMOND_HELMET
+      name: ''
+    '4':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: DIAMOND_LEGGINGS
+      name: ''
+    '5':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: DIAMOND_CHESTPLATE
+      name: ''
+    '6':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: DIAMOND_BOOTS
+      name: ''
+    '7':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: DIAMOND_AXE
+      name: ''
+    '8':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: FLINT_AND_STEEL
+      name: ''
+    '9':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: DIAMOND_SWORD
+      name: ''
+    '10':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:regeneration
+      name: ''
+    '11':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SPLASH_POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:poison
+      name: ''
+    '12':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SPLASH_POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:harming
+      name: ''
+    '13':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          item-name: '""'
+          enchants:
+            minecraft:punch: 1
+      name: ''
+    '14':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 32
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: ARROW
+        amount: 17
+      name: ''
+    '15':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 2
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: ENDER_PEARL
+      name: ''
+    '16':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: TNT
+        amount: 6
+      name: ''
+    '17':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 16
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: EGG
+        amount: 15
+      name: ''
+    '18':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: GOLDEN_APPLE
+        amount: 4
+      name: ''
+    '19':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 16
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SNOWBALL
+        amount: 6
+      name: ''
+    '20':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SNOWBALL
+        amount: 7
+      name: ''
+    '21':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 4
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: COOKED_BEEF
+      name: ''
+    '22':
+      min-amount: 1
+      chance: 0.6
+      max-amount: 4
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: COOKED_BEEF
+        amount: 2
+      name: ''
+    '23':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SPLASH_POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:swiftness
+      name: ''
+    '24':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:swiftness
+      name: ''
+    '25':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:fire_resistance
+      name: ''
+    '26':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SPLASH_POTION
+        meta:
+          ==: ItemMeta
+          meta-type: POTION
+          item-name: '""'
+          potion-type: minecraft:regeneration
+      name: ''
+    '27':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: EGG
+        amount: 3
+      name: ''
+    '28':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: BOW
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          item-name: '""'
+          enchants:
+            minecraft:power: 2
+      name: ''
+    '29':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_LEGGINGS
+      name: ''
+    '30':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_BOOTS
+      name: ''
+    '31':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: SHIELD
+      name: ''
+    '32':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_CHESTPLATE
+      name: ''
+    '33':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_HELMET
+      name: ''
+    '34':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: GOLDEN_CARROT
+        amount: 5
+      name: ''
+    '35':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: GOLDEN_CARROT
+        amount: 3
+      name: ''
+    '36':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 4
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: TNT
+        amount: 2
+      name: ''
+    '37':
+      min-amount: 1
+      chance: 0.3
+      max-amount: 2
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: ENDER_PEARL
+        amount: 2
+      name: ''
+    '38':
+      min-amount: 1
+      chance: 0.4
+      max-amount: 8
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: ARROW
+        amount: 8
+      name: ''
+    '39':
+      min-amount: 1
+      chance: 0.5
+      max-amount: 1
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: IRON_PICKAXE
+      name: ''
+    '40':
+      min-amount: 1
+      chance: 1.0
+      max-amount: 2
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LAPIS_LAZULI
+        amount: 2
+      name: ''
+    '41':
+      min-amount: 1
+      chance: 1.0
+      max-amount: 4
+      item-stack:
+        ==: org.bukkit.inventory.ItemStack
+        v: 4189
+        type: LAPIS_LAZULI
+        amount: 4
+      name: ''

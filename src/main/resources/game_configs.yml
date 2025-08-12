@@ -1,1 +1,10 @@
-game-configs:
+game-config:
+  Mini:
+    ==: me.tomqnto.skywars.game.GameConfiguration
+    max-teams: 4
+    min-teams: 2
+    team-size: 1
+    map-ids:
+    - 1
+    name: Mini
+    chest-refill-cooldown: 120
