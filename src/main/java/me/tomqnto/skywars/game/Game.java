@@ -84,7 +84,7 @@ public class Game {
 
         if (map.getTeamSpawnLocations().size()<gameTeams.size())
             Bukkit.getLogger().warning("Not enough team locations in the map: %s, config: %s".formatted(map.getName(), gameConfiguration.getName()));
-
+        
         spawnCages();
     }
 
