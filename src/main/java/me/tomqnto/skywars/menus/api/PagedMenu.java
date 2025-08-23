@@ -18,6 +18,8 @@ public abstract class PagedMenu extends SimpleMenu {
     }
 
     protected void setNavigation() {
+        if (maxPage==0)
+            return;
         setItem(getInventory().getSize() - 1, getItemNextPage(), player -> {
             currentPage = Math.min(maxPage, currentPage + 1);
             update();
@@ -30,7 +32,7 @@ public abstract class PagedMenu extends SimpleMenu {
 
     public void addAll(List<Button> buttons) {
         int minus = 9;
-        if (maxPage==1)
+        if (maxPage==0)
             minus = 0;
         final int safeArea = getInventory().getSize() - minus;
 
@@ -48,8 +50,7 @@ public abstract class PagedMenu extends SimpleMenu {
         getActionsMap().clear();
         getInventory().clear();
         onSetup();
-        if (maxPage>1)
-            setNavigation();
+        setNavigation();
     }
 
     public void setButton(int page, int slot, Button button) {

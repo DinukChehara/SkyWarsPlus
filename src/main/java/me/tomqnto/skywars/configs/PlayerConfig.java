@@ -1,6 +1,7 @@
 package me.tomqnto.skywars.configs;
 
 import me.tomqnto.skywars.SkywarsPlus;
+import me.tomqnto.skywars.game.GameConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -32,46 +33,55 @@ public class PlayerConfig {
         }
     }
 
-    public static int getKills(Player player){
-        return config.getInt(player.getName() + ".stats.kills");
+    public static int getKills(Player player, GameConfiguration gameConfig){
+        return config.getInt(player.getName() + ".stats.%s.kills".formatted(gameConfig.getName()));
     }
 
-    public static int getWins(Player player){
-        return config.getInt(player.getName() + ".stats.wins");
+    public static int getWins(Player player, GameConfiguration gameConfig){
+        return config.getInt(player.getName() + ".stats.%s.wins".formatted(gameConfig.getName()));
     }
 
-    public static int getLosses(Player player){
-        return config.getInt(player.getName() + ".stats.losses");
+    public static int getLosses(Player player, GameConfiguration gameConfig){
+        return config.getInt(player.getName() + ".stats.%s.losses".formatted(gameConfig.getName()));
     }
 
-    public static int getWinStreak(Player player){
-        return config.getInt(player.getName() + ".stats.win-streak");
+    public static int getDeaths(Player player, GameConfiguration gameConfig){
+        return config.getInt(player.getName() + ".stats.%s.deaths".formatted(gameConfig.getName()));
     }
 
-    public static void addKill(Player player){
-        config.set(player.getName() + ".stats.kills", getKills(player)+1);
+    public static int getWinStreak(Player player, GameConfiguration gameConfig){
+        return config.getInt(player.getName() + ".stats.%s.win-streak".formatted(gameConfig.getName()));
+    }
+
+    public static void addKill(Player player, GameConfiguration gameConfig){
+        config.set(player.getName() + ".stats.%s.kills".formatted(gameConfig.getName()), getKills(player, gameConfig)+1);
         save();
     }
 
-    public static void addWin(Player player){
-        config.set(player.getName() + ".stats.wins", getWins(player)+1);
-        addWinStreak(player);
+    public static void addWin(Player player, GameConfiguration gameConfig){
+        config.set(player.getName() + ".stats.%s.wins".formatted(gameConfig.getName()), getWins(player, gameConfig)+1);
+        addWinStreak(player, gameConfig);
         save();
     }
 
-    public static void addLoss(Player player){
-        config.set(player.getName() + ".stats.losses", getLosses(player)+1);
-        resetWinStreak(player);
+    public static void addLoss(Player player, GameConfiguration gameConfig){
+        config.set(player.getName() + ".stats.%s.losses".formatted(gameConfig.getName()), getLosses(player, gameConfig)+1);
+        resetWinStreak(player, gameConfig);
         save();
     }
 
-    public static void addWinStreak(Player player){
-        config.set(player.getName() + ".stats.win-streak", getWinStreak(player)+1);
+    public static void addDeath(Player player, GameConfiguration gameConfig){
+        config.set(player.getName() + ".stats.%s.deaths".formatted(gameConfig.getName()), getDeaths(player, gameConfig)+1);
         save();
     }
 
-    public static void resetWinStreak(Player player){
-        config.set(player.getName() + ".stats.win-streak", 0);
+    public static void addWinStreak(Player player, GameConfiguration gameConfig){
+        config.set(player.getName() + ".stats.%s.win-streak".formatted(gameConfig.getName()), getWinStreak(player, gameConfig)+1);
+        save();
+    }
+
+    public static void resetWinStreak(Player player, GameConfiguration gameConfig){
+        config.set(player.getName() + ".stats.%s.win-streak".formatted(gameConfig.getName()), 0);
         save();
     }
 

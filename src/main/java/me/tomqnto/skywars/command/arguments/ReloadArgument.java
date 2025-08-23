@@ -10,12 +10,7 @@ import org.bukkit.command.CommandSender;
 public class ReloadArgument implements ArgumentExecutor {
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PluginConfigManager.load();
-        GameConfigurationManager.load();
-        LootItemsConfig.load();
-        MapConfig.load();
-        JoinMenuConfig.load();
-        SkyWarsMenuConfig.load();
+        SkywarsPlus.loadConfigs();
         Message.send(sender, "<green>Successfully reloaded all plugin configs");
         Message.send(sender, "<green>Data will is being validated");
         DataValidator.validateData();

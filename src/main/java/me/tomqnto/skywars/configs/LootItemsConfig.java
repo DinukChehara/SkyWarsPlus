@@ -13,12 +13,12 @@ import java.util.Map;
 
 public class LootItemsConfig {
 
-    private static final File file = new File(SkywarsPlus.getInstance().getDataFolder(), "loot-items.yml");
+    private static final File file = new File(SkywarsPlus.getInstance().getDataFolder(), "loot_items.yml");
     private static FileConfiguration config;
 
     static {
         if (!file.exists())
-            SkywarsPlus.getInstance().saveResource("loot-items.yml", false);
+            SkywarsPlus.getInstance().saveResource("loot_items.yml", false);
 
         load();
     }

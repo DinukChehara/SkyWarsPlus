@@ -27,13 +27,13 @@ import java.util.function.Consumer;
 
 public class SkyWarsMenuConfig {
 
-    public final static File file = new File(SkywarsPlus.getInstance().getDataFolder(), "skywars-menu.yml");
+    public final static File file = new File(SkywarsPlus.getInstance().getDataFolder(), "skywars_menu.yml");
     public static FileConfiguration config;
 
 
     static {
         if (!file.exists())
-            SkywarsPlus.getInstance().saveResource("skywars-menu.yml", false);
+            SkywarsPlus.getInstance().saveResource("skywars_menu.yml", false);
 
         load();
     }

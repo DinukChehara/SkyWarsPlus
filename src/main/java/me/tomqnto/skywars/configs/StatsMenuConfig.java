@@ -1,7 +1,7 @@
 package me.tomqnto.skywars.configs;
 
 import me.tomqnto.skywars.SkywarsPlus;
-import me.tomqnto.skywars.game.GameManager;
+import me.tomqnto.skywars.game.GameConfiguration;
 import me.tomqnto.skywars.menus.api.Button;
 import me.tomqnto.skywars.menus.api.SimpleMenu;
 import net.kyori.adventure.text.Component;
@@ -14,24 +14,24 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
-public class JoinMenuConfig {
-
-    public final static File file = new File(SkywarsPlus.getInstance().getDataFolder(), "join_menu.yml");
+public class StatsMenuConfig {
+    public final static File file = new File(SkywarsPlus.getInstance().getDataFolder(), "stats_menu.yml");
     public static FileConfiguration config;
 
 
     static {
         if (!file.exists())
-            SkywarsPlus.getInstance().saveResource("join_menu.yml", false);
+            SkywarsPlus.getInstance().saveResource("stats_menu.yml", false);
 
         load();
     }
@@ -62,10 +62,6 @@ public class JoinMenuConfig {
 
     public static String getName(int slot){
         return config.getString("buttons."+slot+".name");
-    }
-
-    public static List<String> getLore(int slot){
-        return config.getStringList("buttons."+slot+".lore");
     }
 
     public static Material getMaterial(int slot){
@@ -113,6 +109,10 @@ public class JoinMenuConfig {
         return msgs;
     }
 
+    public static List<String> getLore(int slot){
+        return config.getStringList("buttons."+slot+".lore");
+    }
+
     public static void performPlayerActions(int slot, Player player){
         for (Consumer<Player> action : getPlayerActions(slot)){
             action.accept(player);
@@ -129,51 +129,42 @@ public class JoinMenuConfig {
         getMessages(slot).forEach(msg -> player.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(msg)));
     }
 
-    public static Button getButton(int slot){
+    public static Button getButton(int slot, Player player){
         String name = getName(slot);
-        List<String> loreString = getLore(slot);
         Material material = getMaterial(slot);
-        boolean glint = hasGlint(slot);
-        String config = getConfig(slot);
+        boolean hasGlint = hasGlint(slot);
+        List<String> stringLore = getLore(slot);
 
-        if (name == null || loreString == null || material == null)
+        if (name==null || material == null || getConfig(slot) == null || GameConfigurationManager.getGameConfiguration(getConfig(slot))==null)
             return null;
 
-        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacyAmpersand();
+        GameConfiguration config = GameConfigurationManager.getGameConfiguration(getConfig(slot));
         List<Component> lore = new ArrayList<>();
-        loreString.forEach(string -> {
-            if (config!=null)
-                string = string.replace("%config-player-count%", String.valueOf(GameManager.getPlayerCount(config)));
-            string = string.replace("%player-count%", String.valueOf(GameManager.getPlayerCount()));
-            lore.add(serializer.deserialize(string).decoration(TextDecoration.ITALIC, false));
+
+        LegacyComponentSerializer serializer = LegacyComponentSerializer.legacyAmpersand();
+
+        stringLore.forEach(str -> {
+            str = str.replace("[KILLS]", String.valueOf(PlayerConfig.getKills(player, config)));
+            str = str.replace("[WINS]", String.valueOf(PlayerConfig.getWins(player, config)));
+            str = str.replace("[LOSSES]", String.valueOf(PlayerConfig.getLosses(player, config)));
+            str = str.replace("[DEATHS]", String.valueOf(PlayerConfig.getDeaths(player, config)));
+            str = str.replace("[WINSTREAK]", String.valueOf(PlayerConfig.getWinStreak(player, config)));
+
+            lore.add(serializer.deserialize(str).decoration(TextDecoration.ITALIC, false));
         });
-        if (config!=null)
-            name = name.replace("%config-player-count%", String.valueOf(GameManager.getPlayerCount(config)));
-        name = name.replace("%player-count%", String.valueOf(GameManager.getPlayerCount()));
-        Component buttonName = serializer.deserialize(name);
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
-        meta.itemName(buttonName);
+        meta.itemName(serializer.deserialize(name));
         meta.lore(lore);
-        if (glint)
-            meta.setEnchantmentGlintOverride(true);
-        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+        meta.setEnchantmentGlintOverride(hasGlint);
         item.setItemMeta(meta);
 
-
-        Consumer<Player> action = player1 -> {
-            performPlayerActions(slot,player1);
+        return new Button(item, player1 -> {
             performConsoleActions(slot, Bukkit.getConsoleSender());
+            performPlayerActions(slot, player1);
             sendMessages(slot, player1);
-        };
-
-        return new Button(item, action);
+        });
     }
-
-    public static boolean isButtonValid(int slot){
-        return getButton(slot)!=null;
-    }
-
 }

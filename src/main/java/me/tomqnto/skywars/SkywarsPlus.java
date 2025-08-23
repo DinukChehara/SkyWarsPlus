@@ -5,17 +5,12 @@ import me.tomqnto.skywars.configs.*;
 import me.tomqnto.skywars.game.Game;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.GameConfiguration;
-import me.tomqnto.skywars.listeners.InGameListeners;
-import me.tomqnto.skywars.listeners.inLobbyListeners;
+import me.tomqnto.skywars.listeners.GameListeners;
+import me.tomqnto.skywars.listeners.LobbyListeners;
 import me.tomqnto.skywars.menus.api.InventoryListener;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class SkywarsPlus extends JavaPlugin {
 
@@ -31,17 +26,12 @@ public final class SkywarsPlus extends JavaPlugin {
 
         ConfigurationSerialization.registerClass(GameConfiguration.class);
 
-        MapConfig.load();
-        GameConfigurationManager.load();
-        LootItemsConfig.load();
-        PlayerConfig.load();
-        JoinMenuConfig.load();
-        SkyWarsMenuConfig.load();
+        loadConfigs();
 
         GameManager gameManager = new GameManager();
 
-        getServer().getPluginManager().registerEvents(new InGameListeners(gameManager), this);
-        getServer().getPluginManager().registerEvents(new inLobbyListeners(), this);
+        getServer().getPluginManager().registerEvents(new GameListeners(gameManager), this);
+        getServer().getPluginManager().registerEvents(new LobbyListeners(), this);
         getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
         getCommand("skywarsplus").setExecutor(new SkyWarsPlusCommand(gameManager));
@@ -58,5 +48,16 @@ public final class SkywarsPlus extends JavaPlugin {
     @Override
     public void onDisable() {
         GameManager.games.values().forEach(Game::deleteGame);
+    }
+
+    public static void loadConfigs(){
+        PluginConfigManager.load();
+        GameConfigurationManager.load();
+        LootItemsConfig.load();
+        MapConfig.load();
+        JoinMenuConfig.load();
+        SkyWarsMenuConfig.load();
+        StatsMenuConfig.load();
+        PlayerConfig.load();
     }
 }

@@ -97,18 +97,18 @@ public class DataValidator {
 
         for (String button : joinMenuButtons.keySet()){
             if (!joinMenuButtons.get(button))
-                error_messages.add("The button in the slot '%s' is not properly set up in join-menu.yml".formatted(button));
+                error_messages.add("The button in the slot '%s' is not properly set up in join_menu.yml".formatted(button));
         }
 
 
         for (String button : skywarsMenuButtons.keySet()){
             if (!skywarsMenuButtons.get(button))
-                error_messages.add("The button in the slot '%s' is not properly set up in skywars-menu.yml".formatted(button));
+                error_messages.add("The button in the slot '%s' is not properly set up in skywars_menu.yml".formatted(button));
         }
 
         for (String type : lootItems.keySet()){
             if (!lootItems.get(type))
-                error_messages.add("%s is either empty or not properly set up in loot-items.yml".formatted(type));
+                error_messages.add("%s is either empty or not properly set up in loot_items.yml".formatted(type));
         }
 
         if (!lobby)
@@ -118,10 +118,10 @@ public class DataValidator {
             error_messages.add("<red>Invalid cage material. See valid materials: https://jd.papermc.io/paper/1.21.4/org/bukkit/Material.html");
 
         if (!joinMenuRow)
-            error_messages.add("<red>Invalid row count specified in join-menu.yml. Valid values are: ONE, TWO, THREE, FOUR, FIVE, SIX.");
+            error_messages.add("<red>Invalid row count specified in join_menu.yml. Valid values are: ONE, TWO, THREE, FOUR, FIVE, SIX.");
 
         if (!skywarsMenuRow)
-            error_messages.add("<red>Invalid row count specified in skywars-menu.yml. Valid values are: ONE, TWO, THREE, FOUR, FIVE, SIX.");
+            error_messages.add("<red>Invalid row count specified in skywars_menu.yml. Valid values are: ONE, TWO, THREE, FOUR, FIVE, SIX.");
 
 
         to.sendRichMessage("<red>Errors(%s):".formatted(error_messages.size()));

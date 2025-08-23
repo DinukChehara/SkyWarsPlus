@@ -27,9 +27,11 @@ public class GameJoinHandler {
         }
         else {
             Game game = gameManager.createGame(gameSettings);
-            sendJoinMessage(player, game.getId());
-            game.playerJoin(player);
-            return;
+            if (game!=null){
+                sendJoinMessage(player, game.getId());
+                game.playerJoin(player);
+                return;
+            }
         }
 
         Message.send(player, "<red>Could not find a game to join");

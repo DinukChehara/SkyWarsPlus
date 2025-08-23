@@ -33,19 +33,31 @@ public class GameScoreboard extends BukkitRunnable {
 
     @Override
     public void run() {
-        for (Player player : game.getInGamePlayers()){
-            if ((!gameManager.hasActiveSession(player) || gameManager.getPlayerSession(player).getGame()!=game || game.getGameState() == GameState.ENDED) && (!hasScoreboard.containsKey(player) || hasScoreboard.get(player))){
+        for (Player player : game.getInGamePlayers()) {
+            boolean hasSb = hasScoreboard.getOrDefault(player, false);
+
+            if ((!gameManager.hasActiveSession(player)
+                    || gameManager.getPlayerSession(player).getGame() != game
+                    || game.getGameState() == GameState.ENDED)
+                    && hasSb) {
+
                 removeScoreboard(player);
                 hasScoreboard.put(player, false);
-            }
-            else if (player.getScoreboard()!=null && player.getScoreboard().getObjective(SkywarsPlus.getInstance().getName())!=null){
-                updateScoreboard(player);
-            }
-            else if (!hasScoreboard.containsKey(player)){
-                createScoreboard(player);
+                hasRegisteredStartedTeams.put(player, false);
+
+            } else {
+                if (player.getScoreboard().getObjective(SkywarsPlus.getInstance().getName()) != null) {
+
+                    updateScoreboard(player);
+
+                } else if (!hasSb && game.getGameState() != GameState.ENDED) {
+                    createScoreboard(player);
+                    hasScoreboard.put(player, true);
+                }
             }
         }
     }
+
 
     public void createScoreboard(Player player){
         hasScoreboard.put(player, true);
@@ -102,47 +114,58 @@ public class GameScoreboard extends BukkitRunnable {
         player.setScoreboard(scoreboard);
     }
 
-    public void updateScoreboard(Player player){
+    public void updateScoreboard(Player player) {
         Scoreboard scoreboard = player.getScoreboard();
 
-        if (!hasRegisteredStartedTeams.get(player) && game.getGameState()==GameState.STARTED){
+        if (!hasRegisteredStartedTeams.getOrDefault(player, false)
+                && game.getGameState() == GameState.STARTED) {
             registerGameStartedTeams(scoreboard, scoreboard.getObjective(SkywarsPlus.getInstance().getName()), player);
             hasRegisteredStartedTeams.put(player, true);
         }
 
-        if (game.getGameState()==GameState.STARTED){
+        if (game.getGameState() == GameState.STARTED) {
             Team kills = scoreboard.getTeam("kills");
-            kills.suffix(Component.text(gameManager.getPlayerSession(player).getKills(), NamedTextColor.AQUA));
+            if (kills != null) {
+                kills.suffix(Component.text(gameManager.getPlayerSession(player).getKills(), NamedTextColor.AQUA));
+            }
 
             Team playersLeft = scoreboard.getTeam("playersLeft");
-            playersLeft.suffix(Component.text(game.getAlivePlayers().size()));
+            if (playersLeft != null) {
+                playersLeft.suffix(Component.text(game.getAlivePlayers().size()));
+            }
 
-            if (game.getGameConfiguration().getTeamSize()>1) {
+            if (game.getGameConfiguration().getTeamSize() > 1) {
                 Team teamsLeft = scoreboard.getTeam("teamsLeft");
-                teamsLeft.suffix(Component.text(game.getAliveTeams().size()));
+                if (teamsLeft != null) {
+                    teamsLeft.suffix(Component.text(game.getAliveTeams().size()));
+                }
             }
 
             Team chestRefill = scoreboard.getTeam("chestRefill");
-            chestRefill.suffix(Component.text(game.getChestRefillCountdown().getTimeLeftFormatted(), NamedTextColor.GREEN));
+            if (chestRefill != null) {
+                chestRefill.suffix(Component.text(game.getChestRefillCountdown().getTimeLeftFormatted(), NamedTextColor.GREEN));
+            }
         }
 
-        if (game.getGameState() == GameState.WAITING || game.getGameState() == GameState.STARTING){
-
+        if (game.getGameState() == GameState.WAITING || game.getGameState() == GameState.STARTING) {
             Team countdown = scoreboard.getTeam("countdown");
-            if (game.getGameState() == GameState.WAITING) {
-                countdown.prefix(Component.text("Not enough players to start", NamedTextColor.GRAY));
-                countdown.suffix(Component.empty());
-            }else{
-                countdown.prefix(Component.text("Starting in: ", NamedTextColor.GREEN));
-                countdown.suffix(Component.text(game.getStartCountdown().getTime() + "s", NamedTextColor.GREEN));
+            if (countdown != null) {
+                if (game.getGameState() == GameState.WAITING) {
+                    countdown.prefix(Component.text("Not enough players to start", NamedTextColor.GRAY));
+                    countdown.suffix(Component.empty());
+                } else {
+                    countdown.prefix(Component.text("Starting in: ", NamedTextColor.GREEN));
+                    countdown.suffix(Component.text(game.getStartCountdown().getTime() + "s", NamedTextColor.GREEN));
+                }
             }
 
             Team playerCount = scoreboard.getTeam("playerCount");
-
-            playerCount.suffix(Component.text(game.getAlivePlayers().size() + "/" + game.getMaxPlayers()));
+            if (playerCount != null) {
+                playerCount.suffix(Component.text(game.getAlivePlayers().size() + "/" + game.getMaxPlayers()));
+            }
         }
-
     }
+
 
     public void removeScoreboard(Player player){
         player.getScoreboard().getObjectives().forEach(Objective::unregister);

@@ -26,11 +26,11 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class InGameListeners implements Listener {
+public class GameListeners implements Listener {
 
     private final GameManager gameManager;
 
-    public InGameListeners(GameManager gameManager) {
+    public GameListeners(GameManager gameManager) {
         this.gameManager = gameManager;
     }
 
@@ -39,6 +39,14 @@ public class InGameListeners implements Listener {
         if (gameManager.hasActiveSession(event.getPlayer()) && event.getTo().getWorld() != gameManager.getPlayerSession(event.getPlayer()).getGame().getMap().getBukkitWorld()) {
             event.setCancelled(true);
             Message.send(event.getPlayer(),"<red>Teleport canceled: Cannot teleport out of the game world");
+        }
+    }
+
+    @EventHandler
+    public void onPlayerLeave(PlayerQuitEvent event){
+        Player player = event.getPlayer();
+        if (gameManager.hasActiveSession(player) && gameManager.getPlayerSession(player).getGame().isAlive(player)){
+            gameManager.getPlayerSession(player).getGame().playerLeave(player);
         }
     }
 
@@ -96,7 +104,7 @@ public class InGameListeners implements Listener {
                 event.deathMessage(Component.empty());
 
                 if (player.getKiller()!=null){
-                    PlayerConfig.addKill(player.getKiller());
+                    PlayerConfig.addKill(player.getKiller(), game.getGameConfiguration());
                     gameManager.getPlayerSession(player.getKiller()).addKill();
                     player.getKiller().playSound(player.getKiller().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                 }

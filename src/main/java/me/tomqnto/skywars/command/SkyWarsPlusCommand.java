@@ -36,6 +36,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         arguments.put("setloot", new SetLootItemsArgument());
         arguments.put("addloot", new AddLootItemsArgument());
         arguments.put("reload", new ReloadArgument());
+        arguments.put("stats", new StatsArgument());
     }
 
     @Override

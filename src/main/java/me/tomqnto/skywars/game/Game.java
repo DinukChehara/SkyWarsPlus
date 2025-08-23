@@ -77,7 +77,7 @@ public class Game {
         for (int x=0; x<gameConfiguration.getMaxTeams(); x++)
             teamSpawnLocations.put(gameTeams.stream().toList().get(x),map.getTeamSpawnLocations().get(x));
 
-        gameScoreboard.runTaskTimer(SkywarsPlus.getInstance(), 10, 10);
+        gameScoreboard.runTaskTimer(SkywarsPlus.getInstance(), 0, 10);
         startCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
         Bukkit.getServer().getPluginManager().registerEvents(this.chestManager, SkywarsPlus.getInstance());
@@ -162,6 +162,7 @@ public class Game {
         alivePlayers.remove(player);
         deadPlayers.add(player);
         addSpectator(player);
+        PlayerConfig.addDeath(player, gameConfiguration);
 
         if (!isTeamAlive(getTeam(player)))
             teamAliveMap.put(getTeam(player), false);
@@ -171,6 +172,10 @@ public class Game {
         }
 
 
+    }
+
+    public boolean isAlive(Player player){
+        return alivePlayers.contains(player);
     }
 
     public @Nullable GameTeam getTeamWon(){
@@ -249,8 +254,8 @@ public class Game {
                 broadcastTitle(Component.text("GAME OVER!", NamedTextColor.RED, TextDecoration.BOLD), Component.empty(), spectators);
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
-                getTeamWon().getTeamPlayers().forEach(PlayerConfig::addWin);
-                getDeadTeams().forEach(team -> team.getTeamPlayers().forEach(PlayerConfig::addLoss));
+                getTeamWon().getTeamPlayers().forEach(player -> PlayerConfig.addWin(player, gameConfiguration));
+                getDeadTeams().forEach(team -> team.getTeamPlayers().forEach(player -> PlayerConfig.addLoss(player, gameConfiguration)));
             }
         }
     }

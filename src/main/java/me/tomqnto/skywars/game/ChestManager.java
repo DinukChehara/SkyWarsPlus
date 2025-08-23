@@ -41,7 +41,7 @@ public class ChestManager implements Listener {
         ConfigurationSection middleChestItemsSection = LootItemsConfig.getMiddleChestItemsSection();
 
         if (normalChestItemsSection==null || middleChestItemsSection==null)
-            Bukkit.getLogger().severe("Please setup your 'loot-items' in loot-items.yml");
+            Bukkit.getLogger().severe("Please setup your 'loot-items' in loot_items.yml");
 
         for (String key : normalChestItemsSection.getKeys(false)){
             ConfigurationSection section = normalChestItemsSection.getConfigurationSection(key);

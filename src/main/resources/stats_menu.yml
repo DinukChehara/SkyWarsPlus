@@ -1,0 +1,15 @@
+rows: THREE
+
+buttons:
+  13:
+    name: "&b&lMini Stats"
+    material: DIAMOND_SWORD
+    lore:
+      - ""
+      - "&7Wins: &f[WINS]"
+      - "&7Losses: &f[LOSSES]"
+      - "&7Kills: &f[KILLS]"
+      - "&7Deaths: &f[DEATHS]"
+      - "&7Winstreak: &f[WINSTREAK]"
+    glint: true
+    config: Mini
