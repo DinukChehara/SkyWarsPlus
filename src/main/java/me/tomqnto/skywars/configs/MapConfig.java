@@ -43,9 +43,9 @@ public class MapConfig {
         return maps;
     }
 
-    public static List<List<Integer>> getMiddleChestLocations(String map){
+    public static List<List<Integer>> getOPChestLocations(String map){
 
-        return (List<List<Integer>>) config.get(map + ".middle-chest-locations");
+        return (List<List<Integer>>) config.get(map + ".op-chest-locations");
     }
 
     public static List<Double> getSpectatorTeleportLocation(String map){
@@ -61,6 +61,6 @@ public class MapConfig {
     }
 
     public static boolean isMapValid(String map){
-        return getSpectatorTeleportLocation(map)!=null && !getSpectatorTeleportLocation(map).isEmpty() && getTeamSpawnCoordinates(map)!=null && !getSpectatorTeleportLocation(map).isEmpty() && getMiddleChestLocations(map)!=null;
+        return getSpectatorTeleportLocation(map)!=null && !getSpectatorTeleportLocation(map).isEmpty() && getTeamSpawnCoordinates(map)!=null && !getSpectatorTeleportLocation(map).isEmpty() && getOPChestLocations(map)!=null;
     }
 }

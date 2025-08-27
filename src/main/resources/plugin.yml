@@ -1,5 +1,5 @@
 name: SkywarsPlus
-version: '0.2.1-beta'
+version: '0.3.0'
 main: me.tomqnto.skywars.SkywarsPlus
 api-version: '1.21'
 prefix: SkywarsPlus

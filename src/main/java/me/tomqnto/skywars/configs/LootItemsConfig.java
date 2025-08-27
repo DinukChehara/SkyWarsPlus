@@ -36,10 +36,10 @@ public class LootItemsConfig {
         load();
     }
 
-    public static void setLootItems(Inventory inventory, boolean isMiddleChestLoot){
+    public static void setLootItems(Inventory inventory, boolean isOPChestLoot){
         String path = "loot-items.normal-chest";
-        if (isMiddleChestLoot)
-            path = "loot-items.middle-chest";
+        if (isOPChestLoot)
+            path = "loot-items.op-chest";
 
         config.set(path, "");
 
@@ -62,7 +62,7 @@ public class LootItemsConfig {
     public static void addLootItems(Inventory inventory, boolean isMiddleChestLoot){
         String path = "loot-items.normal-chest";
         if (isMiddleChestLoot)
-            path = "loot-items.middle-chest";
+            path = "loot-items.op-chest";
 
         int key = Integer.parseInt(config.getConfigurationSection(path).getKeys(false).stream().toList().getLast());
         for (int slot=0; slot<inventory.getSize(); slot++){
@@ -80,8 +80,8 @@ public class LootItemsConfig {
         saveConfig();
     }
 
-    public static ConfigurationSection getMiddleChestItemsSection(){
-        return config.getConfigurationSection("loot-items.middle-chest");
+    public static ConfigurationSection getOPChestItemsSection(){
+        return config.getConfigurationSection("loot-items.op-chest");
     }
 
     public static ConfigurationSection getNormalChestItemsSection(){

@@ -102,8 +102,8 @@ public class GameMap {
         return new Location(bukkitWorld, coords.getFirst(), coords.get(1), coords.getLast());
     }
 
-    public List<Location> getChestLocations(){
-        List<List<Integer>> intList = MapConfig.getMiddleChestLocations(this.getName());
+    public List<Location> getOPChestLocations(){
+        List<List<Integer>> intList = MapConfig.getOPChestLocations(this.getName());
         List<Location> locationList = new ArrayList<>();
 
         for (List<Integer> intLocations : intList){

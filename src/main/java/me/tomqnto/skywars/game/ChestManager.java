@@ -24,23 +24,25 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ChestManager implements Listener {
 
+    private final Game game;
     private final GameMap map;
     private final World world;
     private final Set<Location> defaultNormalChestLocations = new HashSet<>();
-    private final Set<Location> defaultMiddleChestLocations = new HashSet<>();
+    private final Set<Location> defaultOPChestLocations = new HashSet<>();
     private final Set<Location> playerPlacedChestLocations = new HashSet<>();
     private final Set<Location> openedChests = new HashSet<>();
     private final List<LootItem> normalChestItems = new ArrayList<>();
-    private final List<LootItem> middleChestItems = new ArrayList<>();
+    private final List<LootItem> opChestItems = new ArrayList<>();
 
     public ChestManager(Game game) {
+        this.game = game;
         this.map = game.getMap();
         this.world = map.getBukkitWorld();
-        this.defaultMiddleChestLocations.addAll(map.getChestLocations());
+        this.defaultOPChestLocations.addAll(map.getOPChestLocations());
         ConfigurationSection normalChestItemsSection = LootItemsConfig.getNormalChestItemsSection();
-        ConfigurationSection middleChestItemsSection = LootItemsConfig.getMiddleChestItemsSection();
+        ConfigurationSection opChestItemsSection = LootItemsConfig.getOPChestItemsSection();
 
-        if (normalChestItemsSection==null || middleChestItemsSection==null)
+        if (normalChestItemsSection==null || opChestItemsSection==null)
             Bukkit.getLogger().severe("Please setup your 'loot-items' in loot_items.yml");
 
         for (String key : normalChestItemsSection.getKeys(false)){
@@ -48,9 +50,9 @@ public class ChestManager implements Listener {
             normalChestItems.add(new LootItem(section));
         }
 
-        for (String key : middleChestItemsSection.getKeys(false)){
-            ConfigurationSection section = middleChestItemsSection.getConfigurationSection(key);
-            middleChestItems.add(new LootItem(section));
+        for (String key : opChestItemsSection.getKeys(false)){
+            ConfigurationSection section = opChestItemsSection.getConfigurationSection(key);
+            opChestItems.add(new LootItem(section));
         }
     }
 
@@ -60,7 +62,7 @@ public class ChestManager implements Listener {
             return;
 
         if (event.getBlockPlaced().getType()== Material.CHEST){
-            if (!defaultNormalChestLocations.contains(event.getBlockPlaced().getLocation()) || !defaultMiddleChestLocations.contains(event.getBlockPlaced().getLocation()))
+            if (!defaultNormalChestLocations.contains(event.getBlockPlaced().getLocation()) || !defaultOPChestLocations.contains(event.getBlockPlaced().getLocation()))
                 playerPlacedChestLocations.add(event.getBlockPlaced().getLocation());
         }
     }
@@ -86,24 +88,49 @@ public class ChestManager implements Listener {
 
     }
 
-    public void fill(Inventory inventory, boolean isMiddleChest){
+    public void fill(Inventory inventory, boolean isOpChest){
         inventory.clear();
 
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        Set<LootItem> normalUsed = new HashSet<>();
-        Set<LootItem> middleUsed = new HashSet<>();
+        Set<LootItem> normalUsedItems = new HashSet<>();
+        Set<LootItem> opUsedItems = new HashSet<>();
+        int normalMaxArmor = game.getGameConfiguration().getMaxArmorPiecesNormalChest();
+        int OPMaxArmor = game.getGameConfiguration().getMaxArmorPiecesOPChest();
+        int normalArmorPieceCount = 0;
+        int opArmorPieceCount = 0;
 
         for (int slotIndex = 0; slotIndex < inventory.getSize(); slotIndex++) {
             LootItem randomItem = normalChestItems.get(random.nextInt(normalChestItems.size()));
-            if (isMiddleChest)
-                randomItem = middleChestItems.get(random.nextInt(middleChestItems.size()));
+            boolean isArmor = false;
 
-            if (!isMiddleChest) {
-                if (normalUsed.contains(randomItem)) continue;
-                normalUsed.add(randomItem);
+            if (isOpChest)
+                randomItem = opChestItems.get(random.nextInt(opChestItems.size()));
+
+            if (!isOpChest) {
+                if (normalUsedItems.contains(randomItem)) continue;
+
+                String type = randomItem.make(random).getType().name();
+                if (type.endsWith("_HELMET") || type.endsWith("_CHESTPLATE") || type.endsWith("_LEGGINGS") || type.endsWith("_BOOTS"))
+                    isArmor = true;
+
+                if (isArmor){
+                    if (normalArmorPieceCount == normalMaxArmor) continue;
+                    normalArmorPieceCount++;
+                }
+
+                normalUsedItems.add(randomItem);
             } else{
-                if (middleUsed.contains(randomItem)) continue;
-                middleUsed.add(randomItem);
+                if (opUsedItems.contains(randomItem)) continue;
+                opUsedItems.add(randomItem);
+
+                String type = randomItem.make(random).getType().name();
+                if (type.endsWith("_HELMET") || type.endsWith("_CHESTPLATE") || type.endsWith("_LEGGINGS") || type.endsWith("_BOOTS"))
+                    isArmor = true;
+
+                if (isArmor){
+                    if (opArmorPieceCount == OPMaxArmor) continue;
+                    opArmorPieceCount++;
+                }
             }
 
 
@@ -130,7 +157,7 @@ public class ChestManager implements Listener {
                 checkChest(chest);
         });
 
-        defaultMiddleChestLocations.forEach(location -> {
+        defaultOPChestLocations.forEach(location -> {
             if (location.getBlock().getState() instanceof Chest chest)
                 checkChest(chest);
         });
@@ -139,7 +166,7 @@ public class ChestManager implements Listener {
     public void checkChest(Chest chest) {
         boolean playerPlaced = playerPlacedChestLocations.contains(chest.getLocation());
         boolean defaultNormalChest = defaultNormalChestLocations.contains(chest.getLocation());
-        boolean defaultMiddleChest = defaultMiddleChestLocations.contains(chest.getLocation());
+        boolean defaultMiddleChest = defaultOPChestLocations.contains(chest.getLocation());
 
         if ((playerPlaced && (!defaultNormalChest && !defaultMiddleChest)))
             return;

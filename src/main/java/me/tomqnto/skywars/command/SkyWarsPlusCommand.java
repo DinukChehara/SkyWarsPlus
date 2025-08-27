@@ -91,7 +91,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
             }
 
             if (args[0].equals("setloot") || args[0].equals("addloot")){
-                return List.of("middle", "normal").stream().filter(arg -> arg.startsWith(args[1])).toList();
+                return List.of("op", "normal").stream().filter(arg -> arg.startsWith(args[1])).toList();
             }
         }
 
@@ -105,8 +105,12 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
             if (args.length==5)
                 return List.of("team_size");
             if (args.length==6)
+                return List.of("max_armor_normal_chest");
+            if (args.length>7)
+                return List.of("max_armor_op_chest");
+            if (args.length==8)
                 return List.of("chest_refill_cooldown");
-            if (args.length>6)
+            if (args.length>9)
                 return List.of("map_tags");
         }
 

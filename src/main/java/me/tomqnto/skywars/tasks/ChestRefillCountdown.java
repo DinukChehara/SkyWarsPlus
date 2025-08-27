@@ -9,10 +9,6 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-
 public class ChestRefillCountdown extends BukkitRunnable {
     
     private final Game game;
@@ -30,10 +26,12 @@ public class ChestRefillCountdown extends BukkitRunnable {
     public void run() {
         timeLeftFormatted = DurationFormatUtils.formatDuration(secondsLeft * 1000L, "mm':'ss");
 
-        if (game.getGameState()==GameState.STARTED){
-
+        if (game.isActive()){
+            game.updateScoreboardChestRefill();
             for (Player player : game.getInGamePlayers())
                 player.sendActionBar(Component.text("Chests refill in %s".formatted(timeLeftFormatted)));
+
+
 
             if (secondsLeft ==0){
                 game.getChestManager().resetChests();
@@ -47,6 +45,8 @@ public class ChestRefillCountdown extends BukkitRunnable {
     }
 
     public String getTimeLeftFormatted() {
+        if (timeLeftFormatted==null)
+            return "null";
         return timeLeftFormatted;
     }
 }

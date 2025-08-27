@@ -17,7 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +76,6 @@ public class Game {
         for (int x=0; x<gameConfiguration.getMaxTeams(); x++)
             teamSpawnLocations.put(gameTeams.stream().toList().get(x),map.getTeamSpawnLocations().get(x));
 
-        gameScoreboard.runTaskTimer(SkywarsPlus.getInstance(), 0, 10);
         startCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
         Bukkit.getServer().getPluginManager().registerEvents(this.chestManager, SkywarsPlus.getInstance());
@@ -90,8 +88,8 @@ public class Game {
 
     public void playerJoin(Player player){
 
-        if (gameState == GameState.STARTED   || gameState == GameState.ENDED){
-            if (gameState==GameState.STARTED)
+        if (hasStarted()){
+            if (isActive())
                 Message.send(player, "<gray>This game already started");
             else
                 Message.send(player, "<gray>This game already ended");
@@ -105,10 +103,11 @@ public class Game {
         player.teleport(map.getSpectatorLocation());
         assignTeam(player);
         teleportToTeamSpawnLocation(player);
+        gameScoreboard.createScoreboard(player);
 
         broadcastMessage("<gold>%s<gray> joined the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
 
-        if (gameState == GameState.WAITING){
+        if (isWaiting()){
             if (getPlayerCount()==minPlayers){
                 setGameState(GameState.STARTING);
             }
@@ -117,12 +116,13 @@ public class Game {
                 startCountdown.setTime(20);
             }
         }
+        updateScoreboardPlayerCount();
     }
 
     public void playerLeave(Player player){
 
         showSpectators(player);
-        if (gameState == GameState.WAITING || gameState == GameState.STARTING){
+        if (!hasStarted()){
             getTeam(player).removePlayer(player);
             gamePlayers.remove(player);
             alivePlayers.remove(player);
@@ -147,11 +147,13 @@ public class Game {
             deleteGame();
             return;
         }
+        gameScoreboard.removeScoreboard(player);
 
-        if (gameState == GameState.STARTING){
+        if (isStarting()){
             if (getPlayerCount()<minPlayers)
                 setGameState(GameState.WAITING);
         }
+        updateScoreboardPlayerCount();
     }
 
     public void playerDie(Player player){
@@ -166,12 +168,33 @@ public class Game {
 
         if (!isTeamAlive(getTeam(player)))
             teamAliveMap.put(getTeam(player), false);
+        
+        updateScoreboardPlayersLeft();
+        updateScoreboardTeamsLeft();
 
         if (getAliveTeams().size()==1){
             setGameState(GameState.ENDED);
         }
+    }
 
+    public void updateScoreboardPlayersLeft(){
+        getInGamePlayers().forEach(gameScoreboard::updatePlayersLeft);
+    }
 
+    public void updateScoreboardTeamsLeft(){
+        getInGamePlayers().forEach(gameScoreboard::updateTeamsLeft);
+    }
+
+    public void updateScoreboardPlayerCount(){
+        getInGamePlayers().forEach(gameScoreboard::updatePlayerCount);
+    }
+
+    public void updateScoreboardChestRefill(){
+        getInGamePlayers().forEach(gameScoreboard::updateChestRefill);
+    }
+
+    public void updateScoreboardStartCountdown(){
+        getInGamePlayers().forEach(gameScoreboard::updateStartCountdown);
     }
 
     public boolean isAlive(Player player){
@@ -238,14 +261,12 @@ public class Game {
         }
 
         switch (newState){
-            case STARTING -> {
-                teleportToTeamSpawnLocations();
-            }
+
             case STARTED -> {
                 gameTeams.forEach(team -> {if (!isTeamAlive(team)) teamAliveMap.remove(team);});
-                getInGamePlayers().forEach(player -> hiddenPlayers.put(player, new ArrayList<>()));
                 removeCages();
                 chestRefillCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
+                getInGamePlayers().forEach(player -> {hiddenPlayers.put(player, new ArrayList<>()); gameScoreboard.registerStartedTeams(player);});
                 for (Player player : gamePlayers.keySet())
                     player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 3*20, 10));
             }
@@ -254,6 +275,7 @@ public class Game {
                 broadcastTitle(Component.text("GAME OVER!", NamedTextColor.RED, TextDecoration.BOLD), Component.empty(), spectators);
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
+                getInGamePlayers().forEach(gameScoreboard::removeScoreboard);
                 getTeamWon().getTeamPlayers().forEach(player -> PlayerConfig.addWin(player, gameConfiguration));
                 getDeadTeams().forEach(team -> team.getTeamPlayers().forEach(player -> PlayerConfig.addLoss(player, gameConfiguration)));
             }
@@ -287,13 +309,9 @@ public class Game {
     }
 
     public void deleteGame(){
-        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); showSpectators(player); if (isSpectator(player)) removeSpectator(player);});
+        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); gameScoreboard.removeScoreboard(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); showSpectators(player); if (isSpectator(player)) removeSpectator(player);});
         map.unload();
         gameManager.getGames().remove(id);
-        try{
-            gameScoreboard.cancel();
-        } catch (IllegalStateException ignored) {
-        }
     }
 
     public void assignTeam(Player player){
@@ -351,18 +369,17 @@ public class Game {
     public void setCages(Material material) {
         int size = 1;
         int start = -2;
-        int end = size;
 
         for (GameTeam team : gameTeams) {
             Location center = getTeamSpawnLocations().get(team).clone();
 
-            for (int x = start; x <= end; x++) {
-                for (int y = -1; y <= end+2; y++) {
-                    for (int z = start; z <= end; z++) {
+            for (int x = start; x <= size; x++) {
+                for (int y = -1; y <= size +2; y++) {
+                    for (int z = start; z <= size; z++) {
                         Location loc = center.clone().add(x, y, z);
                         Block block = loc.getBlock();
 
-                        boolean isEdge = x == start || x == end || y == -1 || y == end+2 || z == start || z == end;
+                        boolean isEdge = x == start || x == size || y == -1 || y == size +2 || z == start || z == size;
 
                         if (isEdge) {
                             block.setType(material);
@@ -463,5 +480,29 @@ public class Game {
 
     public ChestRefillCountdown getChestRefillCountdown(){
         return chestRefillCountdown;
+    }
+
+    public GameScoreboard getGameScoreboard(){
+        return gameScoreboard;
+    }
+
+    public boolean hasStarted(){
+        return gameState == GameState.STARTED || gameState == GameState.ENDED;
+    }
+
+    public boolean hasEnded(){
+        return gameState == GameState.ENDED;
+    }
+
+    public boolean isWaiting(){
+        return gameState == GameState.WAITING;
+    }
+
+    public boolean isStarting(){
+        return gameState == GameState.STARTING;
+    }
+
+    public boolean isActive(){
+        return gameState == GameState.STARTED;
     }
 }

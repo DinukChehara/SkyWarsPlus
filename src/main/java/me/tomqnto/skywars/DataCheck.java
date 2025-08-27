@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DataValidator {
+public class DataCheck {
 
     private static HashMap<String, Boolean> maps;
     private static HashMap<String, Boolean> lootItems;
@@ -43,7 +43,7 @@ public class DataValidator {
 
     public static void validateLootItems(){
         lootItems.put("normal-chest", !LootItemsConfig.getNormalChestItemsSection().getKeys(false).isEmpty());
-        lootItems.put("middle-chest", !LootItemsConfig.getMiddleChestItemsSection().getKeys(false).isEmpty());
+        lootItems.put("middle-chest", !LootItemsConfig.getOPChestItemsSection().getKeys(false).isEmpty());
     }
 
     public static void validateLobby(){

@@ -1,10 +1,9 @@
 package me.tomqnto.skywars.command.arguments;
 
-import me.tomqnto.skywars.DataValidator;
+import me.tomqnto.skywars.DataCheck;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.command.ArgumentExecutor;
-import me.tomqnto.skywars.configs.*;
 import org.bukkit.command.CommandSender;
 
 public class ReloadArgument implements ArgumentExecutor {
@@ -13,8 +12,8 @@ public class ReloadArgument implements ArgumentExecutor {
         SkywarsPlus.loadConfigs();
         Message.send(sender, "<green>Successfully reloaded all plugin configs");
         Message.send(sender, "<green>Data will is being validated");
-        DataValidator.validateData();
-        DataValidator.sendResults(sender);
+        DataCheck.validateData();
+        DataCheck.sendResults(sender);
     }
 
     @Override

@@ -13,17 +13,18 @@ public class GameConfiguration implements ConfigurationSerializable {
     private final int minTeams;
     private final int maxTeams;
     private final int teamSize;
-    private final String[] allowedMapIDs;
+    private final int maxArmorPiecesNormalChest;
+    private final int maxArmorPiecesOPChest;
     private final int chestRefillCooldown;
+    private final String[] allowedMapIDs;
 
-    public static GameConfiguration SOLOS_SETTINGS = new GameConfiguration("Solos", 4, 12, 1, 120,"solos");
-    public static GameConfiguration DUOS_SETTINGS = new GameConfiguration("Duos",4, 12, 2, 20,"duos");
-
-    public GameConfiguration(String name, int minTeams, int maxTeams, int teamSize, int chestRefillCooldown, String... allowedMapIDs) {
+    public GameConfiguration(String name, int minTeams, int maxTeams, int teamSize, int maxArmorPiecesNormalChest, int maxArmorPiecesOPChest, int chestRefillCooldown, String... allowedMapIDs) {
         this.maxTeams = maxTeams;
         this.minTeams = minTeams;
         this.name = name;
         this.teamSize = teamSize;
+        this.maxArmorPiecesNormalChest = maxArmorPiecesNormalChest;
+        this.maxArmorPiecesOPChest = maxArmorPiecesOPChest;
         this.chestRefillCooldown = chestRefillCooldown;
         this.allowedMapIDs = allowedMapIDs;
     }
@@ -51,6 +52,8 @@ public class GameConfiguration implements ConfigurationSerializable {
         map.put("min-teams", minTeams);
         map.put("max-teams", maxTeams);
         map.put("team-size", teamSize);
+        map.put("max-armor-normal-chest", maxArmorPiecesNormalChest);
+        map.put("max-armor-op-chest", maxArmorPiecesOPChest);
         map.put("chest-refill-cooldown", chestRefillCooldown);
         map.put("map-ids", allowedMapIDs);
 
@@ -64,9 +67,11 @@ public class GameConfiguration implements ConfigurationSerializable {
         int maxTeams = (int) map.get("max-teams");
         int teamSize = (int) map.get("team-size");
         int chestRefillCooldown = (int) map.get("chest-refill-cooldown");
+        int maxArmorNormal = (int) map.get("max-armor-normal-chest");
+        int maxArmorOP = (int) map.get("max-armor-op-chest");
         List<String> ids = (List<String>) map.get("map-ids");
         String[] allowedMapIDs = ids.toArray(new String[0]);
-        return new GameConfiguration(name, minTeams, maxTeams, teamSize, chestRefillCooldown, allowedMapIDs);
+        return new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefillCooldown, allowedMapIDs);
     }
 
     public int getTeamSize() {
@@ -75,5 +80,16 @@ public class GameConfiguration implements ConfigurationSerializable {
 
     public int getChestRefillCooldown() {
         return chestRefillCooldown;
+    }
+
+
+
+    public int getMaxArmorPiecesNormalChest() {
+        return maxArmorPiecesNormalChest;
+    }
+
+
+    public int getMaxArmorPiecesOPChest() {
+        return maxArmorPiecesOPChest;
     }
 }

@@ -2,7 +2,6 @@ package me.tomqnto.skywars.menus;
 
 import me.tomqnto.skywars.game.Game;
 import me.tomqnto.skywars.game.GameManager;
-import me.tomqnto.skywars.game.GameState;
 import me.tomqnto.skywars.menus.api.Button;
 import me.tomqnto.skywars.menus.api.PagedMenu;
 import net.kyori.adventure.text.Component;
@@ -26,7 +25,7 @@ public class GamesMenu extends PagedMenu {
 
     @Override
     public void onSetup() {
-        List<Game> games = gameManager.getGames().values().stream().filter(game -> List.of(GameState.WAITING, GameState.STARTING).contains(game.getGameState())).toList();
+        List<Game> games = gameManager.getGames().values().stream().filter(game -> !game.hasStarted()).toList();
         List<Button> buttons = new ArrayList<>();
 
         for (Game game : games){

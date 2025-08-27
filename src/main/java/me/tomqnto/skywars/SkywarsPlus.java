@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SkywarsPlus extends JavaPlugin {
 
-    public static SkywarsPlus instance;
+    private static SkywarsPlus instance;
 
     @Override
     public void onLoad() {
@@ -36,9 +36,9 @@ public final class SkywarsPlus extends JavaPlugin {
 
         getCommand("skywarsplus").setExecutor(new SkyWarsPlusCommand(gameManager));
 
-        Message.send(Bukkit.getConsoleSender(), "<green>Data Validation Results:");
-        DataValidator.validateData();
-        DataValidator.sendResults(Bukkit.getConsoleSender());
+        Message.send(Bukkit.getConsoleSender(), "<green>Data Check in progress");
+        DataCheck.validateData();
+        DataCheck.sendResults(Bukkit.getConsoleSender());
     }
 
     public static SkywarsPlus getInstance(){

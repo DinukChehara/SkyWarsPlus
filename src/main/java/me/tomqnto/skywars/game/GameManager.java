@@ -80,12 +80,9 @@ public class GameManager {
     }
 
     public static String generateID(){
-        String id = "sw-%s-%s-%s";
-        String uuid = UUID.randomUUID().toString().substring(0, 8);
-        String time = String.valueOf(System.currentTimeMillis());
-        String time2 = time.substring(0, 4);
-        time = time.substring(time.length()-5);
-        return id.formatted(time, uuid, time2);
+        String id = "sw%s";
+        String uuid = UUID.randomUUID().toString().substring(0, 5);
+        return id.formatted(uuid);
     }
 
     public static List<String> getValidMaps(String[] tags){

@@ -98,13 +98,14 @@ public class GameListeners implements Listener {
                 return;
             }
 
-            if (game.getGameState()==GameState.STARTED){
+            if (game.isActive()){
                 game.playerDie(player);
                 game.broadcastMessage(event.deathMessage().color(NamedTextColor.RED));
                 event.deathMessage(Component.empty());
 
                 if (player.getKiller()!=null){
                     PlayerConfig.addKill(player.getKiller(), game.getGameConfiguration());
+                    game.getGameScoreboard().updateKills(player);
                     gameManager.getPlayerSession(player.getKiller()).addKill();
                     player.getKiller().playSound(player.getKiller().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
                 }
@@ -128,7 +129,7 @@ public class GameListeners implements Listener {
         Player player = event.getPlayer();
 
         if (gameManager.hasActiveSession(player)){
-            if (gameManager.getPlayerSession(player).getGame().getGameState()!=GameState.STARTED)
+            if (!gameManager.getPlayerSession(player).getGame().isActive())
                 event.setCancelled(true);
         }
     }
@@ -138,7 +139,7 @@ public class GameListeners implements Listener {
         Player player = event.getPlayer();
 
         if (gameManager.hasActiveSession(player)){
-            if (gameManager.getPlayerSession(player).getGame().getGameState()!=GameState.STARTED)
+            if (!gameManager.getPlayerSession(player).getGame().isActive())
                 event.setCancelled(true);
         }
     }
@@ -151,7 +152,7 @@ public class GameListeners implements Listener {
             return;
 
         Game game = gameManager.getPlayerSession(player).getGame();
-        if (game.getGameState()!=GameState.STARTED || game.isSpectator(player))
+        if (!game.isActive() || game.isSpectator(player))
             event.setCancelled(true);
     }
 
@@ -170,17 +171,17 @@ public class GameListeners implements Listener {
         }
 
 
-        if (game.getGameState() != GameState.STARTED)
+        if (!game.isActive())
             event.setCancelled(true);
 
         if (game.getSpectators().contains(player))
             event.setCancelled(true);
 
         if (event.getDamageSource().getDamageType()== DamageType.OUT_OF_WORLD){
-            if (game.getGameState() == GameState.WAITING){
+            if (game.isWaiting()){
                 event.setCancelled(true);
                 player.teleport(game.getMap().getSpectatorLocation());
-            } else if (game.getGameState() == GameState.STARTED) {
+            } else if (game.isActive()) {
                 if (game.getSpectators().contains(player)){
                     event.setCancelled(true);
                     player.teleport(game.getMap().getSpectatorLocation());
@@ -223,7 +224,7 @@ public class GameListeners implements Listener {
             return;
 
         PlayerSession session = gameManager.getPlayerSession(player);
-        if (session.getGame().isSpectator(player) || session.getGame().getGameState() != GameState.STARTED)
+        if (session.getGame().isSpectator(player) || !session.getGame().isActive())
             event.setCancelled(true);
     }
 
@@ -245,7 +246,7 @@ public class GameListeners implements Listener {
             return;
 
         PlayerSession session = gameManager.getPlayerSession(player);
-        if (session.getGame().isSpectator(player) || session.getGame().getGameState() != GameState.STARTED)
+        if (session.getGame().isSpectator(player) || !session.getGame().hasStarted())
             event.setCancelled(true);
     }
 

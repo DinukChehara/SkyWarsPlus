@@ -34,10 +34,10 @@ public class SetLootItemsArgument implements ArgumentExecutor {
         Block block = player.getTargetBlockExact(5);
         if (block!=null && (block.getState() instanceof DoubleChest chest)){
             Inventory inv = chest.getInventory();
-            LootItemsConfig.setLootItems(inv, Objects.equals(args[1], "middle"));
+            LootItemsConfig.setLootItems(inv, Objects.equals(args[1], "op"));
         } else if (block!=null && (block.getState() instanceof Chest chest)) {
             Inventory inv = chest.getBlockInventory();
-            LootItemsConfig.setLootItems(inv, Objects.equals(args[1], "middle"));
+            LootItemsConfig.setLootItems(inv, Objects.equals(args[1], "op"));
         } else {
             Message.send(player, "<red>You must be looking at a chest");
             return;
@@ -48,11 +48,11 @@ public class SetLootItemsArgument implements ArgumentExecutor {
 
     @Override
     public String getUsage() {
-        return "/skywarsplus setloot <normal | middle>";
+        return "/skywarsplus setloot <normal | op>";
     }
 
     @Override
     public String getDescription() {
-        return "Sets the loot for normal/middle chests";
+        return "Sets the loot for normal/op chests";
     }
 }
