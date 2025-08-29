@@ -23,8 +23,8 @@ public final class SkywarsPlus extends JavaPlugin {
 
     @Override
     public void onEnable() {
-
         ConfigurationSerialization.registerClass(GameConfiguration.class);
+
 
         loadConfigs();
 
@@ -37,8 +37,6 @@ public final class SkywarsPlus extends JavaPlugin {
         getCommand("skywarsplus").setExecutor(new SkyWarsPlusCommand(gameManager));
 
         Message.send(Bukkit.getConsoleSender(), "<green>Data Check in progress");
-        DataCheck.validateData();
-        DataCheck.sendResults(Bukkit.getConsoleSender());
     }
 
     public static SkywarsPlus getInstance(){

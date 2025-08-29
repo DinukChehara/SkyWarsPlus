@@ -208,7 +208,6 @@ public class GameScoreboard {
 
     public void removeScoreboard(Player player){
         player.getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
 }

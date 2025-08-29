@@ -24,4 +24,6 @@ public class Button extends ItemStack implements Listener {
     public Consumer<Player> getAction() {
         return action;
     }
+
+
 }

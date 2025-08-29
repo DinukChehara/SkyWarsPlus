@@ -8,7 +8,6 @@ import java.util.List;
 
 public class GameJoinHandler {
 
-    private static final List<GameState> requiredStates = List.of(GameState.STARTING, GameState.WAITING);
 
     public static void joinGame(Player player, GameConfiguration gameSettings, GameManager gameManager){
 
@@ -18,7 +17,7 @@ public class GameJoinHandler {
         HashMap<String, Game> games = gameManager.getGames();
         if (!games.isEmpty()) {
             for (Game game : games.values()) {
-                if (gameSettings == game.getGameConfiguration() && game.getPlayerCount() < game.getMaxPlayers() && requiredStates.contains(game.getGameState())) {
+                if (gameSettings == game.getGameConfiguration() && game.getPlayerCount() < game.getMaxPlayers() && !game.hasStarted()) {
                     sendJoinMessage(player, game.getId());
                     game.playerJoin(player);
                     return;
@@ -35,7 +34,6 @@ public class GameJoinHandler {
         }
 
         Message.send(player, "<red>Could not find a game to join");
-
     }
 
     public static void joinGame(Player player, String id, GameManager gameManager){
@@ -51,7 +49,7 @@ public class GameJoinHandler {
         }
     }
 
-    public static void sendJoinMessage(Player player, String id){
+    private static void sendJoinMessage(Player player, String id){
         Message.send(player, "<gray>Joined %s".formatted(id));
     }
 }

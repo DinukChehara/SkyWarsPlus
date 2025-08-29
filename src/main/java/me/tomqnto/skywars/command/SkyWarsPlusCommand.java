@@ -44,7 +44,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
 
         if (args.length==0){
             if (sender instanceof Player player)
-                new SkyWarsMenu().open(player);
+                new SkyWarsMenu(player).open(player);
             else
                 Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
             return true;

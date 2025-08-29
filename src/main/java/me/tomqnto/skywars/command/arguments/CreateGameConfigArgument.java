@@ -23,8 +23,13 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
         }
         name = args[1];
 
-        if (args.length<9 && args.length > 1) {
+        if (args.length<9 && args.length > 2) {
             Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
+            return;
+        }
+
+        if (name.startsWith("id:")){
+            Message.send(sender, "<red>The config name cannot start with 'id:'");
             return;
         }
 
@@ -35,7 +40,7 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
 
         gameConfiguration = new GameConfiguration(name, 6, 12, 1, 2, 1, 180, "defaultmap1");
 
-        if (args.length>1){
+        if (args.length>2){
             int minTeams = Integer.parseInt(args[2]);
             int maxTeams = Integer.parseInt(args[3]);
             int teamSize = Integer.parseInt(args[4]);

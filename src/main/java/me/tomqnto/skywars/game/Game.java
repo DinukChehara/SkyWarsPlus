@@ -142,18 +142,18 @@ public class Game {
         refreshPlayer(player);
         player.teleport(gameManager.getLobbyLocation());
         player.clearTitle();
-
-        if (getPlayerCount()==0) {
-            deleteGame();
-            return;
-        }
         gameScoreboard.removeScoreboard(player);
 
         if (isStarting()){
             if (getPlayerCount()<minPlayers)
                 setGameState(GameState.WAITING);
         }
+
         updateScoreboardPlayerCount();
+
+        if (getPlayerCount()==0) {
+            deleteGame();
+        }
     }
 
     public void playerDie(Player player){
