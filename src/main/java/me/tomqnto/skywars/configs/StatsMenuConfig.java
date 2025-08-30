@@ -78,6 +78,6 @@ public class StatsMenuConfig {
         meta.lore(lore);
         item.setItemMeta(meta);
 
-        return new Button(item, button.getAction());
+        return new Button(item, button.getAction(), player1 -> {}, player1 -> {}, player1 -> {}, player1 -> {});
     }
 }

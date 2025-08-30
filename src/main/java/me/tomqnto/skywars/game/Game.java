@@ -10,6 +10,7 @@ import me.tomqnto.skywars.tasks.StartCountdown;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -81,7 +82,7 @@ public class Game {
         Bukkit.getServer().getPluginManager().registerEvents(this.chestManager, SkywarsPlus.getInstance());
 
         if (map.getTeamSpawnLocations().size()<gameTeams.size())
-            Bukkit.getLogger().warning("Not enough team locations in the map: %s, config: %s".formatted(map.getName(), gameConfiguration.getName()));
+            SkywarsPlus.getInstance().getLogger().warning("Not enough team locations in the map: %s, config: %s".formatted(map.getName(), gameConfiguration.getName()));
         
         spawnCages();
     }
@@ -95,6 +96,7 @@ public class Game {
                 Message.send(player, "<gray>This game already ended");
             return;
         }
+        Message.send(player, "<gray>Joined %s".formatted(id));
 
         refreshPlayer(player);
         PlayerSession session = gameManager.createPlayerSession(player, this);
@@ -105,7 +107,11 @@ public class Game {
         teleportToTeamSpawnLocation(player);
         gameScoreboard.createScoreboard(player);
 
-        broadcastMessage("<gold>%s<gray> joined the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
+//        broadcastMessage("<gold>%s<gray> joined the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
+        broadcastMessage(Message.PLAYER_JOINED_GAME.setPlaceholders(
+                Placeholder.unparsed("player", player.getName()),
+                Placeholder.unparsed("player-count", String.valueOf(getPlayerCount())),
+                Placeholder.unparsed("max-players", String.valueOf(maxPlayers))));
 
         if (isWaiting()){
             if (getPlayerCount()==minPlayers){
@@ -126,14 +132,21 @@ public class Game {
             getTeam(player).removePlayer(player);
             gamePlayers.remove(player);
             alivePlayers.remove(player);
-            broadcastMessage("<gold>%s<gray> left the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
+//            broadcastMessage("<gold>%s<gray> left the game <darK_gray>[<gray>%s<dark_gray>]".formatted(player.getName(), getPlayerCount() + "/" + maxPlayers));
+            broadcastMessage(Message.PLAYER_LEFT_GAME.setPlaceholders(
+                    Placeholder.unparsed("player", player.getName()),
+                    Placeholder.unparsed("player-count", String.valueOf(getPlayerCount())),
+                    Placeholder.unparsed("max-players", String.valueOf(maxPlayers))));
         }
-        else{
-            if (deadPlayers.contains(player)){
+        else if (isActive()) {
+            if (deadPlayers.contains(player)) {
                 removeSpectator(player);
-            } else{
-                broadcastMessage("<gold>%s<gray> left the game".formatted(player.getName()));
-                playerDie(player);
+            } else {
+                broadcastMessage(Message.PLAYER_QUIT_GAME.setPlaceholders(
+                        Placeholder.unparsed("player", player.getName()),
+                        Placeholder.unparsed("player-count", String.valueOf(getPlayerCount())),
+                        Placeholder.unparsed("max-players", String.valueOf(maxPlayers))));
+                player.setHealth(0);
                 removeSpectator(player);
             }
         }
@@ -164,7 +177,6 @@ public class Game {
         alivePlayers.remove(player);
         deadPlayers.add(player);
         addSpectator(player);
-        PlayerConfig.addDeath(player, gameConfiguration);
 
         if (!isTeamAlive(getTeam(player)))
             teamAliveMap.put(getTeam(player), false);

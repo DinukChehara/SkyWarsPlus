@@ -18,7 +18,6 @@ public class GameJoinHandler {
         if (!games.isEmpty()) {
             for (Game game : games.values()) {
                 if (gameSettings == game.getGameConfiguration() && game.getPlayerCount() < game.getMaxPlayers() && !game.hasStarted()) {
-                    sendJoinMessage(player, game.getId());
                     game.playerJoin(player);
                     return;
                 }
@@ -27,7 +26,6 @@ public class GameJoinHandler {
         else {
             Game game = gameManager.createGame(gameSettings);
             if (game!=null){
-                sendJoinMessage(player, game.getId());
                 game.playerJoin(player);
                 return;
             }
@@ -37,19 +35,13 @@ public class GameJoinHandler {
     }
 
     public static void joinGame(Player player, String id, GameManager gameManager){
-        Game game = gameManager.getGames().get(id);
-        if (game==null){
+        if (!gameManager.getGames().containsKey(id)){
             Message.send(player, "<red>This game does not exist");
             return;
         }
+        Game game = gameManager.getGames().get(id);
 
-        if (game.getGameState()==GameState.STARTING || game.getGameState()==GameState.WAITING){
-            sendJoinMessage(player, id);
-            game.playerJoin(player);
-        }
+        game.playerJoin(player);
     }
 
-    private static void sendJoinMessage(Player player, String id){
-        Message.send(player, "<gray>Joined %s".formatted(id));
-    }
 }

@@ -51,7 +51,7 @@ public class GamesMenu extends PagedMenu {
 
             item.setItemMeta(meta);
 
-            buttons.add(new Button(item, player -> player.performCommand("sw join id:%s".formatted(id))));
+            buttons.add(new Button(item, player -> player.performCommand("sw join id:%s".formatted(id)), player -> {}, player -> {}, player -> {}, player -> {}));
         }
         addAll(buttons);
     }

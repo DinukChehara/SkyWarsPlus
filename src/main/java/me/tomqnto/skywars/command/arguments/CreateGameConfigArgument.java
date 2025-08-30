@@ -4,7 +4,10 @@ import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.ArgumentExecutor;
 import me.tomqnto.skywars.game.GameConfiguration;
 import me.tomqnto.skywars.configs.GameConfigurationManager;
+import me.tomqnto.skywars.menus.CreateConfigMenu;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
@@ -12,21 +15,14 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
+        if (args.length < 2) {
+            Message.INVALID_USAGE.send(sender, Placeholder.unparsed("usage", getUsage()));
+            return;
+        }
+
         GameConfiguration gameConfiguration;
-
-        String name;
-
-
-        if (args.length == 0) {
-            Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
-            return;
-        }
-        name = args[1];
-
-        if (args.length<9 && args.length > 2) {
-            Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
-            return;
-        }
+        String name = args[1];
 
         if (name.startsWith("id:")){
             Message.send(sender, "<red>The config name cannot start with 'id:'");
@@ -34,13 +30,22 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
         }
 
         if (GameConfigurationManager.doesExist(name)){
-            Message.send(sender, "<red>A game config with this name already exists");
+            Message.send(sender, "<red>A config with this name already exists");
             return;
         }
 
-        gameConfiguration = new GameConfiguration(name, 6, 12, 1, 2, 1, 180, "defaultmap1");
+        if (sender instanceof Player player){
 
-        if (args.length>2){
+            String[] mapIds = Arrays.copyOfRange(args, 1, args.length);
+
+            new CreateConfigMenu(name, mapIds).open(player);
+        } else{
+
+            if (args.length<9) {
+                Message.INVALID_USAGE.send(sender, Placeholder.unparsed("usage", getUsage()));
+                return;
+            }
+
             int minTeams = Integer.parseInt(args[2]);
             int maxTeams = Integer.parseInt(args[3]);
             int teamSize = Integer.parseInt(args[4]);
@@ -54,10 +59,11 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
                 return;
             }
             gameConfiguration = new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefillCooldown,allowedMapIDs);
+
+            GameConfigurationManager.saveGameConfiguration(gameConfiguration);
+            Message.send(sender, "<green>Successfully created new game config: <yellow>" + name);
         }
 
-        GameConfigurationManager.saveGameConfiguration(gameConfiguration);
-        Message.send(sender, "<green>Successfully created new game config: <yellow>" + name);
     }
 
     @Override

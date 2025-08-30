@@ -1,6 +1,7 @@
 package me.tomqnto.skywars.configs;
 
 import me.tomqnto.skywars.SkywarsPlus;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -24,7 +25,7 @@ public class MapConfig {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static void saveConfig(){
+    public static void save(){
         try {
             config.save(file);
         } catch (IOException e) {
@@ -63,4 +64,14 @@ public class MapConfig {
     public static boolean isMapValid(String map){
         return getSpectatorTeleportLocation(map)!=null && !getSpectatorTeleportLocation(map).isEmpty() && getTeamSpawnCoordinates(map)!=null && !getSpectatorTeleportLocation(map).isEmpty() && getOPChestLocations(map)!=null;
     }
+
+    public static void createMap(String name){
+        config.set(name + ".spectator-teleport-location", List.of(0.0, 0.0, 0.0));
+        config.set(name + ".id", name);
+        config.set(name + ".team-spawn-locations", List.of(List.of(0.0,0.0,0.0), List.of(1.0, 1.0, 1.0)));
+        config.set(name + ".op-chest-locations", List.of());
+
+        save();
+    }
+
 }

@@ -10,10 +10,18 @@ public class Button extends ItemStack implements Listener {
 
     private final ItemStack itemStack;
     private final Consumer<Player> action;
+    private final Consumer<Player> actionRightClick;
+    private final Consumer<Player> actionLeftClick;
+    private final Consumer<Player> actionShiftRightClick;
+    private final Consumer<Player> actionShiftLeftClick;
 
-    public Button(ItemStack itemStack, Consumer<Player> action) {
+    public Button(ItemStack itemStack, Consumer<Player> action, Consumer<Player> actionRightClick, Consumer<Player> actionLeftClick, Consumer<Player> actionShiftRightClick, Consumer<Player> actionShiftLeftClick) {
         this.itemStack = itemStack;
         this.action = action;
+        this.actionRightClick = actionRightClick;
+        this.actionLeftClick = actionLeftClick;
+        this.actionShiftRightClick = actionShiftRightClick;
+        this.actionShiftLeftClick = actionShiftLeftClick;
     }
 
 
@@ -26,4 +34,19 @@ public class Button extends ItemStack implements Listener {
     }
 
 
+    public Consumer<Player> getActionRightClick() {
+        return actionRightClick;
+    }
+
+    public Consumer<Player> getActionLeftClick() {
+        return actionLeftClick;
+    }
+
+    public Consumer<Player> getActionShiftRightClick() {
+        return actionShiftRightClick;
+    }
+
+    public Consumer<Player> getActionShiftLeftClick() {
+        return actionShiftLeftClick;
+    }
 }

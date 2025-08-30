@@ -42,6 +42,6 @@ public class JoinMenuConfig {
             button.getAction().accept(player1);
             if (MenuConfigUtils.getGameConfig(slot, config) != null)
                 player.performCommand("swp join " + MenuConfigUtils.getGameConfig(slot, config));
-        });
+        }, player1 -> {}, player1 -> {}, player1 -> {}, player1 -> {});
     }
 }

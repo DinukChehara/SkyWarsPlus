@@ -3,6 +3,7 @@ package me.tomqnto.skywars.command.arguments;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.ArgumentExecutor;
 import me.tomqnto.skywars.configs.LootItemsConfig;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
@@ -22,12 +23,12 @@ public class AddLootItemsArgument implements ArgumentExecutor {
         }
 
         if (args.length<2){
-            Message.MISSING_OR_INVALID_ARGUMENTS.send(player);
+            Message.INVALID_USAGE.send(player, Placeholder.unparsed("usage", getUsage()));
             return;
         }
 
         if (!List.of("normal", "middle").contains(args[1])){
-            Message.MISSING_OR_INVALID_ARGUMENTS.send(player);
+            Message.INVALID_USAGE.send(player);
             return;
         }
 

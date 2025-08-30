@@ -1,0 +1,4 @@
+prefix: "<darK_gray>[<gold>SkyWars+<dark_gray>]<reset>"
+player-joined-game: "<gold><player> <gray>joined the game <dark_gray>[<gray><player-count>/<max-players><dark_gray>]"
+player-left-game: "<gold><player> <gray>left the game <dark_gray>[<gray><player-count>/<max-players><dark_gray>]"
+player-quit-game: "<gray><player> disconnected"

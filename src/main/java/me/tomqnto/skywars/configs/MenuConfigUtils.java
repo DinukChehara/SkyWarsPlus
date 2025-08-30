@@ -153,7 +153,7 @@ public class MenuConfigUtils {
             sendMessages(slot, player1,config);
         };
 
-        return new Button(item, action);
+        return new Button(item, action, player1 -> {}, player1 -> {}, player1 -> {}, player1 -> {});
     }
 
 }

@@ -36,7 +36,7 @@ public class JoinGameArgument implements ArgumentExecutor {
 
         if (args.length==2){
             if (args[1].startsWith("id:")){
-                GameJoinHandler.joinGame(player, args[1].substring(4), gameManager);
+                GameJoinHandler.joinGame(player, args[1].substring(3), gameManager);
             } else if (GameConfigurationManager.doesExist(args[1]))
                 GameJoinHandler.joinGame(player, GameConfigurationManager.getGameConfiguration(args[1]),gameManager);
             else

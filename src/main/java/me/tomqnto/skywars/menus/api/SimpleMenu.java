@@ -16,6 +16,10 @@ public abstract class SimpleMenu implements Menu, Listener {
 
     private final Inventory inventory;
     private HashMap<Integer, Consumer<Player>> actionsMap = new HashMap<>();
+    private HashMap<Integer, Consumer<Player>> actionsRightMap = new HashMap<>();
+    private HashMap<Integer, Consumer<Player>> actionsLeftMap = new HashMap<>();
+    private HashMap<Integer, Consumer<Player>> actionsShiftRightMap = new HashMap<>();
+    private HashMap<Integer, Consumer<Player>> actionsShiftLeftMap = new HashMap<>();
     private HashMap<Integer, ItemStack> itemsMap = new HashMap<>();
 
     public SimpleMenu(Rows rows, Component title) {
@@ -32,18 +36,54 @@ public abstract class SimpleMenu implements Menu, Listener {
     }
 
     @Override
+    public void clickRight(Player player, int slot) {
+        Consumer<Player> action = this.actionsRightMap.get(slot);
+
+        if (action!=null)
+            action.accept(player);
+    }
+
+    @Override
+    public void clickLeft(Player player, int slot) {
+        Consumer<Player> action = this.actionsLeftMap.get(slot);
+
+        if (action!=null)
+            action.accept(player);
+    }
+
+    @Override
+    public void clickShiftRight(Player player, int slot) {
+        Consumer<Player> action = this.actionsShiftRightMap.get(slot);
+
+        if (action!=null)
+            action.accept(player);
+    }
+
+    @Override
+    public void clickShiftLeft(Player player, int slot) {
+        Consumer<Player> action = this.actionsShiftLeftMap.get(slot);
+
+        if (action!=null)
+            action.accept(player);
+    }
+
+    @Override
     public void setButton(int slot, Button button){
-        setItem(slot, button.getItemStack(), button.getAction());
+        setItem(slot, button.getItemStack(), button.getAction(), button.getActionRightClick(), button.getActionLeftClick(), button.getActionShiftRightClick(), button.getActionShiftLeftClick());
     }
 
     @Override
     public void setItem(int slot, ItemStack item) {
-        setItem(slot, item, player -> {});
+        setItem(slot, item, player -> {}, player -> {}, player -> {}, player -> {}, player -> {});
     }
 
     @Override
-    public void setItem(int slot, ItemStack item, Consumer<Player> action) {
+    public void setItem(int slot, ItemStack item, Consumer<Player> action, Consumer<Player> actionRight, Consumer<Player> actionLeft, Consumer<Player> actionShiftRight, Consumer<Player> actionShiftLeft) {
         this.actionsMap.put(slot, action);
+        this.actionsRightMap.put(slot, actionRight);
+        this.actionsLeftMap.put(slot, actionLeft);
+        this.actionsShiftRightMap.put(slot, actionShiftRight);
+        this.actionsShiftLeftMap.put(slot, actionShiftLeft);
         this.itemsMap.put(slot, item);
         getInventory().setItem(slot, item);
     }
@@ -53,6 +93,8 @@ public abstract class SimpleMenu implements Menu, Listener {
         inventory.clear();
         itemsMap.clear();
         actionsMap.clear();
+        actionsLeftMap.clear();
+        actionsRightMap.clear();
         onSetup();
     }
 

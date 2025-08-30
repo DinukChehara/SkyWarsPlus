@@ -48,7 +48,7 @@ public class GameScoreboard {
         countdown.addEntry(ChatColor.DARK_BLUE.toString());
         countdown.prefix(Component.text("Starting in: ", NamedTextColor.GREEN));
         if (game.isWaiting()) {
-            countdown.prefix(Component.text("Not enough players to start", NamedTextColor.GRAY));
+            countdown.prefix(Component.text("Waiting for players", NamedTextColor.DARK_GRAY));
             countdown.suffix(Component.empty());
         } else {
             countdown.suffix(Component.text(game.getStartCountdown().getTime() + "s", NamedTextColor.GREEN));
@@ -81,10 +81,9 @@ public class GameScoreboard {
         objective.getScore(ChatColor.RED.toString()).setScore(1);
 
         LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        objective.getScore("§7" + formatter.format(dateTime)).setScore(11);
-        objective.getScore("§8" + game.getId()).setScore(10);
+        objective.getScore("§7" + formatter.format(dateTime) + "  §8" + game.getId()).setScore(11);
 
         objective.getScore(ChatColor.DARK_GREEN + " ").setScore(4);
         objective.getScore(ChatColor.DARK_PURPLE + " ").setScore(9);
@@ -134,7 +133,7 @@ public class GameScoreboard {
         Team countdown = scoreboard.getTeam("countdown");
         if (countdown != null) {
             if (game.isWaiting()) {
-                countdown.prefix(Component.text("Not enough players to start", NamedTextColor.GRAY));
+                countdown.prefix(Component.text("Waiting for players", NamedTextColor.DARK_GRAY));
                 countdown.suffix(Component.empty());
             } else {
                 countdown.prefix(Component.text("Starting in: ", NamedTextColor.GREEN));

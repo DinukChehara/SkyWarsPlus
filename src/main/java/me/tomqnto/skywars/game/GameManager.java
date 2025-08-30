@@ -80,9 +80,8 @@ public class GameManager {
     }
 
     public static String generateID(){
-        String id = "sw%s";
         String uuid = UUID.randomUUID().toString().substring(0, 5);
-        return id.formatted(uuid);
+        return "sw" + uuid;
     }
 
     public static List<String> getValidMaps(String[] tags){

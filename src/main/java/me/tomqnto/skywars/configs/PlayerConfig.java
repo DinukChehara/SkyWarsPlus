@@ -1,6 +1,7 @@
 package me.tomqnto.skywars.configs;
 
 import me.tomqnto.skywars.SkywarsPlus;
+import me.tomqnto.skywars.cosmetics.KillMessage;
 import me.tomqnto.skywars.game.GameConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -83,6 +84,16 @@ public class PlayerConfig {
     public static void resetWinStreak(Player player, GameConfiguration gameConfig){
         config.set(player.getName() + ".stats.%s.win-streak".formatted(gameConfig.getName()), 0);
         save();
+    }
+
+    public static KillMessage getKillMessage(Player player){
+        String val = config.getString(player + ".settings.kill-message");
+        
+        try{
+            return KillMessage.valueOf(val);
+        } catch (IllegalArgumentException e) {
+            return KillMessage.DEFAULT;
+        }
     }
 
 }

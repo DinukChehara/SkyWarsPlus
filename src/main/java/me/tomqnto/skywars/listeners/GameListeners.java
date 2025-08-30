@@ -2,6 +2,7 @@ package me.tomqnto.skywars.listeners;
 
 import com.destroystokyo.paper.event.entity.ThrownEggHatchEvent;
 import com.destroystokyo.paper.event.player.PlayerPickupExperienceEvent;
+import com.destroystokyo.paper.event.player.PlayerSetSpawnEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.event.player.PlayerPickItemEvent;
 import me.tomqnto.skywars.Message;
@@ -10,6 +11,7 @@ import me.tomqnto.skywars.configs.PlayerConfig;
 import me.tomqnto.skywars.game.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
@@ -29,6 +31,7 @@ import org.bukkit.util.Vector;
 public class GameListeners implements Listener {
 
     private final GameManager gameManager;
+    private final MiniMessage mm = MiniMessage.miniMessage();
 
     public GameListeners(GameManager gameManager) {
         this.gameManager = gameManager;
@@ -100,16 +103,18 @@ public class GameListeners implements Listener {
 
             if (game.isActive()){
                 game.playerDie(player);
-                game.broadcastMessage(event.deathMessage().color(NamedTextColor.RED));
-                event.deathMessage(Component.empty());
+                PlayerConfig.addDeath(player, game.getGameConfiguration());
 
                 if (player.getKiller()!=null){
                     PlayerConfig.addKill(player.getKiller(), game.getGameConfiguration());
                     game.getGameScoreboard().updateKills(player);
                     gameManager.getPlayerSession(player.getKiller()).addKill();
                     player.getKiller().playSound(player.getKiller().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
-                }
+                    game.broadcastMessage(PlayerConfig.getKillMessage(player.getKiller()).getKillMessage(player, player.getKiller()));
+                } else
+                    game.broadcastMessage(event.deathMessage());
 
+            event.deathMessage(Component.empty());
             }else
                 event.setCancelled(true);
         }
@@ -165,11 +170,11 @@ public class GameListeners implements Listener {
             return;
 
         Game game = gameManager.getPlayerSession(player).getGame();
-        if (event.getDamageSource().getCausingEntity() instanceof Player && game.isSpectator((Player) event.getDamageSource().getCausingEntity())){
-            event.setCancelled(true);
+        if (event.getDamageSource().getCausingEntity() instanceof Player causedPlayer){
+            if ( game.isSpectator(causedPlayer) || game.getTeam(player) == game.getTeam(causedPlayer))
+                event.setCancelled(true);
             return;
         }
-
 
         if (!game.isActive())
             event.setCancelled(true);
@@ -247,6 +252,12 @@ public class GameListeners implements Listener {
 
         PlayerSession session = gameManager.getPlayerSession(player);
         if (session.getGame().isSpectator(player) || !session.getGame().hasStarted())
+            event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onRespawnPointSet(PlayerSetSpawnEvent event){
+        if (gameManager.hasActiveSession(event.getPlayer()))
             event.setCancelled(true);
     }
 

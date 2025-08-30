@@ -23,10 +23,6 @@ public class StartCountdown extends BukkitRunnable {
 
     @Override
     public void run() {
-        if (game.isWaiting()){
-            for (Player player : game.getGamePlayers().keySet())
-                player.sendActionBar(Component.text("Not enough players to start", NamedTextColor.GRAY));
-        }
         if (game.isStarting()) {
             game.updateScoreboardStartCountdown();
 

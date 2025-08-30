@@ -3,9 +3,11 @@ package me.tomqnto.skywars.command;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.arguments.*;
 import me.tomqnto.skywars.configs.GameConfigurationManager;
+import me.tomqnto.skywars.configs.MapConfig;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.GameConfiguration;
 import me.tomqnto.skywars.menus.SkyWarsMenu;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,6 +39,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         arguments.put("addloot", new AddLootItemsArgument());
         arguments.put("reload", new ReloadArgument());
         arguments.put("stats", new StatsArgument());
+        arguments.put("view_map", new ViewMapArgument());
     }
 
     @Override
@@ -46,7 +49,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
             if (sender instanceof Player player)
                 new SkyWarsMenu(player).open(player);
             else
-                Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
+                Message.INVALID_USAGE.send(sender, Placeholder.unparsed("usage", "/skywarsplus <command>"));
             return true;
         }
 
@@ -78,14 +81,14 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
             return validArgs;
         }
 
-        if (args.length==2 && (args[0].equals("help") || args[0].equals("h"))){
+        if (args.length==2 && args[0].equals("help")){
             final List<String> validArgs = new ArrayList<>();
             StringUtil.copyPartialMatches(args[1], arguments.keySet(), validArgs);
             return validArgs;
         }
 
         if (args.length==2){
-            if (args[0].equals("join") || args[0].equals("j")) {
+            if (args[0].equals("join")) {
                 Set<GameConfiguration> savedSettings = GameConfigurationManager.getSavedGameConfigurations();
                 return savedSettings.stream().map(GameConfiguration::getName).toList();
             }
@@ -93,25 +96,33 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
             if (args[0].equals("setloot") || args[0].equals("addloot")){
                 return List.of("op", "normal").stream().filter(arg -> arg.startsWith(args[1])).toList();
             }
+
+            if (args[0].equals("view_map")){
+                return MapConfig.getMaps();
+            }
         }
 
         if (args.length>0 && (args[0].equals("create_config"))){
             if (args.length == 2)
                 return List.of("name");
-            if (args.length == 3)
-                return List.of("min_teams");
-            if (args.length==4)
-                return List.of("max_teams");
-            if (args.length==5)
-                return List.of("team_size");
-            if (args.length==6)
-                return List.of("max_armor_normal_chest");
-            if (args.length>7)
-                return List.of("max_armor_op_chest");
-            if (args.length==8)
-                return List.of("chest_refill_cooldown");
-            if (args.length>9)
-                return List.of("map_tags");
+            if (!(sender instanceof Player)) {
+                if (args.length == 3)
+                    return List.of("min_teams");
+                if (args.length == 4)
+                    return List.of("max_teams");
+                if (args.length == 5)
+                    return List.of("team_size");
+                if (args.length == 6)
+                    return List.of("max_armor_normal_chest");
+                if (args.length == 7)
+                    return List.of("max_armor_op_chest");
+                if (args.length == 8)
+                    return List.of("chest_refill_cooldown");
+            }
+            List<String> ids = new ArrayList<>();
+            MapConfig.getMaps().forEach(map -> ids.add(MapConfig.getID(map)));
+            ids.removeAll(Arrays.stream(Arrays.copyOfRange(args, 1, args.length)).toList());
+            return ids;
         }
 
         return List.of();

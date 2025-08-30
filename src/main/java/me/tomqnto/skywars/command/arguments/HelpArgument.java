@@ -3,6 +3,7 @@ package me.tomqnto.skywars.command.arguments;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.ArgumentExecutor;
 import me.tomqnto.skywars.command.SkyWarsPlusCommand;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 
 public class HelpArgument implements ArgumentExecutor {
@@ -19,7 +20,7 @@ public class HelpArgument implements ArgumentExecutor {
             }
             Message.send(sender, "<gold>%s: <yellow>%s".formatted(command.getUsage(), command.getDescription()));
         } else
-            Message.MISSING_OR_INVALID_ARGUMENTS.send(sender);
+            Message.INVALID_USAGE.send(sender, Placeholder.unparsed("usage", getUsage()));
     }
 
     @Override

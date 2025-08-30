@@ -23,11 +23,11 @@ public abstract class PagedMenu extends SimpleMenu {
         setItem(getInventory().getSize() - 1, getItemNextPage(), player -> {
             currentPage = Math.min(maxPage, currentPage + 1);
             update();
-        });
+        }, player -> {}, player -> {}, player -> {}, player -> {});
         setItem(getInventory().getSize() - 9, getItemPreviousPage(), player -> {
             currentPage = Math.max(0, currentPage - 1);
             update();
-        });
+        }, player -> {}, player -> {}, player -> {}, player -> {});
     }
 
     public void addAll(List<Button> buttons) {
