@@ -8,23 +8,28 @@ import org.bukkit.command.CommandSender;
 
 public enum Message {
 
-    PLAYER_ONLY_COMMAND("<red>Only players can execute this command", false),
-    NO_COMMAND_PERMISSION("<red>You do not have permission to execute this command", false),
-    INVALID_USAGE("<red>Invalid usage. Usage: <usage>", false),
-    COMMAND_NOT_FOUND("<red>Command not found. Use /skywarsplus help <command>", false),
-    COMMAND_NOT_ALLOWED_IN_GAME("<red>You can't use this command during a game", false),
-    COMMAND_ONLY_IN_GAME("<red>You must be in a game to use this command", false),
-    PLAYER_JOINED_GAME("player-joined-game", true),
-    PLAYER_LEFT_GAME("player-left-game", true),
-    PLAYER_QUIT_GAME("player-quit-game", true);
+    PLAYER_ONLY_COMMAND("<red>Only players can execute this command"),
+    NO_COMMAND_PERMISSION("<red>You do not have permission to execute this command"),
+    INVALID_USAGE("<red>Invalid usage. Usage: <usage>"),
+    COMMAND_NOT_FOUND("<red>Command not found. Use /skywarsplus help <command>"),
+    COMMAND_NOT_ALLOWED_IN_GAME("<red>You can't use this command during a game"),
+    COMMAND_ONLY_IN_GAME("<red>You must be in a game to use this command"),
+    PLAYER_JOINED_GAME(MessagesConfig.getMessage("player-joined-game")),
+    PLAYER_LEFT_GAME(MessagesConfig.getMessage("player-left-game")),
+    PLAYER_QUIT_GAME(MessagesConfig.getMessage("player-quit-game")),
+    GAME_STARTING(MessagesConfig.getMessage("game-starting")),
+    GAME_STARTING_TITLE(MessagesConfig.getMessage("game-starting-title")),
+    GAME_STARTING_SUBTITLE(MessagesConfig.getMessage("game-starting-subtitle")),
+    GAME_STARTED_TITLE(MessagesConfig.getMessage("game-started-title")),
+    GAME_STARTED_SUBTITLE(MessagesConfig.getMessage("game-started-subtitle")),
+    GAME_STARTED(MessagesConfig.getMessage("game-started")),
+    CHEST_REFILLED(MessagesConfig.getMessage("chest-refilled"));
 
     private final String message;
-    private final boolean isPath;
     private static final String prefix = MessagesConfig.getMessage("prefix") + " ";
 
-    Message(String message, boolean isPath) {
+    Message(String message) {
         this.message = message;
-        this.isPath = isPath;
     }
 
     public void send(CommandSender to) {
@@ -39,11 +44,7 @@ public enum Message {
     }
 
     public String setPlaceholders(TagResolver... placeholders){
-        Component text;
-        if (isPath)
-            text = MiniMessage.miniMessage().deserialize(MessagesConfig.getMessage(getPath()), TagResolver.resolver(placeholders));
-        else
-            text = MiniMessage.miniMessage().deserialize(message, TagResolver.resolver(placeholders));
+        Component text = MiniMessage.miniMessage().deserialize(message, TagResolver.resolver(placeholders));
         return MiniMessage.miniMessage().serialize(text);
     }
 
@@ -55,7 +56,7 @@ public enum Message {
         return prefix;
     }
 
-    public String getPath(){
+    public String text(){
         return message;
     }
 }

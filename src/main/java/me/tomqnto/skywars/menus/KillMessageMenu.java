@@ -44,7 +44,8 @@ public class KillMessageMenu extends PagedMenu {
             ItemMeta meta = item.getItemMeta();
 
 
-            meta.itemName(MiniMessage.miniMessage().deserialize(name));Component messageComponent = MiniMessage.miniMessage()
+            meta.itemName(MiniMessage.miniMessage().deserialize(name));
+            Component messageComponent = MiniMessage.miniMessage()
                     .deserialize(message)
                     .decoration(TextDecoration.ITALIC, false);
 
@@ -54,7 +55,9 @@ public class KillMessageMenu extends PagedMenu {
                     : Component.text("» Click to select «", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false);
 
             meta.lore(List.of(
+                    Component.text(key, NamedTextColor.DARK_GRAY).decoration(TextDecoration.ITALIC, false),
                     Component.empty(),
+                    Component.text("Kill Message: ", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
                     messageComponent,
                     Component.empty(),
                     actionText

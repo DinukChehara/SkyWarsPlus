@@ -4,13 +4,17 @@ import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.command.ArgumentExecutor;
 import me.tomqnto.skywars.configs.MapConfig;
+import me.tomqnto.skywars.configs.PluginConfigManager;
 import me.tomqnto.skywars.game.GameMap;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Arrays;
 
 public class ViewMapArgument implements ArgumentExecutor {
 
@@ -28,21 +32,31 @@ public class ViewMapArgument implements ArgumentExecutor {
 
         if (check(player)) {
             Message.send(player, "<red>You are no longer viewing the map: " + SkywarsPlus.viewingMaps.get(player).getName());
+            player.teleport(PluginConfigManager.getLobbyLocation());
             SkywarsPlus.viewingMaps.get(player).unload();
             SkywarsPlus.viewingMaps.remove(player);
             return;
         } else {
-            if (args.length!=2)
+            if (args.length==1){
+                Message.send(player, "<red>You are not editing a map. Use /swp view_map <map_name> first");
                 return;
+            }
         }
 
-        if (!MapConfig.getMaps().contains(args[1])) {
-            Message.send(player, "<red>This map does not exist");
+        String[] mapInList = Arrays.copyOfRange(args, 1, args.length);
+        StringBuilder builder = new StringBuilder();
+        Arrays.stream(mapInList).toList().forEach(arg -> builder.append(arg).append(" "));
+        String mapName = builder.toString();
+        mapName = mapName.stripTrailing();
+
+        if (!MapConfig.getMaps().contains(mapName)) {
+            Message.send(player, "<red>The map: " + mapName + " was not found");
             return;
         }
 
-        Message.send(player, "<green>Teleporting to the map: " + args[1]);
-        GameMap map = new GameMap(args[1]);
+        player.setGameMode(GameMode.CREATIVE);
+        Message.send(player, "<green>Teleporting to the map: " + mapName);
+        GameMap map = new GameMap(mapName);
         SkywarsPlus.viewingMaps.put(player, map);
         Location loc = map.getSpectatorLocation() == null ? map.getBukkitWorld().getSpawnLocation() : map.getSpectatorLocation();
 
@@ -64,10 +78,6 @@ public class ViewMapArgument implements ArgumentExecutor {
 
     private boolean check(Player player){
         NamespacedKey key = new NamespacedKey(SkywarsPlus.getInstance(), "viewing_map");
-        if (!player.getWorld().getPersistentDataContainer().has(key)) {
-            Message.send(player, "<red>You are not editing a map. Use /swp view_map <map_name> first");
-            return false;
-        }
-        return true;
+        return player.getWorld().getPersistentDataContainer().has(key);
     }
 }

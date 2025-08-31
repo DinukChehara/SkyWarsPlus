@@ -1,10 +1,12 @@
 package me.tomqnto.skywars.tasks;
 
+import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.game.Game;
 import me.tomqnto.skywars.game.GameState;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,9 +31,10 @@ public class ChestRefillCountdown extends BukkitRunnable {
         if (game.isActive()){
             game.updateScoreboardChestRefill();
 
-            if (secondsLeft ==0){
+            if (secondsLeft == 0){
                 game.getChestManager().resetChests();
-                game.broadcastTitle(Component.text("All chests refilled!", NamedTextColor.YELLOW, TextDecoration.BOLD), Component.empty(), null);
+                game.broadcastTitle(MiniMessage.miniMessage().deserialize(Message.CHEST_REFILLED.text()),
+                        Component.empty(), null);
                 secondsLeft = REFILL_TIME;
             }
 

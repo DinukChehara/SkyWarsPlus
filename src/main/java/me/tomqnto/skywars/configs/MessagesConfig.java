@@ -28,14 +28,6 @@ public class MessagesConfig {
         config = YamlConfiguration.loadConfiguration(file);
     }
 
-    public static String getMessage(Message message){
-
-        String messageStr = config.getString(message.getPath());
-        if (messageStr == null)
-            messageStr = "";
-        return (messageStr);
-    }
-
     public static String getMessage(String path){
 
         String messageStr = config.getString(path);
