@@ -15,7 +15,7 @@ public class MessagesConfig {
 
     private static final File file = new File(SkywarsPlus.getInstance().getDataFolder(), "messages.yml");
     private static FileConfiguration config;
-    private static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private static final MiniMessage mm = MiniMessage.miniMessage();
 
     static {
         if (!file.exists())

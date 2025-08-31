@@ -10,6 +10,7 @@ import me.tomqnto.skywars.tasks.StartCountdown;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -47,6 +48,8 @@ public class Game {
     private final HashMap<GameTeam, Boolean> teamAliveMap;
     private final HashMap<Player, List<Player>> hiddenPlayers = new HashMap<>();
     private final GameScoreboard gameScoreboard;
+
+    private final MiniMessage mm = MiniMessage.miniMessage();
 
     public Game(GameConfiguration gameConfiguration, GameManager gameManager, GameMap map) {
         this.gameConfiguration = gameConfiguration;
@@ -283,8 +286,16 @@ public class Game {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 3*20, 10));
             }
             case ENDED -> {
-                broadcastTitle(Component.text("VICTORY!", NamedTextColor.GOLD, TextDecoration.BOLD), Component.empty(), getTeamWon().getTeamPlayers());
-                broadcastTitle(Component.text("GAME OVER!", NamedTextColor.RED, TextDecoration.BOLD), Component.empty(), spectators);
+                Set<Player> lost = new HashSet<>();
+                getGameTeams().forEach(team -> {if (team!=getTeamWon()) lost.addAll(team.getTeamPlayers());});
+
+                spectators.removeAll(lost);
+                spectators.removeAll(getTeamWon().getTeamPlayers());
+
+                broadcastTitle(mm.deserialize(Message.VICTORY_TITLE.text()), mm.deserialize(Message.VICTORY_SUBTITLE.text()), getTeamWon().getTeamPlayers());
+                broadcastTitle(mm.deserialize(Message.GAME_ENDED_TITLE.text()), mm.deserialize(Message.GAME_ENDED_SUBTITLE.text()), spectators);
+                broadcastTitle(mm.deserialize(Message.LOST_TITLE.text()), mm.deserialize(Message.LOST_SUBTITLE.text()), lost);
+
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
                 getInGamePlayers().forEach(gameScoreboard::removeScoreboard);

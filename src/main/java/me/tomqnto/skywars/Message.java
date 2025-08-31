@@ -23,7 +23,13 @@ public enum Message {
     GAME_STARTED_TITLE(MessagesConfig.getMessage("game-started-title")),
     GAME_STARTED_SUBTITLE(MessagesConfig.getMessage("game-started-subtitle")),
     GAME_STARTED(MessagesConfig.getMessage("game-started")),
-    CHEST_REFILLED(MessagesConfig.getMessage("chest-refilled"));
+    CHEST_REFILLED(MessagesConfig.getMessage("chest-refilled")),
+    VICTORY_TITLE(MessagesConfig.getMessage("victory-title")),
+    VICTORY_SUBTITLE(MessagesConfig.getMessage("victory-subtitle")),
+    LOST_TITLE(MessagesConfig.getMessage("lost-title")),
+    LOST_SUBTITLE(MessagesConfig.getMessage("lost-subtitle")),
+    GAME_ENDED_TITLE(MessagesConfig.getMessage("game-ended-title")),
+    GAME_ENDED_SUBTITLE(MessagesConfig.getMessage("game-ended-subtitle"));
 
     private final String message;
     private static final String prefix = MessagesConfig.getMessage("prefix") + " ";
