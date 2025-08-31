@@ -40,6 +40,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         arguments.put("reload", new ReloadArgument());
         arguments.put("stats", new StatsArgument());
         arguments.put("view_map", new ViewMapArgument());
+        arguments.put("kill_messages", new KillMessageArgument());
     }
 
     @Override

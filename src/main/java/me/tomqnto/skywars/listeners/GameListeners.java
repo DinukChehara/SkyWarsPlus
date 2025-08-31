@@ -7,6 +7,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.event.player.PlayerPickItemEvent;
 import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.SkywarsPlus;
+import me.tomqnto.skywars.configs.KillMessagesConfig;
 import me.tomqnto.skywars.configs.PlayerConfig;
 import me.tomqnto.skywars.game.*;
 import net.kyori.adventure.text.Component;
@@ -109,8 +110,13 @@ public class GameListeners implements Listener {
                     PlayerConfig.addKill(player.getKiller(), game.getGameConfiguration());
                     game.getGameScoreboard().updateKills(player);
                     gameManager.getPlayerSession(player.getKiller()).addKill();
-                    player.getKiller().playSound(player.getKiller().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
-                    game.broadcastMessage(PlayerConfig.getKillMessage(player.getKiller()).getKillMessage(player, player.getKiller()));
+
+                    String key = PlayerConfig.getKillMessageKey(player.getKiller());
+                    if (key != null)
+                        game.broadcastMessage(KillMessagesConfig.getMessage(key, player.getKiller().getName(), player.getName()));
+                    else
+                        game.broadcastMessage(event.deathMessage());
+
                 } else
                     game.broadcastMessage(event.deathMessage());
 

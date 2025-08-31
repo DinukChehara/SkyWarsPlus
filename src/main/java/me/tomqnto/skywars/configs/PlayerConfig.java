@@ -1,7 +1,6 @@
 package me.tomqnto.skywars.configs;
 
 import me.tomqnto.skywars.SkywarsPlus;
-import me.tomqnto.skywars.cosmetics.KillMessage;
 import me.tomqnto.skywars.game.GameConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -86,14 +85,13 @@ public class PlayerConfig {
         save();
     }
 
-    public static KillMessage getKillMessage(Player player){
-        String val = config.getString(player + ".settings.kill-message");
-        
-        try{
-            return KillMessage.valueOf(val);
-        } catch (IllegalArgumentException e) {
-            return KillMessage.DEFAULT;
-        }
+    public static String getKillMessageKey(Player player){
+        return config.getString(player + ".settings.kill-message-key");
+    }
+
+    public static void setKillMessageKey(Player player, String key){
+        config.set(player + ".settings.kill-message-key", key);
+        save();
     }
 
 }
