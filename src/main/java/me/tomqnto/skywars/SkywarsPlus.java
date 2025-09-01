@@ -8,6 +8,7 @@ import me.tomqnto.skywars.game.GameConfiguration;
 import me.tomqnto.skywars.game.GameMap;
 import me.tomqnto.skywars.listeners.GameListeners;
 import me.tomqnto.skywars.listeners.LobbyListeners;
+import me.tomqnto.skywars.listeners.OtherListeners;
 import me.tomqnto.skywars.menus.api.MenuListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -31,18 +32,19 @@ public final class SkywarsPlus extends JavaPlugin {
     public void onEnable() {
         ConfigurationSerialization.registerClass(GameConfiguration.class);
 
-
         loadConfigs();
 
         GameManager gameManager = new GameManager();
 
         getServer().getPluginManager().registerEvents(new GameListeners(gameManager), this);
         getServer().getPluginManager().registerEvents(new LobbyListeners(), this);
+        getServer().getPluginManager().registerEvents(new OtherListeners(), this);
         getServer().getPluginManager().registerEvents(new MenuListeners(), this);
 
         getCommand("skywarsplus").setExecutor(new SkyWarsPlusCommand(gameManager));
 
-        Message.send(Bukkit.getConsoleSender(), "<green>Data Check in progress");
+
+        Metrics metrics = new Metrics(this, 27132);
     }
 
     public static SkywarsPlus getInstance(){

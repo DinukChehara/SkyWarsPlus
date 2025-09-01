@@ -270,6 +270,7 @@ public class Game {
         this.gameState = newState;
         gameManager.getGamesMenu().update();
 
+
         if (before == GameState.STARTING && newState == GameState.WAITING ) {
             broadcastMessage("<gray>Not enough players to start");
             startCountdown.setTime(40);
@@ -286,14 +287,18 @@ public class Game {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 3*20, 10));
             }
             case ENDED -> {
+                // players who lost
                 Set<Player> lost = new HashSet<>();
                 getGameTeams().forEach(team -> {if (team!=getTeamWon()) lost.addAll(team.getTeamPlayers());});
 
-                spectators.removeAll(lost);
-                spectators.removeAll(getTeamWon().getTeamPlayers());
+                // spectators that were not a part of the game
+                Set<Player> others = new HashSet<>(spectators);
+
+                others.removeAll(lost);
+                others.removeAll(getTeamWon().getTeamPlayers());
 
                 broadcastTitle(mm.deserialize(Message.VICTORY_TITLE.text()), mm.deserialize(Message.VICTORY_SUBTITLE.text()), getTeamWon().getTeamPlayers());
-                broadcastTitle(mm.deserialize(Message.GAME_ENDED_TITLE.text()), mm.deserialize(Message.GAME_ENDED_SUBTITLE.text()), spectators);
+                broadcastTitle(mm.deserialize(Message.GAME_ENDED_TITLE.text()), mm.deserialize(Message.GAME_ENDED_SUBTITLE.text()), others);
                 broadcastTitle(mm.deserialize(Message.LOST_TITLE.text()), mm.deserialize(Message.LOST_SUBTITLE.text()), lost);
 
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
@@ -450,10 +455,8 @@ public class Game {
     }
 
     public void addSpectator(Player player){
-        player.setGameMode(GameMode.SURVIVAL);
         player.setCollidable(false);
-        player.setAllowFlight(true);
-        player.setFlying(true);
+        player.setGameMode(GameMode.CREATIVE);
 
         GameManager.getSpectatorTeam().addPlayer(player);
 
@@ -474,6 +477,8 @@ public class Game {
 
     public void removeSpectator(Player player){
         player.setCollidable(true);
+        player.setGameMode(GameMode.SURVIVAL);
+
         GameManager.getSpectatorTeam().removePlayer(player);
 
         hiddenPlayers.keySet().forEach(inGamePlayer -> {
@@ -486,7 +491,6 @@ public class Game {
         });
 
         spectators.remove(player);
-        player.setFlying(false);
     }
 
     public boolean isSpectator(Player player){

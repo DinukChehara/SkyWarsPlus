@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -226,6 +227,16 @@ public class GameListeners implements Listener {
             }
         }
 
+    }
+
+    @EventHandler
+    public void onMessageBroadcast(BroadcastMessageEvent event){
+        event.getRecipients().removeIf(sender -> {
+            if (sender instanceof Player player){
+                gameManager.hasActiveSession(player);
+            }
+            return false;
+        });
     }
 
     @EventHandler
