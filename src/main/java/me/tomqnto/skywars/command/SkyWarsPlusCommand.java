@@ -29,7 +29,7 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
     public SkyWarsPlusCommand(GameManager gameManager) {
         this.gameManager = gameManager;
 
-        arguments.put("create_config", new CreateGameConfigArgument());
+        arguments.put("create-config", new CreateGameConfigArgument());
         arguments.put("games", new GamesArgument(gameManager));
         arguments.put("leave", new LeaveGameArgument(gameManager));
         arguments.put("join", new JoinGameArgument(gameManager));
@@ -40,7 +40,8 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
         arguments.put("reload", new ReloadArgument());
         arguments.put("stats", new StatsArgument());
         arguments.put("view_map", new ViewMapArgument());
-        arguments.put("kill_messages", new KillMessageArgument());
+        arguments.put("kill-messages", new KillMessageArgument());
+        arguments.put("edit-config", new EditGameConfigArgument());
     }
 
     @Override

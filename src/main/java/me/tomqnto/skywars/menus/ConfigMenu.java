@@ -12,13 +12,15 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class CreateConfigMenu extends SimpleMenu {
+public class ConfigMenu extends SimpleMenu {
 
     private final String name;
     private final String[] mapIds;
+    private final boolean editMode;
 
     private int minTeams = 8;
     private int maxTeams = 12;
@@ -27,10 +29,20 @@ public class CreateConfigMenu extends SimpleMenu {
     private int maxArmorOP = 1;
     private int chestRefill = 120;
 
-    public CreateConfigMenu(String name, String[] mapIds) {
+    public ConfigMenu(String name, String[] mapIds, boolean editMode, @Nullable GameConfiguration gameConfig) {
         super(Rows.SIX, Component.text("Config: " + name));
         this.name = name;
         this.mapIds = mapIds;
+        this.editMode = editMode;
+
+        if (gameConfig!=null){
+            minTeams = gameConfig.getMinTeams();
+            maxTeams = gameConfig.getMaxTeams();
+            teamSize = gameConfig.getTeamSize();
+            maxArmorNormal = gameConfig.getMaxArmorPiecesNormalChest();
+            maxArmorOP = gameConfig.getMaxArmorPiecesOPChest();
+            chestRefill = gameConfig.getChestRefillCooldown();
+        }
     }
 
     @Override
@@ -129,10 +141,13 @@ public class CreateConfigMenu extends SimpleMenu {
 
         configItem.setItemMeta(configItemMeta);
 
-        ItemStack create = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
-        ItemMeta createMeta = create.getItemMeta();
-        createMeta.itemName(Component.text("Create", NamedTextColor.GREEN));
-        create.setItemMeta(createMeta);
+        ItemStack confirm = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta confirmMeta = confirm.getItemMeta();
+        String confirmConfirmText = "Create";
+        if (editMode)
+            confirmConfirmText = "Confirm";
+        confirmMeta.itemName(Component.text(confirmConfirmText, NamedTextColor.GREEN));
+        confirm.setItemMeta(confirmMeta);
 
         Button minTeamButton = new Button(
                 minTeamItem,
@@ -195,12 +210,15 @@ public class CreateConfigMenu extends SimpleMenu {
         );
 
         Button createButton = new Button(
-                create,
+                confirm,
                 player -> {
                     player.closeInventory();
                     GameConfiguration config = new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefill, mapIds);
                     GameConfigurationManager.saveGameConfiguration(config);
-                    Message.send(player, "<green>Successfully created the game config: " + name);
+                    if (editMode)
+                        Message.send(player, "<green>Successfully edited the game config: " + name);
+                    else
+                        Message.send(player, "<green>Successfully created the game config: " + name);
                 },
                 player -> {}, player -> {}, player -> {}, player -> {}
         );

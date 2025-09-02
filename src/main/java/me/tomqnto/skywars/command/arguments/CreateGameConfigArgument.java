@@ -4,7 +4,7 @@ import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.command.ArgumentExecutor;
 import me.tomqnto.skywars.game.GameConfiguration;
 import me.tomqnto.skywars.configs.GameConfigurationManager;
-import me.tomqnto.skywars.menus.CreateConfigMenu;
+import me.tomqnto.skywars.menus.ConfigMenu;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,7 +38,7 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
 
             String[] mapIds = Arrays.copyOfRange(args, 1, args.length);
 
-            new CreateConfigMenu(name, mapIds).open(player);
+            new ConfigMenu(name, mapIds, false, null).open(player);
         } else{
 
             if (args.length<9) {
@@ -68,7 +68,7 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
 
     @Override
     public String getUsage() {
-        return "/skywarsplus create_config <name> [optional: <min teams> <max teams> <team size> <max armor normal chest> <max armor op chest> <map ids>]";
+        return "/skywarsplus create-config <name> [for console: <min teams> <max teams> <team size> <max armor normal chest> <max armor op chest> <map ids>]";
     }
 
     @Override

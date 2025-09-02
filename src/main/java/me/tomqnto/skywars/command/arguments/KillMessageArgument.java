@@ -19,7 +19,7 @@ public class KillMessageArgument implements ArgumentExecutor {
 
     @Override
     public String getUsage() {
-        return "/skywarsplus kill_messages";
+        return "/skywarsplus kill-messages";
     }
 
     @Override
