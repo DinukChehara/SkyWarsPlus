@@ -1,6 +1,7 @@
 package me.tomqnto.skywars.game;
 
 import me.tomqnto.skywars.Message;
+import me.tomqnto.skywars.PlayerUtils;
 import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.configs.PlayerConfig;
 import me.tomqnto.skywars.configs.PluginConfigManager;
@@ -304,7 +305,13 @@ public class Game {
                 new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
                 getInGamePlayers().forEach(gameScoreboard::removeScoreboard);
-                getTeamWon().getTeamPlayers().forEach(player -> PlayerConfig.addWin(player, gameConfiguration));
+
+                getTeamWon().getTeamPlayers().forEach(player -> {
+                    PlayerConfig.addWin(player, gameConfiguration);
+                    PlayerUtils.addXp(player, gameConfiguration.getXpPerWin(), Message.WIN_XP_GAINED);
+                    PlayerUtils.displayProgressBar(player);
+                });
+
                 getDeadTeams().forEach(team -> team.getTeamPlayers().forEach(player -> PlayerConfig.addLoss(player, gameConfiguration)));
             }
         }

@@ -6,6 +6,7 @@ import com.destroystokyo.paper.event.player.PlayerSetSpawnEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import io.papermc.paper.event.player.PlayerPickItemEvent;
 import me.tomqnto.skywars.Message;
+import me.tomqnto.skywars.PlayerUtils;
 import me.tomqnto.skywars.SkywarsPlus;
 import me.tomqnto.skywars.configs.KillMessagesConfig;
 import me.tomqnto.skywars.configs.PlayerConfig;
@@ -107,7 +108,6 @@ public class GameListeners implements Listener {
             }
 
             if (game.isActive()){
-                game.playerDie(player);
                 PlayerConfig.addDeath(player, game.getGameConfiguration());
 
                 Player killer = player.getKiller();
@@ -122,10 +122,10 @@ public class GameListeners implements Listener {
                     else
                         game.broadcastMessage(Objects.requireNonNullElse(event.deathMessage(), Component.empty()).color(NamedTextColor.GRAY));
 
-                    int killXp = game.getGameConfiguration().getXpPerKill();
-                    killer.sendRichMessage(Message.KILL_XP_GAINED.setPlaceholders(Placeholder.unparsed("amount", String.valueOf(killXp))));
+                    PlayerUtils.addXp(killer, game.getGameConfiguration().getXpPerKill(), Message.KILL_XP_GAINED);
                 } else
                     game.broadcastMessage(event.deathMessage());
+                game.playerDie(player);
 
             event.deathMessage(Component.empty());
             }else

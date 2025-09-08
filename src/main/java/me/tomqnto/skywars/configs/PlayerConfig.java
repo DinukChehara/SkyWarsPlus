@@ -113,18 +113,13 @@ public class PlayerConfig {
     }
 
     public static void setLevel(Player player, int level){
-        config.set(player.getName() + "progress.level", level);
+        config.set(player.getName() + ".progress.level", level);
         save();
     }
 
-    public static boolean levelUp(Player player, int xp, int xpRequired){
-        if (xp >= xpRequired){
-            int xpLeft = xp-xpRequired;
-            setLevel(player, getLevel(player)+1);
-            setXp(player, xpLeft);
-            return true;
-        }
-        return false;
+    public static void addLevel(Player player){
+        setLevel(player, getLevel(player) + 1);
+        save();
     }
 
 }

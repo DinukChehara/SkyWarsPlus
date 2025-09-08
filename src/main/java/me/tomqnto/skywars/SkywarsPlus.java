@@ -68,6 +68,7 @@ public final class SkywarsPlus extends JavaPlugin {
         PlayerConfig.load();
         KillMessagesConfig.load();
         MessagesConfig.load();
+        LevelsConfig.load();
     }
 
 }
