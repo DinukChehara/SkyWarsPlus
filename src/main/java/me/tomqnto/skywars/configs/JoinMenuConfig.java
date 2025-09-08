@@ -12,13 +12,13 @@ import java.util.*;
 
 public class JoinMenuConfig {
 
-    public final static File file = new File(SkywarsPlus.getInstance().getDataFolder(), "join_menu.yml");
+    public final static File file = new File(SkywarsPlus.getInstance().getDataFolder(), "menus/join_menu.yml");
     public static FileConfiguration config;
 
 
     static {
         if (!file.exists())
-            SkywarsPlus.getInstance().saveResource("join_menu.yml", false);
+            SkywarsPlus.getInstance().saveResource("menus/join_menu.yml", false);
 
         load();
     }

@@ -120,6 +120,10 @@ public class SkyWarsPlusCommand implements TabCompleter, CommandExecutor {
                     return List.of("max_armor_op_chest");
                 if (args.length == 8)
                     return List.of("chest_refill_cooldown");
+                if (args.length == 9)
+                    return List.of("xp_per_kill");
+                if (args.length == 10)
+                    return List.of("xp_per_win");
             }
             List<String> ids = new ArrayList<>();
             MapConfig.getMaps().forEach(map -> ids.add(MapConfig.getID(map)));

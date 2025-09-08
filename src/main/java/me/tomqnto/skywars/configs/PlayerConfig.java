@@ -86,12 +86,45 @@ public class PlayerConfig {
     }
 
     public static String getKillMessageKey(Player player){
-        return config.getString(player + ".settings.kill-message-key");
+        return config.getString(player.getName() + ".settings.kill-message-key");
     }
 
     public static void setKillMessageKey(Player player, String key){
-        config.set(player + ".settings.kill-message-key", key);
+        config.set(player.getName() + ".settings.kill-message-key", key);
         save();
+    }
+
+    public static int getXp(Player player){
+        return config.getInt(player.getName() + ".progress.xp");
+    }
+
+    public static void addXp(Player player, int amount){
+        config.set(player.getName() + ".progress.xp", getXp(player) + amount);
+        save();
+    }
+
+    public static void setXp(Player player, int xp){
+        config.set(player.getName() + ".progress.xp", xp);
+        save();
+    }
+
+    public static int getLevel(Player player){
+        return config.getInt(player.getName() + ".progress.level");
+    }
+
+    public static void setLevel(Player player, int level){
+        config.set(player.getName() + "progress.level", level);
+        save();
+    }
+
+    public static boolean levelUp(Player player, int xp, int xpRequired){
+        if (xp >= xpRequired){
+            int xpLeft = xp-xpRequired;
+            setLevel(player, getLevel(player)+1);
+            setXp(player, xpLeft);
+            return true;
+        }
+        return false;
     }
 
 }

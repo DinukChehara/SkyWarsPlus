@@ -13,6 +13,7 @@ import me.tomqnto.skywars.game.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Entity;
@@ -29,6 +30,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.BroadcastMessageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Objects;
 
 public class GameListeners implements Listener {
 
@@ -107,17 +110,20 @@ public class GameListeners implements Listener {
                 game.playerDie(player);
                 PlayerConfig.addDeath(player, game.getGameConfiguration());
 
-                if (player.getKiller()!=null){
-                    PlayerConfig.addKill(player.getKiller(), game.getGameConfiguration());
+                Player killer = player.getKiller();
+                if (killer!=null){
+                    PlayerConfig.addKill(killer, game.getGameConfiguration());
                     game.getGameScoreboard().updateKills(player);
                     gameManager.getPlayerSession(player.getKiller()).addKill();
 
-                    String key = PlayerConfig.getKillMessageKey(player.getKiller());
-                    if (key != null)
-                        game.broadcastMessage(KillMessagesConfig.getMessage(key, player.getKiller().getName(), player.getName()));
+                    String key = PlayerConfig.getKillMessageKey(killer);
+                    if (!Objects.equals(key, "null"))
+                        game.broadcastMessage(KillMessagesConfig.getMessage(key, killer.getName(), player.getName()));
                     else
-                        game.broadcastMessage(event.deathMessage());
+                        game.broadcastMessage(Objects.requireNonNullElse(event.deathMessage(), Component.empty()).color(NamedTextColor.GRAY));
 
+                    int killXp = game.getGameConfiguration().getXpPerKill();
+                    killer.sendRichMessage(Message.KILL_XP_GAINED.setPlaceholders(Placeholder.unparsed("amount", String.valueOf(killXp))));
                 } else
                     game.broadcastMessage(event.deathMessage());
 

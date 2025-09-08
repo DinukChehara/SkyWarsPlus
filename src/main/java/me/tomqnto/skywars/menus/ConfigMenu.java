@@ -28,6 +28,14 @@ public class ConfigMenu extends SimpleMenu {
     private int maxArmorNormal = 2;
     private int maxArmorOP = 1;
     private int chestRefill = 120;
+    private int xpPerKill = 1;
+    private int xpPerWin = 10;
+
+    private final Component increaseByOne = Component.text("[LEFT-CLICK] +1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false);
+    private final Component increaseByFive = Component.text("[SHIFT LEFT-CLICK] +5", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false);
+    private final Component decreaseByOne = Component.text("[RIGHT-CLICK] -1", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false);
+    private final Component decreaseByFive = Component.text("[SHIFT RIGHT-CLICK] -5", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false);
+
 
     public ConfigMenu(String name, String[] mapIds, boolean editMode, @Nullable GameConfiguration gameConfig) {
         super(Rows.SIX, Component.text("Config: " + name));
@@ -42,6 +50,8 @@ public class ConfigMenu extends SimpleMenu {
             maxArmorNormal = gameConfig.getMaxArmorPiecesNormalChest();
             maxArmorOP = gameConfig.getMaxArmorPiecesOPChest();
             chestRefill = gameConfig.getChestRefillCooldown();
+            xpPerKill = gameConfig.getXpPerKill();
+            xpPerWin = gameConfig.getXpPerWin();
         }
     }
 
@@ -52,9 +62,7 @@ public class ConfigMenu extends SimpleMenu {
         ItemMeta minTeamMeta = minTeamItem.getItemMeta();
         minTeamMeta.itemName(Component.text("Min Teams: " + minTeams, NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         minTeamMeta.lore(List.of(
-                Component.empty().decoration(TextDecoration.ITALIC, false),
-                Component.text("[LEFT-CLICK] +1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("[RIGHT-CLICK] -1", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                Component.empty().decoration(TextDecoration.ITALIC, false),increaseByOne,decreaseByOne
         ));
         minTeamItem.setItemMeta(minTeamMeta);
 
@@ -62,9 +70,7 @@ public class ConfigMenu extends SimpleMenu {
         ItemMeta maxTeamMeta = maxTeamItem.getItemMeta();
         maxTeamMeta.itemName(Component.text("Max Teams: " + maxTeams, NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         maxTeamMeta.lore(List.of(
-                Component.empty().decoration(TextDecoration.ITALIC, false),
-                Component.text("[LEFT-CLICK] +1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("[RIGHT-CLICK] -1", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                Component.empty().decoration(TextDecoration.ITALIC, false),increaseByOne,decreaseByOne
         ));
         maxTeamItem.setItemMeta(maxTeamMeta);
 
@@ -72,9 +78,7 @@ public class ConfigMenu extends SimpleMenu {
         ItemMeta maxArmorNormalMeta = maxArmorNormalItem.getItemMeta();
         maxArmorNormalMeta.itemName(Component.text("Max Armor (Normal Chest): " + maxArmorNormal, NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         maxArmorNormalMeta.lore(List.of(
-                Component.empty().decoration(TextDecoration.ITALIC, false),
-                Component.text("[LEFT-CLICK] +1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("[RIGHT-CLICK] -1", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                Component.empty().decoration(TextDecoration.ITALIC, false),increaseByOne,decreaseByOne
         ));
         maxArmorNormalItem.setItemMeta(maxArmorNormalMeta);
 
@@ -82,9 +86,7 @@ public class ConfigMenu extends SimpleMenu {
         ItemMeta maxArmorOPMeta = maxArmorOPItem.getItemMeta();
         maxArmorOPMeta.itemName(Component.text("Max Armor (OP Chest): " + maxArmorOP, NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         maxArmorOPMeta.lore(List.of(
-                Component.empty().decoration(TextDecoration.ITALIC, false),
-                Component.text("[LEFT-CLICK] +1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("[RIGHT-CLICK] -1", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                Component.empty().decoration(TextDecoration.ITALIC, false),increaseByOne,decreaseByOne
         ));
         maxArmorOPItem.setItemMeta(maxArmorOPMeta);
 
@@ -92,9 +94,7 @@ public class ConfigMenu extends SimpleMenu {
         ItemMeta teamSizeMeta = teamSizeItem.getItemMeta();
         teamSizeMeta.itemName(Component.text("Team Size: " + teamSize, NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         teamSizeMeta.lore(List.of(
-                Component.empty().decoration(TextDecoration.ITALIC, false),
-                Component.text("[LEFT-CLICK] +1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("[RIGHT-CLICK] -1", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                Component.empty().decoration(TextDecoration.ITALIC, false),increaseByOne,decreaseByOne
         ));
         teamSizeItem.setItemMeta(teamSizeMeta);
 
@@ -103,13 +103,42 @@ public class ConfigMenu extends SimpleMenu {
         chestRefillMeta.itemName(Component.text("Chest Refill Timer: " + chestRefill + "s", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         chestRefillMeta.lore(List.of(
                 Component.empty().decoration(TextDecoration.ITALIC, false),
-                Component.text("[LEFT-CLICK] +1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("[SHIFT LEFT-CLICK] +5", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
+                increaseByOne,
+                increaseByFive,
                 Component.empty(),
-                Component.text("[RIGHT-CLICK] -1", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
-                Component.text("[SHIFT RIGHT-CLICK] -5", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                decreaseByOne,
+                decreaseByFive
         ));
         chestRefillItem.setItemMeta(chestRefillMeta);
+
+        ItemStack killXpItem =  new ItemStack(Material.EXPERIENCE_BOTTLE);
+        ItemMeta killXpMeta = killXpItem.getItemMeta();
+        killXpMeta.itemName(Component.text("XP Per Kill: " + xpPerKill + "xp", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
+        killXpMeta.lore(List.of(
+                Component.empty(),
+                increaseByOne,
+                increaseByFive,
+                Component.empty(),
+                decreaseByOne,
+                decreaseByFive,
+                Component.empty()
+        ));
+        killXpItem.setItemMeta(killXpMeta);
+
+        ItemStack winXpItem =  new ItemStack(Material.EXPERIENCE_BOTTLE);
+        ItemMeta winXpMeta = winXpItem.getItemMeta();
+
+        winXpMeta.itemName(Component.text("XP Per Win: " + xpPerWin + "xp" , NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
+        winXpMeta.lore(List.of(
+                Component.empty(),
+                increaseByOne,
+                increaseByFive,
+                Component.empty(),
+                decreaseByOne,
+                decreaseByFive,
+                Component.empty()
+        ));
+        winXpItem.setItemMeta(winXpMeta);
 
         ItemStack configItem = new ItemStack(Material.HEAVY_CORE);
         ItemMeta configItemMeta = configItem.getItemMeta();
@@ -136,6 +165,10 @@ public class ConfigMenu extends SimpleMenu {
                 Component.text("  • Max Armor (OP): " + maxArmorOP, NamedTextColor.GREEN)
                         .decoration(TextDecoration.ITALIC, false),
                 Component.text("  • Chest Refill Timer: " + chestRefill + "s", NamedTextColor.GREEN)
+                        .decoration(TextDecoration.ITALIC, false),
+                Component.text("  • XP Per Kill: " + xpPerKill + "xp", NamedTextColor.GREEN)
+                        .decoration(TextDecoration.ITALIC, false),
+                Component.text("  • XP Per Win: " + xpPerWin + "xp", NamedTextColor.GREEN)
                         .decoration(TextDecoration.ITALIC, false)
         ));
 
@@ -209,11 +242,41 @@ public class ConfigMenu extends SimpleMenu {
                 player -> {chestRefill+=5; update();}
         );
 
+        Button killXpButton = new Button(
+                killXpItem,
+                player -> {},
+                player -> { if ((xpPerKill-1)<0) return; xpPerKill--; update();},
+                player -> {xpPerKill++; update();},
+                player -> {
+                    if ((xpPerKill-5)<0)
+                        xpPerKill = 0;
+                    else
+                        xpPerKill -= 5;
+                    update();
+                },
+                player -> {xpPerKill+=5; update();}
+        );
+
+        Button winXpButton = new Button(
+                winXpItem,
+                player -> {},
+                player -> { if ((xpPerWin-1)<0) return; xpPerWin--; update();},
+                player -> {xpPerWin++; update();},
+                player -> {
+                    if ((xpPerWin-5)<0)
+                        xpPerWin = 0;
+                    else
+                        xpPerWin -= 5;
+                    update();
+                },
+                player -> {xpPerWin+=5; update();}
+        );
+
         Button createButton = new Button(
                 confirm,
                 player -> {
                     player.closeInventory();
-                    GameConfiguration config = new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefill, mapIds);
+                    GameConfiguration config = new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefill, xpPerKill, xpPerWin, mapIds);
                     GameConfigurationManager.saveGameConfiguration(config);
                     if (editMode)
                         Message.send(player, "<green>Successfully edited the game config: " + name);
@@ -227,11 +290,13 @@ public class ConfigMenu extends SimpleMenu {
         setButton(12, maxTeamButton);
         setButton(28, maxArmorNormalButton);
         setButton(14, teamSizeButton);
+        setButton(16, killXpButton);
         setButton(30, maxArmorOPButton);
         setButton(32, chestRefillButton);
-        setButton(35, createButton);
+        setButton(34, winXpButton);
 
-        setItem(17, configItem);
+        setButton(49, createButton);
+        setItem(53, configItem);
 
         for (ItemStack item : getInventory().getContents()){
             if (item == null || !item.hasItemMeta())

@@ -29,7 +29,9 @@ public enum Message {
     LOST_TITLE(MessagesConfig.getMessage("lost-title")),
     LOST_SUBTITLE(MessagesConfig.getMessage("lost-subtitle")),
     GAME_ENDED_TITLE(MessagesConfig.getMessage("game-ended-title")),
-    GAME_ENDED_SUBTITLE(MessagesConfig.getMessage("game-ended-subtitle"));
+    GAME_ENDED_SUBTITLE(MessagesConfig.getMessage("game-ended-subtitle")),
+    KILL_XP_GAINED(MessagesConfig.getMessage("xp-gained-kill")),
+    WIN_XP_GAINED(MessagesConfig.getMessage("xp-gained-win"));
 
     private final String message;
     private static final String prefix = MessagesConfig.getMessage("prefix") + " ";

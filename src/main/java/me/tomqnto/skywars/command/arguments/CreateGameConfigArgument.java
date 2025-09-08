@@ -52,13 +52,15 @@ public class CreateGameConfigArgument implements ArgumentExecutor {
             int maxArmorNormal = Integer.parseInt(args[5]);
             int maxArmorOP = Integer.parseInt(args[6]);
             int chestRefillCooldown = Integer.parseInt(args[7]);
-            String[] allowedMapIDs = Arrays.copyOfRange(args, 7, args.length);
+            int xpPerKill = Integer.parseInt(args[8]);
+            int xpPerKWin = Integer.parseInt(args[9]);
+            String[] allowedMapIDs = Arrays.copyOfRange(args, 10, args.length);
 
             if (minTeams > maxTeams){
                 Message.send(sender, "<red>Minimum team count must be less than or equal to maximum team count");
                 return;
             }
-            gameConfiguration = new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefillCooldown,allowedMapIDs);
+            gameConfiguration = new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefillCooldown, xpPerKill, xpPerKWin, allowedMapIDs);
 
             GameConfigurationManager.saveGameConfiguration(gameConfiguration);
             Message.send(sender, "<green>Successfully created new game config: <yellow>" + name);

@@ -16,9 +16,11 @@ public class GameConfiguration implements ConfigurationSerializable {
     private final int maxArmorPiecesNormalChest;
     private final int maxArmorPiecesOPChest;
     private final int chestRefillCooldown;
+    private final int xpPerKill;
+    private final int xpPerWin;
     private final String[] allowedMapIDs;
 
-    public GameConfiguration(String name, int minTeams, int maxTeams, int teamSize, int maxArmorPiecesNormalChest, int maxArmorPiecesOPChest, int chestRefillCooldown, String... allowedMapIDs) {
+    public GameConfiguration(String name, int minTeams, int maxTeams, int teamSize, int maxArmorPiecesNormalChest, int maxArmorPiecesOPChest, int chestRefillCooldown, int xpPerKill, int xpPerWin, String... allowedMapIDs) {
         this.maxTeams = maxTeams;
         this.minTeams = minTeams;
         this.name = name;
@@ -26,6 +28,8 @@ public class GameConfiguration implements ConfigurationSerializable {
         this.maxArmorPiecesNormalChest = maxArmorPiecesNormalChest;
         this.maxArmorPiecesOPChest = maxArmorPiecesOPChest;
         this.chestRefillCooldown = chestRefillCooldown;
+        this.xpPerKill = xpPerKill;
+        this.xpPerWin = xpPerWin;
         this.allowedMapIDs = allowedMapIDs;
     }
 
@@ -45,6 +49,14 @@ public class GameConfiguration implements ConfigurationSerializable {
         return allowedMapIDs;
     }
 
+    public int getXpPerKill(){
+        return xpPerKill;
+    }
+
+    public int getXpPerWin(){
+        return xpPerWin;
+    }
+
     @Override
     public @NotNull Map<String, Object> serialize() {
         Map<String, Object> map = new HashMap<>();
@@ -56,6 +68,8 @@ public class GameConfiguration implements ConfigurationSerializable {
         map.put("max-armor-op-chest", maxArmorPiecesOPChest);
         map.put("chest-refill-cooldown", chestRefillCooldown);
         map.put("map-ids", allowedMapIDs);
+        map.put("xp-per-kill", xpPerKill);
+        map.put("xp-per-win", xpPerWin);
 
 
         return map;
@@ -69,9 +83,11 @@ public class GameConfiguration implements ConfigurationSerializable {
         int chestRefillCooldown = (int) map.get("chest-refill-cooldown");
         int maxArmorNormal = (int) map.get("max-armor-normal-chest");
         int maxArmorOP = (int) map.get("max-armor-op-chest");
+        int xpPerWin = (int) map.get("xp-per-win");
+        int xpPerKill = (int) map.get("xp-per-kill");
         List<String> ids = (List<String>) map.get("map-ids");
         String[] allowedMapIDs = ids.toArray(new String[0]);
-        return new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefillCooldown, allowedMapIDs);
+        return new GameConfiguration(name, minTeams, maxTeams, teamSize, maxArmorNormal, maxArmorOP, chestRefillCooldown, xpPerKill, xpPerWin, allowedMapIDs);
     }
 
     public int getTeamSize() {

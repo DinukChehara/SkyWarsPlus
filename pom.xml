@@ -46,7 +46,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.1</version>
                 <configuration>
-                    <finalName>SkyWarsPlus-${project.version}</finalName>
+                    <finalName>${project.name}-${project.version}</finalName>
                     <outputDirectory>${user.home}\Desktop\server\plugins</outputDirectory>
                 </configuration>
             </plugin>

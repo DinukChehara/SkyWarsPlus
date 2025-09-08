@@ -25,6 +25,12 @@ public class GameJoinHandler {
         }
         else {
             Game game = gameManager.createGame(gameSettings);
+            List<String> maps = GameManager.getValidMaps(gameSettings.getAllowedMapIDs());
+            if (maps.isEmpty()){
+                Message.send(player, "<red>No maps available");
+                return;
+            }
+
             if (game!=null){
                 game.playerJoin(player);
                 return;
