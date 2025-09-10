@@ -43,14 +43,13 @@ public class PlayerUtils {
     public static void displayProgressBar(Player player){
         int currentXp = PlayerConfig.getXp(player);
         int currentLevel = PlayerConfig.getLevel(player);
-        int currentLevelXp = LevelsConfig.getXp(currentLevel);
 
         int nextLevelXp = LevelsConfig.getXp(currentLevel + 1);
-        int progress = currentXp / nextLevelXp;
         int barLength = 20;
-        int filled = progress * barLength;
-        String bar = "<green>█".repeat(filled) + "<gray>█".repeat(barLength-filled);
+        int progress = (int) (((double) currentXp / nextLevelXp) * barLength);
+
+        String bar = "<green>█".repeat(progress) + "<gray>█".repeat(barLength-progress);
         player.sendRichMessage("<gold>Progress: <yellow>%s<gray>/<yellow>%s".formatted(currentXp, nextLevelXp));
-        player.sendRichMessage("    <dark_gray><bold>[ </bold>" + bar + "<bold><dark_gray> ]");
+        player.sendRichMessage("    <dark_gray><bold>[</bold>" + bar + "<bold><dark_gray>]");
     }
 }
