@@ -47,8 +47,9 @@ public class Game {
     private final int maxPlayers;
     private final Set<Player> spectators;
     private final HashMap<GameTeam, Boolean> teamAliveMap;
-    private final HashMap<Player, List<Player>> hiddenPlayers = new HashMap<>();
+    private final HashMap<Player, List<Player>> hiddenPlayers;
     private final GameScoreboard gameScoreboard;
+    private final HashMap<Player, Integer> kills;
 
     private final MiniMessage mm = MiniMessage.miniMessage();
 
@@ -71,6 +72,9 @@ public class Game {
         this.spectators = new HashSet<>();
         this.teamAliveMap = new HashMap<>();
         this.gameScoreboard = new GameScoreboard(this, gameManager);
+        this.hiddenPlayers = new HashMap<>();
+        this.kills = new HashMap<>();
+
 
         for (int x=0; x<gameConfiguration.getMaxTeams(); x++){
             GameTeam team = new GameTeam();
@@ -87,7 +91,7 @@ public class Game {
 
         if (map.getTeamSpawnLocations().size()<gameTeams.size())
             SkywarsPlus.getInstance().getLogger().warning("Not enough team locations in the map: %s, config: %s".formatted(map.getName(), gameConfiguration.getName()));
-        
+
         spawnCages();
     }
 
@@ -102,7 +106,7 @@ public class Game {
         }
         Message.send(player, "<gray>Joined %s".formatted(id));
 
-        refreshPlayer(player);
+        PlayerUtils.refreshPlayer(player);
         PlayerSession session = gameManager.createPlayerSession(player, this);
         gamePlayers.put(player, session);
         alivePlayers.add(player);
@@ -156,8 +160,8 @@ public class Game {
         }
 
         gameManager.deletePlayerSession(player);
-        refreshPlayer(player);
-        player.teleport(gameManager.getLobbyLocation());
+        PlayerUtils.refreshPlayer(player);
+        PlayerUtils.teleport(player, gameManager.getLobbyLocation());
         player.clearTitle();
         gameScoreboard.removeScoreboard(player);
 
@@ -284,13 +288,18 @@ public class Game {
                 removeCages();
                 chestRefillCountdown.runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
                 getInGamePlayers().forEach(player -> {hiddenPlayers.put(player, new ArrayList<>()); gameScoreboard.registerStartedTeams(player);});
-                for (Player player : gamePlayers.keySet())
+                for (Player player : gamePlayers.keySet()){
+                    kills.put(player, 0);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 3*20, 10));
+                }
             }
             case ENDED -> {
+                new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
+
                 // players who lost
                 Set<Player> lost = new HashSet<>();
                 getGameTeams().forEach(team -> {if (team!=getTeamWon()) lost.addAll(team.getTeamPlayers());});
+                lost.retainAll(spectators);
 
                 // spectators that were not a part of the game
                 Set<Player> others = new HashSet<>(spectators);
@@ -301,8 +310,8 @@ public class Game {
                 broadcastTitle(mm.deserialize(Message.VICTORY_TITLE.text()), mm.deserialize(Message.VICTORY_SUBTITLE.text()), getTeamWon().getTeamPlayers());
                 broadcastTitle(mm.deserialize(Message.GAME_ENDED_TITLE.text()), mm.deserialize(Message.GAME_ENDED_SUBTITLE.text()), others);
                 broadcastTitle(mm.deserialize(Message.LOST_TITLE.text()), mm.deserialize(Message.LOST_SUBTITLE.text()), lost);
+                broadcastMessage();
 
-                new EndCountdown(this).runTaskTimer(SkywarsPlus.getInstance(), 0, 20);
 
                 getInGamePlayers().forEach(gameScoreboard::removeScoreboard);
 
@@ -312,6 +321,7 @@ public class Game {
                     PlayerUtils.displayProgressBar(player);
                 });
 
+                lost.forEach(PlayerUtils::displayProgressBar);
                 getDeadTeams().forEach(team -> team.getTeamPlayers().forEach(player -> PlayerConfig.addLoss(player, gameConfiguration)));
             }
         }
@@ -333,18 +343,8 @@ public class Game {
         return gamePlayers.size();
     }
 
-    public void refreshPlayer(Player player){
-        player.getInventory().clear();
-        player.setHealth(20);
-        player.setFoodLevel(20);
-        player.setSaturation(6);
-        player.setExperienceLevelAndProgress(0);
-        player.clearActivePotionEffects();
-        player.setGameMode(GameMode.SURVIVAL);
-    }
-
     public void deleteGame(){
-        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); gameScoreboard.removeScoreboard(player); refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); showSpectators(player); if (isSpectator(player)) removeSpectator(player);});
+        map.getBukkitWorld().getPlayers().forEach(player -> {gameManager.deletePlayerSession(player); gameScoreboard.removeScoreboard(player); PlayerUtils.refreshPlayer(player); player.setGameMode(GameMode.SURVIVAL);player.teleport(gameManager.getLobbyLocation()); showSpectators(player); if (isSpectator(player)) removeSpectator(player);});
         map.unload();
         gameManager.getGames().remove(id);
     }
@@ -510,6 +510,10 @@ public class Game {
 
     public void hideSpectators(Player player){
         spectators.forEach(spectator -> player.hidePlayer(SkywarsPlus.getInstance(), spectator));
+    }
+
+    public void addKill(Player player){
+        kills.put(player, kills.get(player) + 1);
     }
 
     public ChestRefillCountdown getChestRefillCountdown(){

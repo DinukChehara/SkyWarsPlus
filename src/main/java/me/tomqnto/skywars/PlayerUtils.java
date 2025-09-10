@@ -3,8 +3,11 @@ package me.tomqnto.skywars;
 import me.tomqnto.skywars.configs.LevelsConfig;
 import me.tomqnto.skywars.configs.PlayerConfig;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class PlayerUtils {
 
@@ -51,5 +54,20 @@ public class PlayerUtils {
         String bar = "<green>█".repeat(progress) + "<gray>█".repeat(barLength-progress);
         player.sendRichMessage("<gold>Progress: <yellow>%s<gray>/<yellow>%s".formatted(currentXp, nextLevelXp));
         player.sendRichMessage("    <dark_gray><bold>[</bold>" + bar + "<bold><dark_gray>]");
+    }
+
+    public static void teleport(Player player, Location location){
+        player.setVelocity(new Vector(0,0,0));
+        player.teleport(location);
+    }
+
+    public static void refreshPlayer(Player player){
+        player.getInventory().clear();
+        player.setHealth(20);
+        player.setFoodLevel(20);
+        player.setSaturation(6);
+        player.setExperienceLevelAndProgress(0);
+        player.clearActivePotionEffects();
+        player.setGameMode(GameMode.SURVIVAL);
     }
 }

@@ -113,6 +113,7 @@ public class GameListeners implements Listener {
                 Player killer = player.getKiller();
                 if (killer!=null){
                     PlayerConfig.addKill(killer, game.getGameConfiguration());
+                    game.addKill(killer);
                     game.getGameScoreboard().updateKills(player);
                     gameManager.getPlayerSession(player.getKiller()).addKill();
 
