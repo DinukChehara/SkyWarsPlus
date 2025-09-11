@@ -4,9 +4,6 @@ import me.tomqnto.skywars.Message;
 import me.tomqnto.skywars.game.Game;
 import me.tomqnto.skywars.game.GameState;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Sound;
@@ -17,7 +14,7 @@ import java.time.Duration;
 public class StartCountdown extends BukkitRunnable {
 
     private final Game game;
-    private int time = 40;
+    private int time = 30;
     private final MiniMessage mm = MiniMessage.miniMessage();
 
     public StartCountdown(Game game) {

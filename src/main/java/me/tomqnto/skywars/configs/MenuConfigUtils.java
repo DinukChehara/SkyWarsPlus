@@ -1,6 +1,6 @@
 package me.tomqnto.skywars.configs;
 
-import me.tomqnto.skywars.PlaceholderManager;
+import me.tomqnto.skywars.MenuPlaceholders;
 import me.tomqnto.skywars.menus.api.Button;
 import me.tomqnto.skywars.menus.api.SimpleMenu;
 import net.kyori.adventure.text.Component;
@@ -39,7 +39,7 @@ public class MenuConfigUtils {
     public static String getName(int slot, Player player, FileConfiguration config){
         String name = config.getString("buttons."+slot+".name");
 
-        name = PlaceholderManager.setPlaceholders(player, name);
+        name = MenuPlaceholders.setPlaceholders(player, name);
 
         return name;
     }
@@ -47,7 +47,7 @@ public class MenuConfigUtils {
     public static List<String> getLore(int slot, Player player, FileConfiguration config){
         List<String> lore = config.getStringList("buttons."+slot+".lore");
         List<String> newLore = new ArrayList<>();
-        lore.forEach(text -> newLore.add(PlaceholderManager.setPlaceholders(player, text)));
+        lore.forEach(text -> newLore.add(MenuPlaceholders.setPlaceholders(player, text)));
 
         return newLore;
     }
@@ -71,7 +71,7 @@ public class MenuConfigUtils {
             if (action.startsWith("[COMMAND] ")){
                 action = action.replace("[COMMAND] ", "");
                 String finalAction = action;
-                actions.add(player -> player.performCommand(PlaceholderManager.setPlaceholders(player, finalAction)));
+                actions.add(player -> player.performCommand(MenuPlaceholders.setPlaceholders(player, finalAction)));
             }
         }
         return actions;
@@ -84,7 +84,7 @@ public class MenuConfigUtils {
             if (action.startsWith("[CONSOLE] ")){
                 action = action.replace("[CONSOLE] ", "");
                 String finalAction = action;
-                actions.add(sender -> Bukkit.dispatchCommand(sender, PlaceholderManager.setPlaceholders(player, finalAction)));
+                actions.add(sender -> Bukkit.dispatchCommand(sender, MenuPlaceholders.setPlaceholders(player, finalAction)));
             }
         }
         return actions;
@@ -96,7 +96,7 @@ public class MenuConfigUtils {
         for (String msg : actionsStr){
             if (msg.startsWith("[MESSAGE] ")){
                 msg = msg.replace("[MESSAGE] ", "");
-                msg = PlaceholderManager.setPlaceholders(player, msg);
+                msg = MenuPlaceholders.setPlaceholders(player, msg);
                 msgs.add(msg);
             }
         }

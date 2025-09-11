@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PlaceholderManager {
+public class MenuPlaceholders {
 
     public static String setPlaceholders(@Nullable Player player, String string){
 
