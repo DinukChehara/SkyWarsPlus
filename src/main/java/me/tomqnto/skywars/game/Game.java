@@ -310,7 +310,6 @@ public class Game {
                 broadcastTitle(mm.deserialize(Message.VICTORY_TITLE.text()), mm.deserialize(Message.VICTORY_SUBTITLE.text()), getTeamWon().getTeamPlayers());
                 broadcastTitle(mm.deserialize(Message.GAME_ENDED_TITLE.text()), mm.deserialize(Message.GAME_ENDED_SUBTITLE.text()), others);
                 broadcastTitle(mm.deserialize(Message.LOST_TITLE.text()), mm.deserialize(Message.LOST_SUBTITLE.text()), lost);
-                broadcastMessage();
 
 
                 getInGamePlayers().forEach(gameScoreboard::removeScoreboard);
