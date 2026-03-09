@@ -1,0 +1,6 @@
+name: skywars-api
+version: '0.1.0'
+main: src.main.java.me.tomqnto.skywars.api.SkyWars
+api-version: '1.21'
+prefix: SkyWarsPlus
+authors: [Tomqnto]
