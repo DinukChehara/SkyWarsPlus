@@ -1,0 +1,4 @@
+min-players: 8
+team-settings:
+  team-count: 12
+  max-players-per-team: 1

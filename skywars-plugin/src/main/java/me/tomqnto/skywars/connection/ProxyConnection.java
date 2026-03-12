@@ -20,12 +20,24 @@ public class ProxyConnection implements PluginMessageListener {
     private static final List<String> lobbies = new ArrayList<>(lobbySockets.keySet());
 
     public static void kickFromProxy(Player player, String reason) {
-
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Kick");
+        out.writeUTF(reason);
+        player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
     }
 
     public static void kick(Player player, IGame game, String richReason) {
+        final MiniMessage mm = MiniMessage.miniMessage();
         if (lobbies.isEmpty()) {
-            player.kick(MiniMessage.miniMessage().deserialize("<red>No servers found. Please contact an administrator."));
+            String message = """
+                    <red>Disconnected</red>
+                    <yellow>You were sent to the lobby, but the lobby is not reachable</yellow>
+                    <yellow>Try again in a moment or contact an administrator if the problem persists</yellow>
+                    <gray>Reason: %s</gray>
+                    """.formatted(richReason);
+
+            player.kick(mm.deserialize(message));
+            return;
         }
         moveTo(player, lobbies.get(new Random().nextInt(lobbies.size())));
     }

@@ -18,14 +18,14 @@ import static me.tomqnto.skywars.SkyWars.*;
 
 public class LobbyConnection {
 
-
     private final SkyWars plugin;
     private final MainConfig config;
     private Socket socket;
-    private boolean enabled = true;
     private InputStreamReader reader;
     private OutputStreamWriter writer;
     private BufferedReader bufferedReader;
+
+    private boolean enabled = true;
 
     public static final ConcurrentHashMap<String, Socket> lobbySockets = new ConcurrentHashMap<>();
 
@@ -34,7 +34,7 @@ public class LobbyConnection {
         this.config = mainConfig;
 
         try {
-            this.socket = new Socket(plugin.getServer().getIp(), config.getInt(Path.listeningPort));
+            this.socket = new Socket(plugin.getServer().getIp(), config.getListeningPort());
              this.reader = new InputStreamReader(socket.getInputStream());
              this.writer = new OutputStreamWriter(socket.getOutputStream());
              this.bufferedReader = new BufferedReader(reader);
@@ -56,10 +56,10 @@ public class LobbyConnection {
                 input.append(line);
 
             JsonObject inputJson = JsonParser.parseString(input.toString()).getAsJsonObject();
-            String type = inputJson.get("type").getAsString();
+            String type = inputJson.get("data_type").getAsString();
 
             switch (type) {
-                case "get_player_info": {
+                case "player_info": {
                     String id =inputJson.get("id").getAsString();
                     String player = inputJson.get("player_uuid").getAsString();
                     JsonObject info = new JsonObject();
@@ -80,7 +80,7 @@ public class LobbyConnection {
                 case "connect_server": {
                     String server = inputJson.get("server").getAsString();
 
-                    if (!config.getStringList(Path.lobbyServers).contains(server))
+                    if (!config.getLobbyServers().contains(server))
                         return;
 
                     String ip = inputJson.get("ip").getAsString();

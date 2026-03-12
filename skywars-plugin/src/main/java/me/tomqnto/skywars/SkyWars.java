@@ -13,11 +13,15 @@ public final class SkyWars extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        mainConfig = new MainConfig(this, "config");
+        mainConfig = new MainConfig("config");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public static void log(String message) {
+        plugin.getLogger().info(message);
     }
 }
