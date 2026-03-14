@@ -1,7 +1,6 @@
 package me.tomqnto.skywars;
 
 import lombok.Getter;
-import me.tomqnto.skywars.api.configuration.ServerType;
 import me.tomqnto.skywars.configuration.MainConfig;
 import me.tomqnto.skywars.game.GameManager;
 import org.bukkit.plugin.java.JavaPlugin;

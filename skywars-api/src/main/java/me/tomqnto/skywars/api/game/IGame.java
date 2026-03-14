@@ -145,6 +145,4 @@ public interface IGame {
      */
     void removeSpectator(Player player);
 
-    World getWorld();
-
 }

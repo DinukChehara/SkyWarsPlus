@@ -17,5 +17,12 @@ public class Path {
         public static final String minPlayers = "min-players";
     }
 
+    public static class MapConfig {
+        public static final String displayName = "display-name";
+        public static final String teamsSectionPath = "teams.";
+        public static final String teamsSection = "teams";
+        public static final String teamColor = teamsSectionPath + "%s.color";
+        public static final String teamSpawnLocations = teamsSectionPath + "%s.spawn-locations";
+    }
 
 }

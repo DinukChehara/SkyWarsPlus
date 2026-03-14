@@ -24,7 +24,6 @@ import java.util.*;
 public class Game implements IGame {
 
     private final GameMode gameMode;
-    private final World world;
 
     private final String id;
     private final List<Player> players;
@@ -38,9 +37,8 @@ public class Game implements IGame {
 
     private GameState gameState = GameState.WAITING;
 
-    public Game(GameMode gameMode, World world) {
+    public Game(GameMode gameMode) {
         this.gameMode = gameMode;
-        this.world = world;
         id = "";
         players = new ArrayList<>();
         spectators = new ArrayList<>();

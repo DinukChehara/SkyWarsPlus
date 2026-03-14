@@ -2,3 +2,12 @@ min-players: 8
 team-settings:
   team-count: 12
   max-players-per-team: 1
+  teams:
+    RED:
+      prefix: "<red><b>R</b> | "
+    BLUE:
+      prefix: "<blue><b>B</b> | "
+    GREEN:
+      prefix: "<green><b>G</b> | "
+    YELLOW:
+      prefix: "<yellow><b>Y</b> | "
