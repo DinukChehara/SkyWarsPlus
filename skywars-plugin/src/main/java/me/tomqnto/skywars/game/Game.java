@@ -1,50 +1,112 @@
 package me.tomqnto.skywars.game;
 
 import lombok.Getter;
+import me.tomqnto.skywars.SkyWars;
 import me.tomqnto.skywars.api.game.GameState;
 import me.tomqnto.skywars.api.game.IGame;
-import me.tomqnto.skywars.configuration.GameMode;
+import me.tomqnto.skywars.api.game.GameMode;
+import me.tomqnto.skywars.game.tasks.StartingTask;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 public class Game implements IGame {
 
     private final GameMode gameMode;
+    private final World world;
 
     private final String id;
     private final List<Player> players;
     private final List<Player> spectators;
     private final List<Player> playing;
     private final Map<Player, Integer> kills;
+    private StartingTask startingTask;
+    private final Scoreboard scoreboard;
 
     private final MiniMessage mm = MiniMessage.miniMessage();
 
     private GameState gameState = GameState.WAITING;
 
-    public Game(GameMode gameMode) {
+    public Game(GameMode gameMode, World world) {
         this.gameMode = gameMode;
+        this.world = world;
         id = "";
         players = new ArrayList<>();
         spectators = new ArrayList<>();
         playing = new ArrayList<>();
         kills = new HashMap<>();
+        startingTask = new StartingTask(this);
+        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+
+        init();
+    }
+
+    public void init() {
+        scoreboard.registerNewTeam("spectators");
+        Team spectators = scoreboard.getTeam("spectators");
+        spectators.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+        spectators.color(NamedTextColor.GRAY);
+        spectators.prefix(Component.text("S", NamedTextColor.GRAY, TextDecoration.BOLD).append(Component.text(" | ")));
     }
 
     @Override
     public void addPlayer(Player player) {
-
+        if (players.size() == gameMode.getMaxPlayers()) {
+            player.sendRichMessage("<red>The game is full.");
+            return;
+        }
+        players.add(player);
+        if (gameState == GameState.WAITING && getPlayerCount() == gameMode.getMinPlayers()) {
+            gameState = GameState.STARTING;
+            startingTask.run();
+            return;
+        }
     }
 
     @Override
     public void removePlayer(Player player, boolean disconnected) {
+        if (disconnected)
+            broadcast("<red>%s disconnected".formatted(player.getName()), true);
 
+        players.remove(player);
+        player.setHealth(0);
+    }
+
+    @Override
+    public int getPlayerCount() {
+        return players.size();
+
+    }
+
+    @Override
+    public void onDeath(Player player, boolean disconnected) {
+        // add to spectators
+    }
+
+    @Override
+    public void addSpectator(Player player) {
+        spectators.add(player);
+        scoreboard.getTeam("spectators").addPlayer(player);
+        broadcast("<i><gray>%s is now spectating the game".formatted(player.getName()), true);
+        player.teleport(playing.get(new Random().nextInt(playing.size())));
+    }
+
+    @Override
+    public void removeSpectator(Player player) {
+        spectators.remove(player);
+        scoreboard.getTeam("spectators").removePlayer(player);
+        broadcast("<i><gray>%s is no longer spectating the game".formatted(player.getName()), true);
     }
 
     @Override
@@ -66,6 +128,20 @@ public class Game implements IGame {
     }
 
     @Override
+    public void broadcastTitle(Component title, Component subtitle, boolean sendToSpectators) {
+        playing.forEach(p -> {
+            p.showTitle(Title.title(title, subtitle));
+        });
+        if (sendToSpectators)
+            spectators.forEach(p -> p.showTitle(Title.title(title, subtitle)));
+    }
+
+    @Override
+    public void playSound(Sound sound, List<Player> players) {
+        players.forEach(p -> p.playSound(p.getLocation(), sound, 1f, 1f));
+    }
+
+    @Override
     public int getPlayerKills(Player player) {
         return kills.getOrDefault(player, 0);
     }
@@ -73,6 +149,18 @@ public class Game implements IGame {
     @Override
     public boolean isPlayer(Player player) {
         return players.contains(player);
+    }
+
+    @Override
+    public void delete() {
+        SkyWars.gameManager.deleteGame(this);
+    }
+
+    @Override
+    public List<Player> getInGamePlayers() {
+        List<Player> inGamePlayers = new ArrayList<>(players);
+        inGamePlayers.addAll(spectators);
+        return inGamePlayers;
     }
 
 }

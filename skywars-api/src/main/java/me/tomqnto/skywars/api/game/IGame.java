@@ -1,7 +1,10 @@
 package me.tomqnto.skywars.api.game;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.List;
 
@@ -80,8 +83,68 @@ public interface IGame {
      */
     void broadcast(Component component, boolean sendToSpectators);
 
+    void broadcastTitle(Component title, Component subtitle, boolean sendToSpectators);
+
+    void playSound(Sound sound, List<Player> players);
+
     int getPlayerKills(Player player);
 
     boolean isPlayer(Player player);
+
+    void delete();
+
+    GameMode getGameMode();
+
+    List<Player> getInGamePlayers();
+
+    int getPlayerCount();
+
+
+    /**
+     * Called when a player dies in this game.
+     *
+     * <p>Implementations should update game state (eg. move the player to spectator
+     * lists, update eliminations, check for end-of-game conditions, etc.) as appropriate.
+     *
+     * @param player the player who died
+     * @param disconnected true if the player died due to a disconnection
+     */
+    void onDeath(Player player, boolean disconnected);
+
+    /**
+     * Get the Bukkit {@link Scoreboard} that this game uses to manage teams and
+     * player display settings.
+     *
+     * @return the {@link Scoreboard} associated with this game
+     */
+    Scoreboard getScoreboard();
+
+    /**
+     * Add the given player as a spectator of this game.
+     *
+     * <p>Note: This method is part of the game implementation API and is intended
+     * to be called only by {@link me.tomqnto.skywars.game.GameManager GameManager}
+     * when managing spectating state for players. External code should use higher-level
+     * game management APIs (for example, GameManager.spectate) rather than calling this
+     * method directly.
+     *
+     * @param player player to add as a spectator
+     */
+    void addSpectator(Player player);
+
+    /**
+     * Remove the given player from this game's spectators.
+     *
+     * <p>Note: This method is part of the game implementation API and is intended
+     * to be called only by {@link me.tomqnto.skywars.game.GameManager GameManager}
+     * when managing spectating state for players. External code should use higher-level
+     * game management APIs (for example, GameManager.stopSpectating) rather than
+     * calling this method directly.
+     *
+     * @param player player to remove from spectators
+     */
+    void removeSpectator(Player player);
+
+    World getWorld();
 
 }
