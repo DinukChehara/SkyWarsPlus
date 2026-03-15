@@ -18,14 +18,9 @@ events-settings:
       display-text: "<gold>Chest <green>Refill"
 
     METEOR_SHOWER:
-      display-text: "<red>Meteor Shower"
+      display-text: "<red>Meteor <yellow>Shower"
 
   event-order:
-    - event: CHEST_REFILL
-      delay: 60
-
-    - event: METEOR_SHOWER
-      delay: 40
-
-    - event: CHEST_REFILL
-      delay: 50
+    - CHEST_REFILL, 60
+    - METEOR_SHOWER, 60
+    - CHEST_REFILL, 120

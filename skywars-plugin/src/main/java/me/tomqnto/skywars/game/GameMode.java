@@ -1,14 +1,12 @@
-package me.tomqnto.skywars.api.game;
+package me.tomqnto.skywars.game;
 
 import me.tomqnto.skywars.api.configuration.BaseConfig;
 import me.tomqnto.skywars.api.configuration.Path;
-import org.bukkit.plugin.Plugin;
+import me.tomqnto.skywars.api.game.IGameMode;import org.bukkit.plugin.Plugin;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class GameMode extends BaseConfig {
+public class GameMode extends BaseConfig implements IGameMode {
 
     public GameMode(Plugin plugin, String name) {
         super(plugin, name);
@@ -42,7 +40,13 @@ public class GameMode extends BaseConfig {
         return getString(Path.GameMode.eventDisplayText.formatted(event));
     }
 
-    public List<Map<?,?>> getEventOrder() {
-        return getMapList(Path.GameMode.eventOrderSection);
+    public List<List<String>> getEventsInOrder() {
+        List<List<String>> events = new ArrayList<>();
+
+        for (String string : getStringList(Path.GameMode.eventOrderSection))
+            events.add(List.of(string.replaceAll("\\s+", "").split(",")));
+
+        return events;
     }
+
 }
