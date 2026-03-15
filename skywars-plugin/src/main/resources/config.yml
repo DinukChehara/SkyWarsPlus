@@ -1,4 +1,3 @@
 proxy-settings:
   lobby-servers: [lobby, lobby2]
   listening-port: 2560
-

@@ -11,3 +11,21 @@ team-settings:
       prefix: "<green><b>G</b> | "
     YELLOW:
       prefix: "<yellow><b>Y</b> | "
+
+events-settings:
+  event-types:
+    CHEST_REFILL:
+      display-text: "<gold>Chest <green>Refill"
+
+    METEOR_SHOWER:
+      display-text: "<red>Meteor Shower"
+
+  event-order:
+    - event: CHEST_REFILL
+      delay: 60
+
+    - event: METEOR_SHOWER
+      delay: 40
+
+    - event: CHEST_REFILL
+      delay: 50

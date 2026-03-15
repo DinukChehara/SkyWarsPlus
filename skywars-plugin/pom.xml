@@ -51,10 +51,15 @@
   </build>
 
   <repositories>
-      <repository>
-        <id>papermc-repo</id>
-        <url>https://repo.papermc.io/repository/maven-public/</url>
-      </repository>
+    <repository>
+      <id>papermc-repo</id>
+      <url>https://repo.papermc.io/repository/maven-public/</url>
+    </repository>
+
+    <repository>
+      <id>is-releases</id>
+      <url>https://repo.infernalsuite.com/repository/maven-releases/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -64,17 +69,35 @@
       <version>1.21-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-      <dependency>
-          <groupId>me.tomqnto.skywarsplus</groupId>
-          <artifactId>skywars-api</artifactId>
-          <version>0.1.0</version>
-          <scope>compile</scope>
-      </dependency>
+
+    <dependency>
+        <groupId>me.tomqnto.skywarsplus</groupId>
+        <artifactId>skywars-api</artifactId>
+        <version>0.1.0</version>
+        <scope>compile</scope>
+    </dependency>
+
+    <!--ASP-->
+
+    <dependency>
+      <groupId>com.infernalsuite.asp</groupId>
+      <artifactId>api</artifactId>
+      <version>4.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.infernalsuite.asp</groupId>
+      <artifactId>file-loader</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.42</version>
       <scope>provided</scope>
     </dependency>
+
   </dependencies>
 </project>

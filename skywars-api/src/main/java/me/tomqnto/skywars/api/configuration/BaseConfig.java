@@ -9,6 +9,7 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class BaseConfig {
 
@@ -78,6 +79,10 @@ public class BaseConfig {
 
     public ConfigurationSection getConfigurationSection(String path) {
         return config.getConfigurationSection(path);
+    }
+
+    public List<Map<?, ?>> getMapList(String path) {
+        return config.getMapList(path);
     }
 
 }

@@ -15,6 +15,13 @@ public class Path {
         public static final String maxPlayersPerTeam = teamsSection + "max-players-per-team";
         public static final String startingCountdown = teamsSection + "starting-countdown";
         public static final String minPlayers = "min-players";
+
+        public static final String eventsSection = "events-settings.";
+        public static final String eventTypes = eventsSection + "event-types";
+        public static final String eventDisplayText = eventTypes + "%s.display-text";
+
+        public static final String eventOrderSection = eventsSection + "event-order.";
+
     }
 
     public static class MapConfig {
