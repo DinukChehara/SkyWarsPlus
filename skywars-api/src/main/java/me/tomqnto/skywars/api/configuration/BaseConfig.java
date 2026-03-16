@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -83,6 +84,10 @@ public class BaseConfig {
 
     public List<Map<?, ?>> getMapList(String path) {
         return config.getMapList(path);
+    }
+
+    public ItemStack getItemStack(String path) {
+        return config.getItemStack(path);
     }
 
 }
