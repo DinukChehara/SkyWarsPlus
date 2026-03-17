@@ -59,7 +59,7 @@ public class LootTable extends BaseConfig implements ILootTable {
     }
 
     @Override
-    public void loot(Container container) {
+    public void fillContainer(Container container) {
         int size = container.getInventory().getSize();
         ItemStack[] contents = new ItemStack[size];
 

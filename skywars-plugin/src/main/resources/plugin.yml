@@ -1,4 +1,4 @@
-name: skywars-plugin
+name: SkyWarsPlus
 version: '0.1.0'
 main: me.tomqnto.skywars.SkyWars
 api-version: '1.21'

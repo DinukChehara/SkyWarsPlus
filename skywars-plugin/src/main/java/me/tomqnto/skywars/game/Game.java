@@ -18,6 +18,8 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
+import static me.tomqnto.skywars.SkyWars.gameManager;
+
 @Getter
 public class Game implements IGame {
 
@@ -87,21 +89,27 @@ public class Game implements IGame {
 
     @Override
     public void onDeath(Player player, boolean disconnected) {
-        // add to spectators
+        if (disconnected)
+            return;
+        addSpectator(player, false);
     }
 
     @Override
-    public void addSpectator(Player player) {
+    public void addSpectator(Player player, boolean broadcast) {
+        gameManager.getSpectators().put(player, this);
         spectators.add(player);
         scoreboard.getTeam("spectators").addPlayer(player);
-        broadcast("<i><gray>%s is now spectating the game".formatted(player.getName()), true);
+        if (broadcast)
+            broadcast("<i><gray>%s is now spectating the game".formatted(player.getName()), true);
         player.teleport(playing.get(new Random().nextInt(playing.size())));
     }
 
     @Override
-    public void removeSpectator(Player player) {
+    public void removeSpectator(Player player, boolean broadcast) {
+        gameManager.getSpectators().put(player, this);
         spectators.remove(player);
-        scoreboard.getTeam("spectators").removePlayer(player);
+        if (broadcast)
+            scoreboard.getTeam("spectators").removePlayer(player);
         broadcast("<i><gray>%s is no longer spectating the game".formatted(player.getName()), true);
     }
 
@@ -149,7 +157,7 @@ public class Game implements IGame {
 
     @Override
     public void delete() {
-        SkyWars.gameManager.deleteGame(this);
+        gameManager.deleteGame(this);
     }
 
     @Override

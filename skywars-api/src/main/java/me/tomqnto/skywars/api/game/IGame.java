@@ -49,8 +49,8 @@ public interface IGame {
 
     Scoreboard getScoreboard();
 
-    void addSpectator(Player player);
+    void addSpectator(Player player, boolean b);
 
-    void removeSpectator(Player player);
+    void removeSpectator(Player player, boolean b);
 
 }

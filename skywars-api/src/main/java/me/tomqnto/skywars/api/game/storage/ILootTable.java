@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface ILootTable {
 
-    void loot(Container container);
+    void fillContainer(Container container);
 
     int getRolls();
 

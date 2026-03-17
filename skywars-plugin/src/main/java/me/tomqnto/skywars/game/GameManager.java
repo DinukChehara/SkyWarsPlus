@@ -1,5 +1,6 @@
 package me.tomqnto.skywars.game;
 
+import lombok.Getter;
 import me.tomqnto.skywars.api.game.IGame;
 import org.bukkit.entity.Player;
 
@@ -16,8 +17,11 @@ public class GameManager {
     public static HashMap<String, GameMode> gamemodes = new HashMap<>();
     private final File gamemodesFolder = new File(plugin.getDataFolder(), "gamemodes");
 
+    @Getter
     private final Map<Player, IGame> gamesByPlayer = new HashMap<>();
+    @Getter
     private final Map<String, IGame> gamesById = new HashMap<>();
+    @Getter
     private final Map<Player, IGame> spectators = new HashMap<>();
 
     public GameManager() {
@@ -43,18 +47,6 @@ public class GameManager {
 
     public boolean isSpectating(Player player) {
         return spectators.containsKey(player);
-    }
-
-    public void spectate(Player player, IGame game) {
-        if (isSpectating(player) || gameManager.isInGame(player)) return;
-
-        game.addSpectator(player);
-        spectators.put(player, game);
-    }
-
-    public void stopSpectating(Player player) {
-        IGame game = spectators.remove(player);
-        game.removeSpectator(player);
     }
 
 }
