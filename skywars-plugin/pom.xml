@@ -9,7 +9,7 @@
   <version>0.1.0</version>
   <packaging>jar</packaging>
 
-  <name>SkyWarsPlus</name>
+  <name>skywars-plugin</name>
 
   <properties>
     <java.version>21</java.version>

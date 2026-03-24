@@ -2,7 +2,7 @@ package me.tomqnto.skywars.game.tasks;
 
 import me.tomqnto.skywars.api.game.IGame;
 import me.tomqnto.skywars.api.game.events.SkyWarsEvent;
-import me.tomqnto.skywars.game.events.EventRegistry;
+import me.tomqnto.skywars.game.events.EventRegistryImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -30,7 +30,7 @@ public class EventsTask implements Runnable {
             String eventId = eventInfo.getFirst();
             int delay = Integer.parseInt(eventInfo.getLast());
             ticks += delay;
-            events.put(ticks, EventRegistry.getInstance().get(eventId));
+            events.put(ticks, EventRegistryImpl.getInstance().get(eventId));
         }
     }
 

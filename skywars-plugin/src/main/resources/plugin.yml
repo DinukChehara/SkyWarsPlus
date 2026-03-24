@@ -4,3 +4,9 @@ main: me.tomqnto.skywars.SkyWars
 api-version: '1.21'
 prefix: SkyWarsPlus
 authors: [Tomqnto]
+
+commands:
+  join:
+    description: "e"
+  leave:
+    description: "ee"

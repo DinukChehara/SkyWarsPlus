@@ -5,3 +5,7 @@ teams:
     spawn-locations:
       - "x,y,z"
       - "x,y,z"...
+
+chests:
+  "x,y,z":
+    loot-table: normal_chest

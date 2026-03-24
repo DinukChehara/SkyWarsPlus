@@ -2,7 +2,7 @@ package me.tomqnto.skywars.api.game.events;
 
 import java.util.Map;
 
-public interface IEventRegistry {
+public interface EventRegistry {
 
     void register(SkyWarsEvent event);
 

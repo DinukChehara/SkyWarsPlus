@@ -29,6 +29,9 @@ public class Path {
         public static final String teamsSection = "teams";
         public static final String teamColor = teamsSection + ".%s.color";
         public static final String teamSpawnLocations = teamsSection + ".%s.spawn-locations";
+
+        public static final String chestsSection = "chests";
+        public static final String chestLootTable = chestsSection + ".%s.loot-table";
     }
 
     public static class LootTable {

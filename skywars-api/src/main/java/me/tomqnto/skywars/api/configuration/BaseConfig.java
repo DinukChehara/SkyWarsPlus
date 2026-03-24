@@ -20,10 +20,23 @@ public class BaseConfig {
     @Getter
     private FileConfiguration config;
 
-    public BaseConfig(Plugin plugin, String name) {
+    public BaseConfig(Plugin plugin, String name, boolean saveIfNotExists) {
         this.plugin = plugin;
         this.name = name;
         this.file = new File(plugin.getDataFolder(), name + ".yml");
+
+        if (saveIfNotExists && !file.exists())
+            plugin.saveResource(file.getName(), false);
+
+        load();
+    }
+
+    public BaseConfig(Plugin plugin, String name) {
+        this.plugin = plugin;
+        this.name = name;
+        this.file = new File(plugin.getDataFolder(), name + ".yml");;
+
+        load();
     }
 
     public void load() {

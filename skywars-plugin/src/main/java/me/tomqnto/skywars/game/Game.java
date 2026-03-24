@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.tomqnto.skywars.SkyWars;
 import me.tomqnto.skywars.api.game.GameState;
 import me.tomqnto.skywars.api.game.IGame;
+import me.tomqnto.skywars.game.map.GameMap;
 import me.tomqnto.skywars.game.tasks.StartingTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,6 +13,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -24,6 +26,7 @@ import static me.tomqnto.skywars.SkyWars.gameManager;
 public class Game implements IGame {
 
     private final GameMode gameMode;
+    private final GameMap map;
 
     private final String id;
     private final List<Player> players;
@@ -32,13 +35,15 @@ public class Game implements IGame {
     private final Map<Player, Integer> kills;
     private StartingTask startingTask;
     private final Scoreboard scoreboard;
+    private final World world;
 
     private final MiniMessage mm = MiniMessage.miniMessage();
 
     private GameState gameState = GameState.WAITING;
 
-    public Game(GameMode gameMode) {
+    public Game(GameMode gameMode, GameMap map) {
         this.gameMode = gameMode;
+        this.map = map;
         id = "";
         players = new ArrayList<>();
         spectators = new ArrayList<>();
@@ -48,6 +53,7 @@ public class Game implements IGame {
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
         init();
+        world = map.world();
     }
 
     public void init() {
@@ -60,8 +66,16 @@ public class Game implements IGame {
 
     @Override
     public void addPlayer(Player player) {
+        if (gameState == GameState.RUNNING) {
+            player.sendRichMessage("<red>This game has already started");
+            return;
+        }
+        if (gameState == GameState.ENDED || gameState == GameState.ENDING) {
+            player.sendRichMessage("<red>This can has ended");
+            return;
+        }
         if (players.size() == gameMode.getMaxPlayers()) {
-            player.sendRichMessage("<red>The game is full.");
+            player.sendRichMessage("<red>This game is full");
             return;
         }
         players.add(player);

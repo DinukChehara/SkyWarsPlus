@@ -1,7 +1,6 @@
 package me.tomqnto.skywars.game.map;
 
-public class GameMap {
+import org.bukkit.World;
 
-
-
+public record GameMap(String name, World world) {
 }

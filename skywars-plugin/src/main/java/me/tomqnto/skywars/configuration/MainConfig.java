@@ -11,7 +11,7 @@ import java.util.List;
 public class MainConfig extends BaseConfig {
 
     public MainConfig(String name) {
-        super(SkyWars.plugin, name);
+        super(SkyWars.plugin, name, true);
     }
 
     public int getListeningPort() {

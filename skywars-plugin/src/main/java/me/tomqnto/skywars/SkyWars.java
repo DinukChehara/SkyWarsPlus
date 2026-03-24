@@ -1,6 +1,8 @@
 package me.tomqnto.skywars;
 
 import lombok.Getter;
+import me.tomqnto.skywars.commands.JoinCommand;
+import me.tomqnto.skywars.commands.LeaveCommand;
 import me.tomqnto.skywars.configuration.MainConfig;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.map.AswmWorldLoader;
@@ -28,6 +30,11 @@ public final class SkyWars extends JavaPlugin {
         worldLoader = new AswmWorldLoader();
 
         api = new Api();
+
+        gameManager.loadGameModes();
+
+        getCommand("join").setExecutor(new JoinCommand());
+        getCommand("leave").setExecutor(new LeaveCommand());
     }
 
     @Override

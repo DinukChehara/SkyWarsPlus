@@ -1,7 +1,9 @@
 package me.tomqnto.skywars.game;
 
 import lombok.Getter;
+import me.tomqnto.skywars.SkyWars;
 import me.tomqnto.skywars.api.game.IGame;
+import me.tomqnto.skywars.game.map.GameMap;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -9,19 +11,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.tomqnto.skywars.SkyWars.gameManager;
 import static me.tomqnto.skywars.SkyWars.plugin;
+import static me.tomqnto.skywars.SkyWars.worldLoader;
 
+@Getter
 public class GameManager {
 
     public static HashMap<String, GameMode> gamemodes = new HashMap<>();
     private final File gamemodesFolder = new File(plugin.getDataFolder(), "gamemodes");
 
-    @Getter
     private final Map<Player, IGame> gamesByPlayer = new HashMap<>();
-    @Getter
     private final Map<String, IGame> gamesById = new HashMap<>();
-    @Getter
     private final Map<Player, IGame> spectators = new HashMap<>();
 
     public GameManager() {
@@ -29,11 +29,29 @@ public class GameManager {
     }
 
     public boolean loadGameModes() {
-        if (gamemodesFolder.list() == null)
+        if (gamemodesFolder.list() == null) {
+            SkyWars.log("no gamemodes");
             return false;
+        }
 
-        Arrays.stream(gamemodesFolder.list()).forEach(file -> gamemodes.put(file, new GameMode(plugin, "/gamemodes/" + file)));
+        Arrays.stream(gamemodesFolder.list()).forEach(file -> {
+            String name = file.replace(".yml", "");
+            GameMode gamemode = new GameMode(plugin, "gamemodes/" + name);
+            gamemodes.put(name, gamemode);
+            SkyWars.log(String.valueOf(gamemode.getMaxPlayers()));
+            SkyWars.log("Loaded gamemode: " + name);
+        });
         return true;
+    }
+
+    public IGame createGame(String map) {
+        IGame game = new Game(gamemodes.values().stream().toList().getFirst(), new GameMap(map, worldLoader.loadWorld(map)));
+        gamesById.put(game.getId(), game);
+        return game;
+    }
+
+    public IGame getGame(Player player) {
+        return gamesByPlayer.get(player);
     }
 
     public void deleteGame(IGame game) {

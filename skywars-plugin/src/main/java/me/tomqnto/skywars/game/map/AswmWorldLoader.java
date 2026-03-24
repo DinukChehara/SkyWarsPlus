@@ -5,7 +5,6 @@ import com.infernalsuite.asp.api.exceptions.*;
 import com.infernalsuite.asp.api.loaders.SlimeLoader;
 import com.infernalsuite.asp.api.world.SlimeWorld;
 import com.infernalsuite.asp.api.world.SlimeWorldInstance;
-import com.infernalsuite.asp.api.world.properties.SlimePropertyMap;
 import com.infernalsuite.asp.loaders.file.FileLoader;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -13,50 +12,53 @@ import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static me.tomqnto.skywars.SkyWars.plugin;
 
 public class AswmWorldLoader implements WorldLoader{
 
-    private final File worldsdDir = new File(plugin.getDataFolder(), "maps");
-    private final SlimeLoader loader = new FileLoader(worldsdDir);
+    private final File worldsDir = new File(plugin.getDataFolder(), "maps");
+    private final SlimeLoader loader = new FileLoader(new File(worldsDir, "loaded"));
     private final AdvancedSlimePaperAPI asp = AdvancedSlimePaperAPI.instance();
+    private final Map<String, SlimeWorld> slimeWorlds = new HashMap<>();
 
     public AswmWorldLoader() {
-        if (!worldsdDir.exists())
-            worldsdDir.mkdirs();
+        if (!worldsDir.exists())
+            worldsDir.mkdirs();
 
         importWorlds();
     }
 
     public void importWorlds() {
 
-        if (worldsdDir.list() == null)
-            return;
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            if (worldsDir.list() == null)
+                return;
 
-        for (String folder : worldsdDir.list()) {
-            try {
-                SlimeWorld world = asp.readVanillaWorld(new File(plugin.getDataFolder(), "maps"), folder, loader);
-                asp.saveWorld(world);
-            } catch (IOException |
-                     WorldAlreadyExistsException | WorldTooBigException | InvalidWorldException |
-                     WorldLoadedException e) {
-                throw new RuntimeException(e);
+            for (File folder : worldsDir.listFiles()) {
+                if (!folder.isDirectory() || folder.list().length==0)
+                    continue;
+                try {
+                    SlimeWorld world = asp.readVanillaWorld(new File(worldsDir, folder.getName()), folder.getName(), loader);
+                    slimeWorlds.put(folder.getName(), world);
+                } catch (IOException | WorldTooBigException | InvalidWorldException |
+                         WorldLoadedException e) {
+                    throw new RuntimeException(e);
 
+                } catch (WorldAlreadyExistsException ignore) {
+                }
             }
-        }
+        });
     }
 
     @Override
     public World loadWorld(String mapName) {
-        try {
-            SlimeWorld slimeWorld = asp.readWorld(loader, mapName, false, new SlimePropertyMap());
-            slimeWorld = slimeWorld.clone(mapName + System.currentTimeMillis());
-            SlimeWorldInstance worldInstance = asp.loadWorld(slimeWorld, true);
-            return worldInstance.getBukkitWorld();
-        } catch (UnknownWorldException | IOException | CorruptedWorldException | NewerFormatException e) {
-            throw new RuntimeException(e);
-        }
+        SlimeWorld slimeWorld = slimeWorlds.get(mapName);
+        slimeWorld = slimeWorld.clone(mapName + System.currentTimeMillis());
+        SlimeWorldInstance worldInstance = asp.loadWorld(slimeWorld, true);
+        return worldInstance.getBukkitWorld();
     }
 
     @Override
