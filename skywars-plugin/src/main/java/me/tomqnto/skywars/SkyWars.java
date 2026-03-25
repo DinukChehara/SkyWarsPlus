@@ -6,6 +6,7 @@ import me.tomqnto.skywars.commands.LeaveCommand;
 import me.tomqnto.skywars.configuration.MainConfig;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.map.AswmWorldLoader;
+import me.tomqnto.skywars.game.map.MapManager;
 import me.tomqnto.skywars.game.map.WorldLoader;
 import me.tomqnto.skywars.game.storage.ChestManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +16,7 @@ public final class SkyWars extends JavaPlugin {
 
     public static SkyWars plugin;
     public static GameManager gameManager;
+    public static MapManager mapManager;
     public static ChestManager chestManager;
     public static MainConfig mainConfig;
     public static WorldLoader worldLoader;
@@ -25,6 +27,7 @@ public final class SkyWars extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         gameManager = new GameManager();
+        mapManager = new MapManager();
         mainConfig = new MainConfig("config");
         chestManager = new ChestManager();
         worldLoader = new AswmWorldLoader();

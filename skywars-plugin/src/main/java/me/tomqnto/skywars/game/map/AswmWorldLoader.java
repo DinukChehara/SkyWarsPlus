@@ -62,6 +62,14 @@ public class AswmWorldLoader implements WorldLoader{
     }
 
     @Override
+    public World loadWorld(String mapName, String s) {
+        SlimeWorld slimeWorld = slimeWorlds.get(mapName);
+        slimeWorld = slimeWorld.clone(mapName + s + System.currentTimeMillis());
+        SlimeWorldInstance worldInstance = asp.loadWorld(slimeWorld, true);
+        return worldInstance.getBukkitWorld();
+    }
+
+    @Override
     public void deleteWorld(String worldName) {
         File file = Bukkit.getWorld(worldName).getWorldFolder();
         Bukkit.unloadWorld(worldName, false);

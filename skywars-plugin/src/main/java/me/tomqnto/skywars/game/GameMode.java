@@ -12,6 +12,10 @@ public class GameMode extends BaseConfig implements IGameMode {
         super(plugin, name);
     }
 
+    public String getName() {
+        return getString(Path.GameMode.name);
+    }
+
     public int getTeamCount() {
         return getInt(Path.GameMode.teamCount);
     }

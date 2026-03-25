@@ -10,6 +10,8 @@ public class Path {
     }
 
     public static class GameMode {
+        public static final String name = "name";
+
         public static final String teamsSection = "team-settings";
         public static final String teamCount = teamsSection + ".team-count";
         public static final String maxPlayersPerTeam = teamsSection + ".max-players-per-team";

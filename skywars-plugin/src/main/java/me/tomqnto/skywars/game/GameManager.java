@@ -11,8 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static me.tomqnto.skywars.SkyWars.plugin;
-import static me.tomqnto.skywars.SkyWars.worldLoader;
+import static me.tomqnto.skywars.SkyWars.*;
 
 @Getter
 public class GameManager {
@@ -45,7 +44,9 @@ public class GameManager {
     }
 
     public IGame createGame(String map) {
-        IGame game = new Game(gamemodes.values().stream().toList().getFirst(), new GameMap(map, worldLoader.loadWorld(map)));
+        GameMode gamemode = gamemodes.values().stream().toList().getFirst();
+        IGame game = new Game(gamemode,
+                new GameMap(map, worldLoader.loadWorld(map, gamemode.getName()), mapManager.getMapSettings(map)));
         gamesById.put(game.getId(), game);
         return game;
     }

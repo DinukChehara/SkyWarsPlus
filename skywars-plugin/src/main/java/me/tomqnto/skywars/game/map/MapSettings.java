@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,9 @@ import java.util.Map;
 @Getter
 public class MapSettings implements Serializable {
 
-    private static final File dataFolder = new File("data", "map");
+    @Serial
+    private final static long serialVersionUID = 24L;
+    transient private final File dataFolder = new File("data", "map");
 
     private final Map<String, List<Location>> teamSpawnLocations = new HashMap<>();
     private final Map<Location, String> lootChests = new HashMap<>();
@@ -21,6 +22,13 @@ public class MapSettings implements Serializable {
     private Location spectatorTeleport = null;
     @Setter
     private String displayName;
+
+    private final String worldName;
+
+    public MapSettings(String worldName) {
+        this.worldName = worldName;
+        displayName = worldName;
+    }
 
     public void removeSpawnLocation(String team, Location loc) {
         teamSpawnLocations.get(team).remove(loc);
@@ -36,6 +44,29 @@ public class MapSettings implements Serializable {
 
     public void getChestLootTable(Location loc) {
         lootChests.get(loc);
+    }
+
+    public void save() {
+        try {
+            File file = new File(dataFolder, worldName + ".bin");
+            if (!file.exists())
+                file.createNewFile();
+            FileOutputStream fileOut = new FileOutputStream(file);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static MapSettings load(String file) {
+        try (FileInputStream fileIn = new FileInputStream(file)) {
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            return (MapSettings) in.readObject();
+
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

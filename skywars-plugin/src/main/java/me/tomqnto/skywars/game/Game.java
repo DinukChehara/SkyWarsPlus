@@ -51,9 +51,9 @@ public class Game implements IGame {
         kills = new HashMap<>();
         startingTask = new StartingTask(this);
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        world = map.world();
 
         init();
-        world = map.world();
     }
 
     public void init() {
@@ -92,7 +92,13 @@ public class Game implements IGame {
             broadcast("<red>%s disconnected".formatted(player.getName()), true);
 
         players.remove(player);
-        player.setHealth(0);
+        if (gameState == GameState.RUNNING)
+            player.setHealth(0);
+        if (players.size() < gameMode.getMinPlayers()) {
+            startingTask.cancel();
+            broadcast("<red>Not enough players to start", true);
+            startingTask = new StartingTask(this);
+        }
     }
 
     @Override
