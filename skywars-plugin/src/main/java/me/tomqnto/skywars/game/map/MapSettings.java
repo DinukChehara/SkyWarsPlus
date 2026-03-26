@@ -2,6 +2,7 @@ package me.tomqnto.skywars.game.map;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.tomqnto.skywars.api.game.map.IMapSettings;
 import org.bukkit.Location;
 
 import java.io.*;
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-public class MapSettings implements Serializable {
+public class MapSettings implements IMapSettings, Serializable {
 
     @Serial
     private final static long serialVersionUID = 24L;
@@ -42,8 +43,8 @@ public class MapSettings implements Serializable {
         lootChests.remove(loc);
     }
 
-    public void getChestLootTable(Location loc) {
-        lootChests.get(loc);
+    public String getChestLootTable(Location loc) {
+        return lootChests.get(loc);
     }
 
     public void save() {

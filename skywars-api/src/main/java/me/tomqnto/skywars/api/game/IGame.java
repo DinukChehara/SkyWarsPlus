@@ -1,5 +1,6 @@
 package me.tomqnto.skywars.api.game;
 
+import me.tomqnto.skywars.api.game.map.IMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public interface IGame {
 
     GameState getGameState();
 
-    void setGameState(GameState newGameState);
+    void changeState(GameState newGameState);
 
     void broadcast(String richMessage, boolean sendToSpectators);
 
@@ -52,5 +53,8 @@ public interface IGame {
     void addSpectator(Player player, boolean b);
 
     void removeSpectator(Player player, boolean b);
+
+    IMap getMap();
+
 
 }

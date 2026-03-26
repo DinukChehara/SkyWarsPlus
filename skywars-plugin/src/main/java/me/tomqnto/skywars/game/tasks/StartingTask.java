@@ -1,6 +1,5 @@
 package me.tomqnto.skywars.game.tasks;
 
-import lombok.RequiredArgsConstructor;
 import me.tomqnto.skywars.api.game.GameState;
 import me.tomqnto.skywars.api.game.IGame;
 import me.tomqnto.skywars.api.tasks.IStartingTask;
@@ -54,7 +53,7 @@ public class StartingTask implements IStartingTask, Runnable {
     public void run() {
 
         if (countdown == 0) {
-            game.setGameState(GameState.RUNNING);
+            game.changeState(GameState.RUNNING);
             cancel();
         }
 

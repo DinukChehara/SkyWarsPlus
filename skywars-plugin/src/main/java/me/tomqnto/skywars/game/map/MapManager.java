@@ -2,6 +2,7 @@ package me.tomqnto.skywars.game.map;
 
 import lombok.Getter;
 import me.tomqnto.skywars.SkyWars;
+import me.tomqnto.skywars.api.game.map.IMapSettings;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 

@@ -1,10 +1,10 @@
 package me.tomqnto.skywars.game;
 
 import lombok.Getter;
-import me.tomqnto.skywars.SkyWars;
 import me.tomqnto.skywars.api.game.GameState;
 import me.tomqnto.skywars.api.game.IGame;
 import me.tomqnto.skywars.game.map.GameMap;
+import me.tomqnto.skywars.game.storage.ChestManager;
 import me.tomqnto.skywars.game.tasks.StartingTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,6 +14,7 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -61,7 +62,8 @@ public class Game implements IGame {
         Team spectators = scoreboard.getTeam("spectators");
         spectators.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
         spectators.color(NamedTextColor.GRAY);
-        spectators.prefix(Component.text("S", NamedTextColor.GRAY, TextDecoration.BOLD).append(Component.text(" | ")));
+        spectators.prefix(Component.text("S", NamedTextColor.GRAY, TextDecoration.BOLD)
+                .append(Component.text(" | ")));
     }
 
     @Override
@@ -80,7 +82,7 @@ public class Game implements IGame {
         }
         players.add(player);
         if (gameState == GameState.WAITING && getPlayerCount() == gameMode.getMinPlayers()) {
-            gameState = GameState.STARTING;
+            changeState(GameState.STARTING);
             startingTask.run();
             return;
         }
@@ -94,10 +96,8 @@ public class Game implements IGame {
         players.remove(player);
         if (gameState == GameState.RUNNING)
             player.setHealth(0);
-        if (players.size() < gameMode.getMinPlayers()) {
-            startingTask.cancel();
-            broadcast("<red>Not enough players to start", true);
-            startingTask = new StartingTask(this);
+        if (players.size() < gameMode.getMinPlayers() && gameState == GameState.STARTING) {
+            changeState(GameState.WAITING);
         }
     }
 
@@ -134,9 +134,27 @@ public class Game implements IGame {
     }
 
     @Override
-    public void setGameState(GameState newGameState) {
+    public void changeState(GameState newGameState) {
         GameState oldGameState = gameState;
         gameState = newGameState;
+
+        switch (newGameState) {
+            case RUNNING -> {
+                broadcastTitle(Component.text("Go!", NamedTextColor.GREEN, TextDecoration.BOLD),
+                        Component.empty(), false);
+                map.mapSettings().getLootChests().forEach(
+                        (loc, loot) -> ChestManager.getLootTable(loot)
+                                .fillContainer((Container) loc.getBlock())
+                );
+            }
+            case WAITING -> {
+                if (oldGameState == GameState.STARTING) {
+                    startingTask.cancel();
+                    broadcast("<red>Not enough players to start", true);
+                    startingTask = new StartingTask(this);
+                }
+            }
+        }
     }
 
     @Override
