@@ -18,6 +18,10 @@ public class Path {
         public static final String startingCountdown = teamsSection + ".starting-countdown";
         public static final String minPlayers = "min-players";
 
+        public static final String teams = "teams";
+        public static final String teamColor = "teams.%s.color";
+        public static final String teamPrefix = "teams.%s.prefix";
+
         public static final String eventsSection = "events-settings";
         public static final String eventTypes = eventsSection + ".event-types";
         public static final String eventDisplayText = eventTypes + ".%s.display-text";
@@ -29,7 +33,6 @@ public class Path {
     public static class MapConfig {
         public static final String displayName = "display-name";
         public static final String teamsSection = "teams";
-        public static final String teamColor = teamsSection + ".%s.color";
         public static final String teamSpawnLocations = teamsSection + ".%s.spawn-locations";
 
         public static final String chestsSection = "chests";

@@ -36,7 +36,7 @@ public class GameListener implements Listener {
         if (!gameManager.isInGame(player)) return;
         if (gameManager.getGame(player).getGameState() == GameState.RUNNING) return;
 
-        event.setDamage(0);
+        event.setCancelled(true);
     }
 
 }

@@ -1,13 +1,16 @@
 package me.tomqnto.skywars.game;
 
 import lombok.Getter;
+
 import me.tomqnto.skywars.api.game.GameState;
 import me.tomqnto.skywars.api.game.IGame;
 import me.tomqnto.skywars.game.map.GameMap;
 import me.tomqnto.skywars.game.storage.ChestManager;
 import me.tomqnto.skywars.game.tasks.StartingTask;
+import me.tomqnto.skywars.game.team.Team;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
@@ -17,7 +20,6 @@ import org.bukkit.World;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
@@ -26,13 +28,14 @@ import static me.tomqnto.skywars.SkyWars.gameManager;
 @Getter
 public class Game implements IGame {
 
-    private final GameMode gameMode;
+    private final GameMode gamemode;
     private final GameMap map;
 
     private final String id;
     private final List<Player> players;
     private final List<Player> spectators;
     private final List<Player> playing;
+    private final Map<String, Team> teams;
     private final Map<Player, Integer> kills;
     private StartingTask startingTask;
     private final Scoreboard scoreboard;
@@ -42,8 +45,8 @@ public class Game implements IGame {
 
     private GameState gameState = GameState.WAITING;
 
-    public Game(GameMode gameMode, GameMap map) {
-        this.gameMode = gameMode;
+    public Game(GameMode gamemode, GameMap map) {
+        this.gamemode = gamemode;
         this.map = map;
         id = "";
         players = new ArrayList<>();
@@ -52,18 +55,32 @@ public class Game implements IGame {
         kills = new HashMap<>();
         startingTask = new StartingTask(this);
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        teams = new HashMap<>();
         world = map.world();
-
         init();
     }
 
     public void init() {
         scoreboard.registerNewTeam("spectators");
-        Team spectators = scoreboard.getTeam("spectators");
-        spectators.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+        org.bukkit.scoreboard.Team spectators = scoreboard.getTeam("spectators");
+        spectators.setOption(org.bukkit.scoreboard.Team.Option.COLLISION_RULE,
+                org.bukkit.scoreboard.Team.OptionStatus.NEVER);
         spectators.color(NamedTextColor.GRAY);
         spectators.prefix(Component.text("S", NamedTextColor.GRAY, TextDecoration.BOLD)
                 .append(Component.text(" | ")));
+
+        gamemode.getTeams().forEach(team -> {
+            org.bukkit.scoreboard.Team bktTeam = getScoreboard().registerNewTeam(team);
+            bktTeam.color((NamedTextColor) TextColor.fromHexString(gamemode.getTeamColor(team)));
+            bktTeam.prefix(MiniMessage.miniMessage().deserialize(gamemode.getTeamPrefix(team)));
+            teams.put(team, new Team(bktTeam, map.mapSettings().getSpawnLocations(team),
+                    gamemode.getMaxPlayersPerTeam()));
+        });
+    }
+
+    @Override
+    public GameMode getGameMode() {
+        return gamemode;
     }
 
     @Override
@@ -76,12 +93,12 @@ public class Game implements IGame {
             player.sendRichMessage("<red>This can has ended");
             return;
         }
-        if (players.size() == gameMode.getMaxPlayers()) {
+        if (players.size() == gamemode.getMaxPlayers()) {
             player.sendRichMessage("<red>This game is full");
             return;
         }
         players.add(player);
-        if (gameState == GameState.WAITING && getPlayerCount() == gameMode.getMinPlayers()) {
+        if (gameState == GameState.WAITING && getPlayerCount() == gamemode.getMinPlayers()) {
             changeState(GameState.STARTING);
             startingTask.run();
             return;
@@ -96,7 +113,7 @@ public class Game implements IGame {
         players.remove(player);
         if (gameState == GameState.RUNNING)
             player.setHealth(0);
-        if (players.size() < gameMode.getMinPlayers() && gameState == GameState.STARTING) {
+        if (players.size() < gamemode.getMinPlayers() && gameState == GameState.STARTING) {
             changeState(GameState.WAITING);
         }
     }
@@ -128,6 +145,7 @@ public class Game implements IGame {
     public void removeSpectator(Player player, boolean broadcast) {
         gameManager.getSpectators().put(player, this);
         spectators.remove(player);
+        scoreboard.getTeam("spectators").removePlayer(player);
         if (broadcast)
             scoreboard.getTeam("spectators").removePlayer(player);
         broadcast("<i><gray>%s is no longer spectating the game".formatted(player.getName()), true);

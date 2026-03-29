@@ -1,7 +1,6 @@
 display-name: "ur display name"
 teams:
   "RED":
-    color: red
     spawn-locations:
       - "x,y,z"
       - "x,y,z"...

@@ -1,6 +1,7 @@
 package me.tomqnto.skywars.api.game;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface IGameMode {
@@ -10,16 +11,13 @@ public interface IGameMode {
     int getMinPlayers();
     int getStartingCountdown();
 
-    Set<String> getEvents();
-    String getEventDisplayText(String event);
-    List<String> getStringList(String path);
-    int getInt(String path);
+    Map<String, String> getEvents();
 
-    default int getMaxPlayers() {
-        return getTeamCount() * getMaxPlayersPerTeam();
-    }
+    int getMaxPlayers();
 
     List<List<String>> getEventsInOrder();
 
+    String getTeamColor(String t);
+    String getTeamPrefix(String t);
 
 }
