@@ -3,7 +3,9 @@ package me.tomqnto.skywars.game;
 import lombok.Getter;
 import me.tomqnto.skywars.api.configuration.BaseConfig;
 import me.tomqnto.skywars.api.configuration.Path;
-import me.tomqnto.skywars.api.game.IGameMode;import org.bukkit.plugin.Plugin;
+import me.tomqnto.skywars.api.game.IGameMode;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
@@ -19,19 +21,28 @@ public class GameMode extends BaseConfig implements IGameMode {
     private final Map<String, String> events;
     private final List<List<String>> eventsInOrder;
     private final List<String> teams;
+    private final Map<String, String> teamPrefixes;
+    private final Map<String, String> teamColors;
 
-    public GameMode(Plugin plugin, String name) {
-        super(plugin, name);
+    public GameMode(Plugin plugin, String file) {
+        super(plugin, file);
 
-        this.name = getString(Path.GameMode.name);
+        name = getString(Path.GameMode.name);
         teamCount = getInt(Path.GameMode.teamCount);
         maxPlayersPerTeam = getInt(Path.GameMode.maxPlayersPerTeam);
         minPlayers = getInt(Path.GameMode.minPlayers);
         maxPlayers = maxPlayersPerTeam * teamCount;
         startingCountdown = getInt(Path.GameMode.startingCountdown);
         events = new HashMap<>();
+        teamPrefixes = new HashMap<>();
+        teamColors = new HashMap<>();
         eventsInOrder = loadEventsOrder();
         teams = getStringList(Path.GameMode.teams);
+
+        for (String t : teams) {
+            teamColors.put(t, getString(Path.GameMode.teamColor.formatted(t)));
+            teamPrefixes.put(t, getString(Path.GameMode.teamPrefix.formatted(t)));
+        }
 
         loadEvents();
     }
@@ -52,11 +63,11 @@ public class GameMode extends BaseConfig implements IGameMode {
     }
 
     public String getTeamColor(String team) {
-        return getString(Path.GameMode.teamColor.formatted(team));
+        return teamColors.get(team);
     }
 
     public String getTeamPrefix(String team) {
-        return getString(Path.GameMode.teamPrefix.formatted(team));
+        return teamPrefixes.get(team);
     }
 
 }

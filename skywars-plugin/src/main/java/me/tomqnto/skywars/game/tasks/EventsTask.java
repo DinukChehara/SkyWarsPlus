@@ -51,4 +51,8 @@ public class EventsTask implements Runnable {
 
         gameSeconds++;
     }
+
+    public void cancel() {
+        task.cancel();
+    }
 }

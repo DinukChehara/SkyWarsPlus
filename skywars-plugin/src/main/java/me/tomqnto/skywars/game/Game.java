@@ -5,7 +5,8 @@ import lombok.Getter;
 import me.tomqnto.skywars.api.game.GameState;
 import me.tomqnto.skywars.api.game.IGame;
 import me.tomqnto.skywars.game.map.GameMap;
-import me.tomqnto.skywars.game.storage.ChestManager;
+import me.tomqnto.skywars.game.storage.LootManager;
+import me.tomqnto.skywars.game.tasks.EventsTask;
 import me.tomqnto.skywars.game.tasks.StartingTask;
 import me.tomqnto.skywars.game.team.Team;
 import net.kyori.adventure.text.Component;
@@ -38,6 +39,7 @@ public class Game implements IGame {
     private final Map<String, Team> teams;
     private final Map<Player, Integer> kills;
     private StartingTask startingTask;
+    private final EventsTask eventsTask;
     private final Scoreboard scoreboard;
     private final World world;
 
@@ -54,6 +56,7 @@ public class Game implements IGame {
         playing = new ArrayList<>();
         kills = new HashMap<>();
         startingTask = new StartingTask(this);
+        eventsTask = new EventsTask(this);
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         teams = new HashMap<>();
         world = map.world();
@@ -68,6 +71,7 @@ public class Game implements IGame {
         spectators.color(NamedTextColor.GRAY);
         spectators.prefix(Component.text("S", NamedTextColor.GRAY, TextDecoration.BOLD)
                 .append(Component.text(" | ")));
+
 
         gamemode.getTeams().forEach(team -> {
             org.bukkit.scoreboard.Team bktTeam = getScoreboard().registerNewTeam(team);
@@ -161,9 +165,10 @@ public class Game implements IGame {
                 broadcastTitle(Component.text("Go!", NamedTextColor.GREEN, TextDecoration.BOLD),
                         Component.empty(), false);
                 map.mapSettings().getLootChests().forEach(
-                        (loc, loot) -> ChestManager.getLootTable(loot)
+                        (loc, loot) -> LootManager.getLootTable(loot)
                                 .fillContainer((Container) loc.getBlock())
                 );
+                eventsTask.run();
             }
             case WAITING -> {
                 if (oldGameState == GameState.STARTING) {
@@ -171,6 +176,8 @@ public class Game implements IGame {
                     broadcast("<red>Not enough players to start", true);
                     startingTask = new StartingTask(this);
                 }
+            }
+            case ENDING -> {
             }
         }
     }

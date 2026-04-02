@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import static me.tomqnto.skywars.SkyWars.plugin;
 
-public class ChestManager {
+public class LootManager {
 
     private static final File folder = new File(plugin.getDataFolder(), "loot_tables");
     @Getter

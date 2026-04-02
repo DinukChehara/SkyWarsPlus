@@ -1,4 +1,4 @@
-package me.tomqnto.skywars.game.map;
+package me.tomqnto.skywars.game.loaders;
 
 import org.bukkit.World;
 

@@ -1,4 +1,4 @@
-package me.tomqnto.skywars.game.map;
+package me.tomqnto.skywars.game.loaders;
 
 import com.infernalsuite.asp.api.AdvancedSlimePaperAPI;
 import com.infernalsuite.asp.api.exceptions.*;
@@ -19,8 +19,8 @@ import static me.tomqnto.skywars.SkyWars.plugin;
 
 public class AswmWorldLoader implements WorldLoader{
 
-    private final File worldsDir = new File(plugin.getDataFolder(), "maps");
-    private final SlimeLoader loader = new FileLoader(new File(worldsDir, "loaded"));
+    private final File worldsDir = new File(plugin.getDataFolder(), "maps/worlds");
+    private final SlimeLoader loader = new FileLoader(new File(plugin.getDataFolder(), "maps/loaded"));
     private final AdvancedSlimePaperAPI asp = AdvancedSlimePaperAPI.instance();
     private final Map<String, SlimeWorld> slimeWorlds = new HashMap<>();
 
@@ -66,15 +66,16 @@ public class AswmWorldLoader implements WorldLoader{
         SlimeWorld slimeWorld = slimeWorlds.get(mapName);
         slimeWorld = slimeWorld.clone(mapName + s + System.currentTimeMillis());
         SlimeWorldInstance worldInstance = asp.loadWorld(slimeWorld, true);
+        worldInstance.getBukkitWorld().setAutoSave(false);
         return worldInstance.getBukkitWorld();
     }
 
     @Override
     public void deleteWorld(String worldName) {
-        File file = Bukkit.getWorld(worldName).getWorldFolder();
+        File folder = Bukkit.getWorld(worldName).getWorldFolder();
         Bukkit.unloadWorld(worldName, false);
         try {
-            FileUtils.deleteDirectory(file);
+            FileUtils.deleteDirectory(folder);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

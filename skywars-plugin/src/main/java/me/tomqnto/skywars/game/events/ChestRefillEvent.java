@@ -2,7 +2,7 @@ package me.tomqnto.skywars.game.events;
 
 import me.tomqnto.skywars.api.game.IGame;
 import me.tomqnto.skywars.api.game.events.SkyWarsEvent;
-import me.tomqnto.skywars.game.storage.ChestManager;
+import me.tomqnto.skywars.game.storage.LootManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -25,7 +25,7 @@ public class ChestRefillEvent implements SkyWarsEvent {
     public void execute(IGame game) {
         game.getMap().mapSettings().getLootChests().forEach((loc, loot) -> {
             if (loc.getBlock() instanceof Container container)
-                ChestManager.getLootTable(loot).fillContainer(container);
+                LootManager.getLootTable(loot).fillContainer(container);
         });
         game.getInGamePlayers().forEach(p -> p.playSound(p.getLocation(), Sound.BLOCK_CHEST_OPEN, 1f,1f));
         game.broadcastTitle(Component.text("Chest Refilled!", NamedTextColor.GOLD, TextDecoration.BOLD),

@@ -15,26 +15,26 @@ import java.util.Map;
 public class BaseConfig {
 
     private final Plugin plugin;
-    private final String name;
+    private final String fileName;
     private final File file;
     @Getter
     private FileConfiguration config;
 
-    public BaseConfig(Plugin plugin, String name, boolean saveIfNotExists) {
+    public BaseConfig(Plugin plugin, String fileName, boolean saveIfNotExists) {
         this.plugin = plugin;
-        this.name = name;
-        this.file = new File(plugin.getDataFolder(), name + ".yml");
+        this.fileName = fileName;
+        this.file = new File(plugin.getDataFolder(), fileName + ".yml");
 
-        if (saveIfNotExists && !file.exists())
-            plugin.saveResource(file.getName(), false);
+        if (saveIfNotExists && !this.file.exists())
+            plugin.saveResource(this.file.getName(), false);
 
         load();
     }
 
-    public BaseConfig(Plugin plugin, String name) {
+    public BaseConfig(Plugin plugin, String fileName) {
         this.plugin = plugin;
-        this.name = name;
-        this.file = new File(plugin.getDataFolder(), name + ".yml");;
+        this.fileName = fileName;
+        this.file = new File(plugin.getDataFolder(), fileName + ".yml");;
 
         load();
     }
@@ -47,7 +47,7 @@ public class BaseConfig {
         try {
             config.save(file);
         } catch (IOException e) {
-            plugin.getLogger().severe("Couldn't save config " + name);
+            plugin.getLogger().severe("Couldn't save config " + fileName);
         }
     }
 
@@ -102,5 +102,5 @@ public class BaseConfig {
     public ItemStack getItemStack(String path) {
         return config.getItemStack(path);
     }
-
+    
 }

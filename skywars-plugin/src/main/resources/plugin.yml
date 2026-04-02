@@ -10,3 +10,7 @@ commands:
     description: "e"
   leave:
     description: "ee"
+  editmap:
+    description: "ekeodked"
+  savemap:
+    description: "ekeodked"

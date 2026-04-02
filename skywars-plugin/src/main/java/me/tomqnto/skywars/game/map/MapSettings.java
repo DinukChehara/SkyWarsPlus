@@ -22,13 +22,9 @@ public class MapSettings implements IMapSettings, Serializable {
     @Setter
     private Location spectatorTeleport = null;
     @Setter
-    private String displayName;
-
-    private final String worldName;
-
-    public MapSettings(String worldName) {
-        this.worldName = worldName;
-        displayName = worldName;
+    private String mapName;
+    public MapSettings(String mapName) {
+        this.mapName = mapName;
     }
 
     public void removeSpawnLocation(String team, Location loc) {
@@ -49,7 +45,7 @@ public class MapSettings implements IMapSettings, Serializable {
 
     public void save() {
         try {
-            File file = new File(dataFolder, worldName + ".bin");
+            File file = new File(dataFolder, mapName + ".bin");
             if (!file.exists())
                 file.createNewFile();
             FileOutputStream fileOut = new FileOutputStream(file);
