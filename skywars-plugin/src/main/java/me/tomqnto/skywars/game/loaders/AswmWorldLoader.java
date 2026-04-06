@@ -14,10 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static me.tomqnto.skywars.SkyWars.plugin;
 
-public class AswmWorldLoader implements WorldLoader{
+public class AswmWorldLoader implements WorldLoader {
 
     private final File worldsDir = new File(plugin.getDataFolder(), "maps/worlds");
     private final SlimeLoader loader = new FileLoader(new File(plugin.getDataFolder(), "maps/loaded"));
@@ -79,5 +80,10 @@ public class AswmWorldLoader implements WorldLoader{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Set<String> getWorlds() {
+        return slimeWorlds.keySet();
     }
 }

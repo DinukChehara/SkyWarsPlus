@@ -3,6 +3,7 @@ package me.tomqnto.skywars.game.map;
 import lombok.Getter;
 import lombok.Setter;
 import me.tomqnto.skywars.api.game.map.IMapSettings;
+import me.tomqnto.skywars.game.GameMode;
 import org.bukkit.Location;
 
 import java.io.*;
@@ -22,21 +23,34 @@ public class MapSettings implements IMapSettings, Serializable {
     @Setter
     private Location spectatorTeleport = null;
     @Setter
-    private String mapName;
-    public MapSettings(String mapName) {
-        this.mapName = mapName;
+    private String displayName;
+
+    private final String mapId;
+    private final GameMode gameMode;
+
+    public MapSettings(String mapId, GameMode gameMode) {
+        this.mapId = mapId;
+        this.gameMode = gameMode;
     }
 
     public void removeSpawnLocation(String team, Location loc) {
         teamSpawnLocations.get(team).remove(loc);
     }
 
+    public void addSpawnLocation(String team, Location loc) {
+        teamSpawnLocations.get(team).add(loc);
+    }
+
     public List<Location> getSpawnLocations(String team) {
         return teamSpawnLocations.get(team);
     }
 
-    public void removeLootChestLocation(Location loc) {
+    public void removeLootChest(Location loc) {
         lootChests.remove(loc);
+    }
+
+    public void addLootChest(Location loc, String lootTable) {
+        lootChests.put(loc, lootTable);
     }
 
     public String getChestLootTable(Location loc) {
@@ -45,7 +59,7 @@ public class MapSettings implements IMapSettings, Serializable {
 
     public void save() {
         try {
-            File file = new File(dataFolder, mapName + ".bin");
+            File file = new File(dataFolder, mapId + ".bin");
             if (!file.exists())
                 file.createNewFile();
             FileOutputStream fileOut = new FileOutputStream(file);

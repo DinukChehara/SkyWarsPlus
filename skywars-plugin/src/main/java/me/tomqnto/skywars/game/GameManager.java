@@ -16,9 +16,9 @@ import static me.tomqnto.skywars.SkyWars.*;
 @Getter
 public class GameManager {
 
-    public static HashMap<String, GameMode> gamemodes = new HashMap<>();
     private final File gamemodesFolder = new File(plugin.getDataFolder(), "gamemodes");
 
+    private final HashMap<String, GameMode> gamemodes = new HashMap<>();
     private final Map<Player, IGame> gamesByPlayer = new HashMap<>();
     private final Map<String, IGame> gamesById = new HashMap<>();
     private final Map<Player, IGame> spectators = new HashMap<>();
@@ -27,10 +27,10 @@ public class GameManager {
         if (!gamemodesFolder.exists()) gamemodesFolder.mkdir();
     }
 
-    public boolean loadGameModes() {
+    public void loadGameModes() {
         if (gamemodesFolder.list() == null) {
             SkyWars.log("no gamemodes");
-            return false;
+            return;
         }
 
         Arrays.stream(gamemodesFolder.list()).forEach(file -> {
@@ -40,7 +40,6 @@ public class GameManager {
             SkyWars.log(String.valueOf(gamemode.getMaxPlayers()));
             SkyWars.log("Loaded gamemode: " + name);
         });
-        return true;
     }
 
     public IGame createGame(String map) {

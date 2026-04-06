@@ -1,10 +1,10 @@
 package me.tomqnto.skywars;
 
 import lombok.Getter;
-import me.tomqnto.skywars.commands.EditMapCommand;
+import me.tomqnto.skywars.commands.setup.EditMapCommand;
 import me.tomqnto.skywars.commands.JoinCommand;
 import me.tomqnto.skywars.commands.LeaveCommand;
-import me.tomqnto.skywars.commands.SaveMapCommand;
+import me.tomqnto.skywars.commands.setup.SaveMapCommand;
 import me.tomqnto.skywars.configuration.MainConfig;
 import me.tomqnto.skywars.game.GameManager;
 import me.tomqnto.skywars.game.events.ChestRefillEvent;
@@ -21,7 +21,6 @@ public final class SkyWars extends JavaPlugin {
 
     public static SkyWars plugin;
     public static GameManager gameManager;
-    public static LootManager lootManager;
     public static MapManager mapManager;
     public static MainConfig mainConfig;
     public static WorldLoader worldLoader;

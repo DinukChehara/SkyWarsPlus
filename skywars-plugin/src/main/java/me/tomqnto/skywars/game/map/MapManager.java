@@ -2,18 +2,18 @@ package me.tomqnto.skywars.game.map;
 
 import lombok.Getter;
 import me.tomqnto.skywars.SkyWars;
+import me.tomqnto.skywars.game.GameMode;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.codehaus.plexus.util.FileUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static me.tomqnto.skywars.SkyWars.plugin;
@@ -24,37 +24,44 @@ public class MapManager {
     private final File dataFolder = new File("data", "map");
     private final File mapsDir = new File(plugin.getDataFolder(), "maps/worlds");
 
-    private final Map<String, MapSettings> mapSettings = new HashMap<>();
-    private final Map<World, MapSettings> editing = new HashMap<>();
-    private final Map<Player, World> editingPlayers = new HashMap<>();
+    // map id, map settings
+    private final Map<String, MapSettings> maps = new HashMap<>();
+    private final Map<Player, MapSetup> editing = new HashMap<>();
 
-    public void loadMaps() {
+    public MapManager() {loadMapSettings();}
+
+    public void loadMapSettings() {
         for (String file : dataFolder.list()) {
             MapSettings map = MapSettings.load(file);
-            mapSettings.put(file.replace(".bin", ""), map);
-            SkyWars.log("Loaded settings for the map '%s'".formatted(map.getMapName()));
+            maps.put(file.replace(".bin", ""), map);
+            SkyWars.log("Loaded settings for the map '%s'".formatted(map.getMapId()));
         }
     }
 
-    public void editMap(String name, Player player) {
+    public void editMap(String name, Player player, @Nullable GameMode gameMode) {
         World world = worldLoader.loadWorld(name, "edit");
-        MapSettings settings = mapSettings.getOrDefault(name, new MapSettings(name));
-        editing.put(world, settings);
-        editingPlayers.put(player, world);
+        MapSettings settings = maps.getOrDefault(name, new MapSettings(name, gameMode));
+        MapSetup mapSetup = new MapSetup(player, world, settings);
+        editing.put(player, mapSetup);
 
         player.teleport(world.getSpawnLocation());
         player.getPersistentDataContainer().set(new NamespacedKey(plugin, "editing"),
                 PersistentDataType.BOOLEAN, true);
     }
 
-    public void saveMap(World world, boolean saveWorld) throws IOException {
-        MapSettings map = editing.get(world);
-        map.save();
-        mapSettings.put(map.getMapName(), map);
+    public MapSetup getMapSetup(Player player) {
+        return editing.get(player);
+    }
 
-        File worldFolder = new File(Bukkit.getWorldContainer(), world.getName());
+    public void saveMap(Player player, boolean saveWorld) throws IOException {
+        MapSetup setup = editing.get(player);
+        MapSettings map = setup.mapSettings();
+        map.save();
+        maps.put(map.getMapId(), map);
+
+        File worldFolder = new File(Bukkit.getWorldContainer(), player.getName());
         if (saveWorld) {
-            File mapFolder = new File(mapsDir, map.getMapName());
+            File mapFolder = new File(mapsDir, map.getMapId());
             for (File f : worldFolder.listFiles()) {
                 if (f.getName().equals("level.dat"))
                     FileUtils.copyFile(f, new File(mapFolder, "level.dat"));
@@ -63,12 +70,12 @@ public class MapManager {
 
             }
         }
-        Bukkit.unloadWorld(world, false);
+        Bukkit.unloadWorld(setup.world(), false);
         FileUtils.deleteDirectory(worldFolder);
     }
 
     public MapSettings getMapSettings(String name) {
-        return mapSettings.get(name);
+        return maps.get(name);
     }
 
 }

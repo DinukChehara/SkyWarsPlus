@@ -1,16 +1,16 @@
-package me.tomqnto.skywars.commands;
+package me.tomqnto.skywars.commands.setup;
 
 import lombok.SneakyThrows;
 import me.tomqnto.skywars.SkyWars;
 import me.tomqnto.skywars.game.map.MapManager;
 import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static me.tomqnto.skywars.SkyWars.mapManager;
 import static me.tomqnto.skywars.SkyWars.plugin;
 
 public class SaveMapCommand implements CommandExecutor {
@@ -22,16 +22,14 @@ public class SaveMapCommand implements CommandExecutor {
             return true;
         }
 
-        MapManager mapManager = SkyWars.mapManager;
-        if (!mapManager.getEditingPlayers().containsKey(player)) {
+        if (!mapManager.getEditing().containsKey(player)) {
             player.sendRichMessage("<red>You are not editing a map");
             return true;
         }
 
-        World world = mapManager.getEditingPlayers().get(player);
-        mapManager.saveMap(world, true);
+        mapManager.saveMap(player, true);
         player.getPersistentDataContainer().remove(new NamespacedKey(plugin, "editing"));
-        player.sendRichMessage("<yellow>Saved " + mapManager.getEditing().get(world).getMapName());
+        player.sendRichMessage("<yellow>Saved " + mapManager.getMapSetup(player).mapSettings().getMapId());
 
         return true;
     }

@@ -1,7 +1,5 @@
-package me.tomqnto.skywars.commands;
+package me.tomqnto.skywars.commands.setup;
 
-import me.tomqnto.skywars.SkyWars;
-import me.tomqnto.skywars.game.map.MapManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static me.tomqnto.skywars.SkyWars.plugin;
+import static me.tomqnto.skywars.SkyWars.*;
 
 public class EditMapCommand implements CommandExecutor {
 
@@ -25,18 +23,30 @@ public class EditMapCommand implements CommandExecutor {
             return true;
         }
 
+
         if (args.length < 1) {
-            player.sendRichMessage("<red>You must provide the map name");
+            player.sendRichMessage("<red>You must provide the map name and the game mode");
             return true;
         }
 
-        MapManager mapManager = SkyWars.mapManager;
-
-        if (!mapManager.getMapSettings().containsKey(args[0])) {
+        if (!worldLoader.getWorlds().contains(args[0])) {
             player.sendRichMessage("<red>There is no map named '%s'".formatted(args[0]));
             return true;
         }
-        mapManager.editMap(args[1], player);
+
+
+        if (mapManager.getMapSettings(args[0])==null) {
+            if (args.length < 2) {
+                player.sendRichMessage("<red>This map has not been set up before, you must provide the game mode.");
+                return true;
+            }
+            if (!gameManager.getGamemodes().containsKey(args[1])) {
+                player.sendRichMessage("<red>There is no game mode named '%s'".formatted(args[1]));
+                return true;
+            }
+        }
+
+        mapManager.editMap(args[0], player, gameManager.getGamemodes().get(args[1]));
 
 
         player.sendRichMessage("<yellow>Editing " + args[0]);
