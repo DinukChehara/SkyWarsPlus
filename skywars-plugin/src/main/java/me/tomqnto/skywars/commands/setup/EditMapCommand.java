@@ -18,7 +18,7 @@ public class EditMapCommand implements CommandExecutor {
             return true;
         }
 
-        if (player.getPersistentDataContainer().has(new NamespacedKey(plugin, "editing"))) {
+        if (mapManager.getEditing().containsKey(player)) {
             player.sendRichMessage("<red>You are already editing a map");
             return true;
         }
@@ -46,7 +46,7 @@ public class EditMapCommand implements CommandExecutor {
             }
         }
 
-        mapManager.editMap(args[0], player, gameManager.getGamemodes().get(args[1]));
+        mapManager.editMap(args[0], player, args[1]);
 
 
         player.sendRichMessage("<yellow>Editing " + args[0]);

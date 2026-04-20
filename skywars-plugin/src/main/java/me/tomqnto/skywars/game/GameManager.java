@@ -45,7 +45,7 @@ public class GameManager {
     public IGame createGame(String map) {
         GameMode gamemode = gamemodes.values().stream().toList().getFirst();
         IGame game = new Game(gamemode,
-                new GameMap(map, worldLoader.loadWorld(map, gamemode.getName()), mapManager.getMapSettings(map)));
+                new GameMap(map, worldLoader.loadWorld(map, gamemode.getId()), mapManager.getMapSettings(map)));
         gamesById.put(game.getId(), game);
         return game;
     }
@@ -65,6 +65,10 @@ public class GameManager {
 
     public boolean isSpectating(Player player) {
         return spectators.containsKey(player);
+    }
+
+    public GameMode getGameMode(String id) {
+        return gamemodes.get(id);
     }
 
 }

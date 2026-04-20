@@ -75,7 +75,7 @@ public class Game implements IGame {
 
         gamemode.getTeams().forEach(team -> {
             org.bukkit.scoreboard.Team bktTeam = getScoreboard().registerNewTeam(team);
-            bktTeam.color((NamedTextColor) TextColor.fromHexString(gamemode.getTeamColor(team)));
+            bktTeam.color(gamemode.getTeamNamedColor(team, NamedTextColor.WHITE));
             bktTeam.prefix(MiniMessage.miniMessage().deserialize(gamemode.getTeamPrefix(team)));
             teams.put(team, new Team(bktTeam, map.mapSettings().getSpawnLocations(team),
                     gamemode.getMaxPlayersPerTeam()));

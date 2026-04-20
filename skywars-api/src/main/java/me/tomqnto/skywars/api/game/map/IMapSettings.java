@@ -1,6 +1,8 @@
 package me.tomqnto.skywars.api.game.map;
 
+import me.tomqnto.skywars.api.game.IGameMode;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,8 @@ public interface IMapSettings {
     List<Location> getSpawnLocations(String team);
     void removeLootChest(Location loc);
     String getChestLootTable(Location loc);
-    void save();
+    @NotNull Map<String, Object> serialize();
     String getDisplayName();
+    IGameMode getGameMode();
 
 }
